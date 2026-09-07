@@ -1,4 +1,6 @@
-@import "tailwindcss";
+const fs = require('fs');
+
+const cssContent = `@import "tailwindcss";
 
 @theme {
   --color-navy: #0C1220;
@@ -26,9 +28,7 @@
   }
 }
 
-*,
-*::before,
-*::after {
+*, *::before, *::after {
   box-sizing: border-box;
 }
 
@@ -47,12 +47,7 @@ body {
   font-size: 15px;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-playfair-display, Georgia, serif);
   line-height: 1.2;
   font-weight: 700;
@@ -176,8 +171,7 @@ a {
   color: #ffffff;
 }
 
-a,
-button {
+a, button {
   transition: color 0.25s ease, background-color 0.25s ease, border-color 0.25s ease, opacity 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
 }
 
@@ -187,29 +181,18 @@ button {
   border-radius: 2px;
 }
 
-::-webkit-scrollbar {
-  width: 4px;
-}
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #D1D5DB; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #9CA3AF; }
 
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #D1D5DB;
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #9CA3AF;
-}
-
-img {
-  max-width: 100%;
-  height: auto;
-}
+img { max-width: 100%; height: auto; }
 
 ::selection {
   background-color: #C8102E;
   color: #ffffff;
 }
+`;
+
+fs.writeFileSync('app/globals.css', cssContent, { encoding: 'utf8', flag: 'w' });
+console.log('Successfully updated app/globals.css with color: inherit');

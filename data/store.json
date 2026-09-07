@@ -1,0 +1,717 @@
+{
+  "products": [
+    {
+      "name": "dsjkfjkds",
+      "slug": "dsjkfjkds",
+      "category": "Blankets",
+      "categorySlug": "blankets",
+      "price": 333,
+      "originalPrice": 3333,
+      "rating": 5,
+      "reviewCount": 1,
+      "image": "/uploads/sandalwood_1788300721039.png",
+      "images": [
+        "/uploads/sandalwood_1788300721039.png"
+      ],
+      "description": "",
+      "shortDescription": "",
+      "sizes": [
+        "Standard"
+      ],
+      "colors": [
+        "Classic"
+      ],
+      "materials": [
+        "100% Premium Material"
+      ],
+      "stock": 3,
+      "featured": false,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T22:12:05.746Z",
+      "updatedAt": "2026-09-01T22:12:05.746Z",
+      "_id": "prod_1788300725748"
+    },
+    {
+      "name": "bank",
+      "slug": "bank",
+      "category": "Blankets",
+      "categorySlug": "blankets",
+      "price": 300,
+      "originalPrice": 33333,
+      "rating": 5,
+      "reviewCount": 1,
+      "image": "https://m.media-amazon.com/images/I/81+KAQGG9TL.jpg",
+      "images": [
+        "https://m.media-amazon.com/images/I/81+KAQGG9TL.jpg"
+      ],
+      "description": "",
+      "shortDescription": "",
+      "sizes": [
+        "Standard"
+      ],
+      "colors": [
+        "Classic"
+      ],
+      "materials": [
+        "100% Premium Material"
+      ],
+      "stock": 50,
+      "featured": false,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T22:01:41.039Z",
+      "updatedAt": "2026-09-01T22:01:41.039Z",
+      "_id": "prod_1788300101054"
+    },
+    {
+      "_id": "prod_1",
+      "name": "SMARTEX Two-Ply Premium Blanket",
+      "slug": "smartex-two-ply-premium-blanket",
+      "category": "Blankets",
+      "categorySlug": "blankets",
+      "price": 129,
+      "originalPrice": 175,
+      "salePrice": 129,
+      "rating": 4.8,
+      "reviewCount": 320,
+      "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85",
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=85"
+      ],
+      "description": "Experience unparalleled warmth with our SMARTEX Two-Ply Premium Blanket. Crafted from ultra-soft, high-quality fibres with a dual-layer construction that traps heat while remaining breathable. Perfect for UAE winters and air-conditioned rooms.",
+      "shortDescription": "Ultra-soft dual-layer blanket with superior warmth retention",
+      "sizes": [
+        "Single",
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "Ivory",
+        "Charcoal",
+        "Camel",
+        "Navy"
+      ],
+      "materials": [
+        "100% Premium Polyester",
+        "Anti-pilling treatment",
+        "Machine washable"
+      ],
+      "stock": 45,
+      "badge": "Best Seller",
+      "featured": true,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_2",
+      "name": "Luxury Fitted Bed Sheet Set",
+      "slug": "luxury-fitted-bed-sheet-set",
+      "category": "Bed Linen",
+      "categorySlug": "bed-linen",
+      "price": 89,
+      "originalPrice": 120,
+      "salePrice": 89,
+      "rating": 4.7,
+      "reviewCount": 86,
+      "image": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=800&q=85",
+        "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=800&q=85"
+      ],
+      "description": "Wrap yourself in 400-thread-count luxury with our fitted bed sheet set. Includes one fitted sheet, one flat sheet, and two pillowcases. Cool-to-touch fabric keeps you comfortable all night.",
+      "shortDescription": "400-thread-count luxury bedding set with pillowcases",
+      "sizes": [
+        "Single",
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "White",
+        "Ivory",
+        "Stone",
+        "Slate Blue"
+      ],
+      "materials": [
+        "100% Egyptian Cotton",
+        "400 Thread Count",
+        "Sateen weave"
+      ],
+      "stock": 45,
+      "badge": "New",
+      "featured": true,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_3",
+      "name": "Quilt & Duvet Comforter Set",
+      "slug": "quilt-duvet-comforter-set",
+      "category": "Comforters",
+      "categorySlug": "comforters",
+      "price": 149,
+      "originalPrice": 199,
+      "salePrice": 149,
+      "rating": 4.9,
+      "reviewCount": 72,
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=800&q=85",
+        "https://images.unsplash.com/photo-1540518614846-7ede433c4550?w=800&q=85"
+      ],
+      "description": "Our all-season Quilt & Duvet Comforter Set delivers the perfect balance of warmth and breathability. The microfibre fill is hypoallergenic and maintains its loft wash after wash.",
+      "shortDescription": "All-season hypoallergenic comforter with duvet cover",
+      "sizes": [
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "White",
+        "Cream",
+        "Light Grey",
+        "Dusty Rose"
+      ],
+      "materials": [
+        "Microfibre fill",
+        "Hypoallergenic",
+        "Duvet cover included"
+      ],
+      "stock": 45,
+      "featured": true,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_4",
+      "name": "Premium Pillow Case Set (4-Pack)",
+      "slug": "premium-pillow-case-set",
+      "category": "Bed Linen",
+      "categorySlug": "bed-linen",
+      "price": 39,
+      "originalPrice": 55,
+      "salePrice": 39,
+      "rating": 4.6,
+      "reviewCount": 43,
+      "image": "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1584100936595-c0654b55a2e2?w=800&q=85"
+      ],
+      "description": "Soft, smooth pillow cases with envelope closure for a tidy look. Made from high-quality microfibre that's gentle on skin and hair. Easy care — machine washable and quick-dry.",
+      "shortDescription": "Soft microfibre pillow cases with envelope closure, 4-pack",
+      "sizes": [
+        "Standard",
+        "King"
+      ],
+      "colors": [
+        "White",
+        "Ivory",
+        "Blush",
+        "Grey",
+        "Navy"
+      ],
+      "materials": [
+        "Microfibre",
+        "Hypoallergenic",
+        "Easy care"
+      ],
+      "stock": 45,
+      "featured": false,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_5",
+      "name": "Luxury Bedspread Collection",
+      "slug": "luxury-bedspread-collection",
+      "category": "Bedspreads",
+      "categorySlug": "bedspreads",
+      "price": 119,
+      "originalPrice": 160,
+      "salePrice": 119,
+      "rating": 4.7,
+      "reviewCount": 39,
+      "image": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=800&q=85"
+      ],
+      "description": "Transform your bedroom with our Luxury Bedspread Collection. Features a stunning jacquard-woven pattern with a subtle sheen that adds an instant touch of elegance. Lightweight yet warm.",
+      "shortDescription": "Jacquard-woven luxury bedspread with elegant pattern",
+      "sizes": [
+        "Single",
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "Gold & Ivory",
+        "Silver & White",
+        "Burgundy & Gold",
+        "Navy & Silver"
+      ],
+      "materials": [
+        "Jacquard woven",
+        "Polyester-cotton blend",
+        "Dry clean recommended"
+      ],
+      "stock": 45,
+      "badge": "Premium",
+      "featured": true,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_6",
+      "name": "SMARTEX Ultra-Soft Fleece Blanket",
+      "slug": "smartex-ultra-soft-fleece-blanket",
+      "category": "Blankets",
+      "categorySlug": "blankets",
+      "price": 79,
+      "originalPrice": 99,
+      "salePrice": 79,
+      "rating": 4.8,
+      "reviewCount": 215,
+      "image": "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1565538810643-b5bdb714032a?w=800&q=85"
+      ],
+      "description": "Snuggle up in our SMARTEX Ultra-Soft Fleece Blanket. Made from premium coral fleece, this blanket is incredibly soft, lightweight, and perfect for everyday use. Great for sofas, travel, or as a bedroom layer.",
+      "shortDescription": "Coral fleece blanket — lightweight, ultra-soft, everyday comfort",
+      "sizes": [
+        "Single",
+        "Double",
+        "King"
+      ],
+      "colors": [
+        "Cream",
+        "Sky Blue",
+        "Blush Pink",
+        "Camel",
+        "Mint"
+      ],
+      "materials": [
+        "Premium coral fleece",
+        "Anti-static",
+        "Machine washable"
+      ],
+      "stock": 45,
+      "badge": "Best Seller",
+      "featured": false,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_7",
+      "name": "Hotel Collection Duvet Set",
+      "slug": "hotel-collection-duvet-set",
+      "category": "Comforters",
+      "categorySlug": "comforters",
+      "price": 189,
+      "originalPrice": 249,
+      "salePrice": 189,
+      "rating": 4.9,
+      "reviewCount": 58,
+      "image": "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=800&q=85"
+      ],
+      "description": "Recreate the five-star hotel experience at home. Our Hotel Collection Duvet Set includes a 300-thread-count duvet cover with matching shams. The baffle-box construction keeps the filling evenly distributed.",
+      "shortDescription": "Five-star hotel quality duvet with shams — 300TC",
+      "sizes": [
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "Pure White",
+        "Ivory",
+        "Soft Grey"
+      ],
+      "materials": [
+        "300 Thread Count Cotton",
+        "Baffle-box construction",
+        "Premium fill"
+      ],
+      "stock": 45,
+      "badge": "Premium",
+      "featured": true,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_8",
+      "name": "Classic Woven Bedspread",
+      "slug": "classic-woven-bedspread",
+      "category": "Bedspreads",
+      "categorySlug": "bedspreads",
+      "price": 89,
+      "originalPrice": 119,
+      "salePrice": 89,
+      "rating": 4.5,
+      "reviewCount": 61,
+      "image": "https://images.unsplash.com/photo-1580301762395-21ce84d00bc6?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1580301762395-21ce84d00bc6?w=800&q=85"
+      ],
+      "description": "Our Classic Woven Bedspread combines traditional craftsmanship with modern aesthetics. The herringbone weave adds texture and depth to any bedroom. Versatile enough for year-round use.",
+      "shortDescription": "Herringbone woven bedspread — timeless and versatile",
+      "sizes": [
+        "Single",
+        "Double",
+        "King"
+      ],
+      "colors": [
+        "Natural",
+        "Charcoal",
+        "Rust",
+        "Sage"
+      ],
+      "materials": [
+        "Cotton-acrylic blend",
+        "Herringbone weave",
+        "Machine washable"
+      ],
+      "stock": 45,
+      "featured": false,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_9",
+      "name": "SMARTEX Heavy Weight Blanket",
+      "slug": "smartex-heavy-weight-blanket",
+      "category": "Blankets",
+      "categorySlug": "blankets",
+      "price": 159,
+      "originalPrice": 210,
+      "salePrice": 159,
+      "rating": 4.9,
+      "reviewCount": 144,
+      "image": "https://images.unsplash.com/photo-1600369672770-985fd30004eb?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1600369672770-985fd30004eb?w=800&q=85"
+      ],
+      "description": "Our flagship SMARTEX Heavy Weight Blanket delivers deep, cozy warmth for even the coldest nights. Three-ply construction with premium thermal insulation — ideal for UAE winters and cold hotel rooms.",
+      "shortDescription": "Three-ply thermal blanket for maximum warmth",
+      "sizes": [
+        "Single",
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "Ivory",
+        "Mocha",
+        "Charcoal",
+        "Burgundy"
+      ],
+      "materials": [
+        "Three-ply premium polyester",
+        "Thermal insulation layer",
+        "Anti-pilling"
+      ],
+      "stock": 45,
+      "badge": "New",
+      "featured": true,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_10",
+      "name": "Embroidered Luxury Bedspread",
+      "slug": "embroidered-luxury-bedspread",
+      "category": "Bedspreads",
+      "categorySlug": "bedspreads",
+      "price": 145,
+      "originalPrice": 195,
+      "salePrice": 145,
+      "rating": 4.8,
+      "reviewCount": 29,
+      "image": "https://images.unsplash.com/photo-1571508601891-ca5e7a713859?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1571508601891-ca5e7a713859?w=800&q=85"
+      ],
+      "description": "Make a statement with our Embroidered Luxury Bedspread. Intricate floral embroidery on a satin-finish base creates a look of opulence and sophistication. Perfect for master bedrooms and guest rooms.",
+      "shortDescription": "Floral embroidered bedspread with satin-finish base",
+      "sizes": [
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "Gold on Ivory",
+        "Silver on White",
+        "Champagne on Blush"
+      ],
+      "materials": [
+        "Satin-finish base",
+        "Machine embroidery",
+        "Dry clean recommended"
+      ],
+      "stock": 45,
+      "badge": "Premium",
+      "featured": false,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_11",
+      "name": "Cotton Rich Flat Sheet Set",
+      "slug": "cotton-rich-flat-sheet-set",
+      "category": "Bed Linen",
+      "categorySlug": "bed-linen",
+      "price": 65,
+      "originalPrice": 85,
+      "salePrice": 65,
+      "rating": 4.6,
+      "reviewCount": 78,
+      "image": "https://images.unsplash.com/photo-1629949009765-5734ab20c81b?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1629949009765-5734ab20c81b?w=800&q=85"
+      ],
+      "description": "Our Cotton Rich Flat Sheet Set gives you the luxurious feel of pure cotton at an accessible price. Crisp, cool, and breathable — ideal for hot UAE summers. Includes flat sheet and two standard pillowcases.",
+      "shortDescription": "Breathable cotton-rich flat sheet with pillowcases",
+      "sizes": [
+        "Single",
+        "Double",
+        "King",
+        "Super King"
+      ],
+      "colors": [
+        "White",
+        "Ivory",
+        "Pale Blue",
+        "Soft Pink",
+        "Sage"
+      ],
+      "materials": [
+        "60% Cotton, 40% Polyester",
+        "Percale weave",
+        "Easy iron"
+      ],
+      "stock": 45,
+      "featured": false,
+      "bestseller": false,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "prod_12",
+      "name": "Microfibre Comforter — All Seasons",
+      "slug": "microfibre-comforter-all-seasons",
+      "category": "Comforters",
+      "categorySlug": "comforters",
+      "price": 99,
+      "originalPrice": 135,
+      "salePrice": 99,
+      "rating": 4.7,
+      "reviewCount": 94,
+      "image": "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&q=85",
+      "images": [
+        "https://images.unsplash.com/photo-1545558014-8692077e9b5c?w=800&q=85"
+      ],
+      "description": "Our lightweight Microfibre Comforter is designed for the UAE climate — warm enough for cool nights, light enough to use year-round. The silky microfibre shell is smooth against the skin.",
+      "shortDescription": "Lightweight year-round comforter ideal for UAE climate",
+      "sizes": [
+        "Single",
+        "Double",
+        "King"
+      ],
+      "colors": [
+        "White",
+        "Cream",
+        "Light Grey"
+      ],
+      "materials": [
+        "Microfibre shell",
+        "Hollow fibre fill",
+        "Machine washable"
+      ],
+      "stock": 45,
+      "featured": false,
+      "bestseller": true,
+      "showOnHomepage": true,
+      "showOnCollection": true,
+      "status": "published",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    }
+  ],
+  "categories": [
+    {
+      "_id": "cat_1",
+      "name": "Blankets",
+      "slug": "blankets",
+      "description": "Premium multi-ply blankets for ultimate warmth and comfort",
+      "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
+      "status": "active",
+      "createdAt": "2026-09-01T21:43:58.059Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "cat_2",
+      "name": "Bed Linen",
+      "slug": "bed-linen",
+      "description": "Luxurious fitted and flat sheets for a perfect night's sleep",
+      "image": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&q=80",
+      "status": "active",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "cat_3",
+      "name": "Comforters",
+      "slug": "comforters",
+      "description": "Plush quilt and duvet sets for all-season comfort",
+      "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80",
+      "status": "active",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    },
+    {
+      "_id": "cat_4",
+      "name": "Bedspreads",
+      "slug": "bedspreads",
+      "description": "Elegant bedspreads to transform your bedroom aesthetic",
+      "image": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600&q=80",
+      "status": "active",
+      "createdAt": "2026-09-01T21:43:58.061Z",
+      "updatedAt": "2026-09-01T21:43:58.061Z"
+    }
+  ],
+  "orders": [
+    {
+      "_id": "ord_1001",
+      "orderNumber": "BHT-98421",
+      "customerName": "Rashid Al Nuaimi",
+      "email": "rashid.nuaimi@example.ae",
+      "phone": "+971 50 123 4567",
+      "shippingAddress": {
+        "street": "Villa 14, Al Safa 2",
+        "city": "Dubai",
+        "emirate": "Dubai",
+        "country": "United Arab Emirates"
+      },
+      "items": [
+        {
+          "name": "Smartex Two-Ply Premium Blanket",
+          "price": 280,
+          "quantity": 2,
+          "size": "King (220x240cm)",
+          "color": "Royal Navy & Gold"
+        }
+      ],
+      "totalAmount": 560,
+      "paymentStatus": "Paid",
+      "orderStatus": "Pending",
+      "notes": "Deliver before 5 PM",
+      "createdAt": "2026-09-01T17:43:58.061Z",
+      "updatedAt": "2026-09-01T22:12:33.104Z"
+    },
+    {
+      "_id": "ord_1002",
+      "orderNumber": "BHT-98422",
+      "customerName": "Fatima Al Mansoori",
+      "email": "fatima.m@example.ae",
+      "phone": "+971 52 876 5432",
+      "shippingAddress": {
+        "street": "Apt 502, Marina Crown Tower",
+        "city": "Dubai",
+        "emirate": "Dubai",
+        "country": "United Arab Emirates"
+      },
+      "items": [
+        {
+          "name": "Luxury Fitted Bed Sheet Set",
+          "price": 195,
+          "quantity": 1,
+          "size": "King",
+          "color": "Ivory White"
+        }
+      ],
+      "totalAmount": 195,
+      "paymentStatus": "Cash on Delivery",
+      "orderStatus": "Pending",
+      "notes": "Call before arrival",
+      "createdAt": "2026-09-01T13:43:58.062Z",
+      "updatedAt": "2026-09-01T21:43:58.062Z"
+    },
+    {
+      "_id": "ord_1003",
+      "orderNumber": "BHT-98423",
+      "customerName": "Mohamed Al Mazrouei",
+      "email": "m.mazrouei@example.ae",
+      "phone": "+971 55 334 9988",
+      "shippingAddress": {
+        "street": "Corniche Residence",
+        "city": "Abu Dhabi",
+        "emirate": "Abu Dhabi",
+        "country": "United Arab Emirates"
+      },
+      "items": [
+        {
+          "name": "Quilt Duvet Comforter Set",
+          "price": 340,
+          "quantity": 1,
+          "size": "Super King",
+          "color": "Charcoal Grey"
+        }
+      ],
+      "totalAmount": 340,
+      "paymentStatus": "Paid",
+      "orderStatus": "Shipped",
+      "createdAt": "2026-08-31T21:43:58.062Z",
+      "updatedAt": "2026-09-01T21:43:58.062Z"
+    }
+  ]
+}
