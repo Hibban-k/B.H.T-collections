@@ -33,6 +33,7 @@ export default function Footer() {
                   alt="B.H.T. Collections Logo"
                   fill
                   className="object-contain"
+                  sizes="48px"
                 />
               </div>
               <div className="flex flex-col leading-none">

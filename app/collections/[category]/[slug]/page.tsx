@@ -6,7 +6,9 @@ import Image from "next/image";
 import { Star, CheckCircle2, MessageCircle, Phone, Truck, RotateCcw } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
-import { getProductBySlug, getProducts } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
+
+export const revalidate = 3600;
 
 interface Props {
   params: Promise<{ category: string; slug: string }>;
@@ -14,7 +16,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await ProductService.getProductBySlug(slug);
   if (!product) return {};
   return {
     title: `${product.name} | B.H.T. COLLECTIONS`,
@@ -24,15 +26,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProductPage({ params }: Props) {
   const { slug, category } = await params;
-  const product = await getProductBySlug(slug);
+  const product = await ProductService.getProductBySlug(slug);
   if (!product || product.status !== "published" || product.categorySlug !== category) {
     notFound();
   }
 
-  const allProducts = await getProducts({ status: "published" });
-  const related = allProducts
-    .filter((p) => p.categorySlug === product.categorySlug && p.slug !== product.slug)
-    .slice(0, 4);
+  const related = await ProductService.getRelatedProducts(
+    product.categorySlug,
+    product.slug,
+    4
+  );
 
   return (
     <div className="min-h-screen bg-transparent">
@@ -80,7 +83,7 @@ export default async function ProductPage({ params }: Props) {
             {/* Thumbnail Row */}
             {product.images && product.images.length > 1 && (
               <div className="flex gap-3 mt-4">
-                {product.images.map((img, i) => (
+                {product.images.map((img: string, i: number) => (
                   <div key={i} className="relative w-20 h-20 bg-white rounded-xl overflow-hidden border border-[#F2EBDC] shadow-xs">
                     <Image src={img} alt={`${product.name} ${i + 1}`} fill className="object-cover" />
                   </div>
@@ -151,7 +154,7 @@ export default async function ProductPage({ params }: Props) {
                   Available Sizes
                 </p>
                 <div className="flex flex-wrap gap-2">
-                  {product.sizes.map((size) => (
+                  {product.sizes.map((size: string) => (
                     <span
                       key={size}
                       className="px-3.5 py-1.5 bg-white border border-[#E2E8F0] rounded-lg text-xs font-semibold text-[#0B131F]"
@@ -211,7 +214,7 @@ export default async function ProductPage({ params }: Props) {
               Materials &amp; Care Details
             </h2>
             <div className="grid sm:grid-cols-3 gap-4">
-              {product.materials.map((mat) => (
+              {product.materials.map((mat: string) => (
                 <div key={mat} className="flex items-center gap-3 bg-white p-3.5 rounded-xl border border-[#F2EBDC] shadow-sm">
                   <CheckCircle2 className="w-4 h-4 text-[#1BA14B] shrink-0" />
                   <span className="text-sm font-medium text-[#64748B]">{mat}</span>

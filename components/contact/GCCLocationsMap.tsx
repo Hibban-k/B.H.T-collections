@@ -66,7 +66,6 @@ export default function GCCLocationsMap() {
               fill
               className="object-contain sm:object-cover object-center p-1 sm:p-2 transition-transform duration-700 group-hover:scale-[1.02]"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 70vw, 800px"
-              priority
             />
 
             {/* Subtle Overlay badge on bottom of map */}

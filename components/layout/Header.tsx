@@ -67,6 +67,7 @@ export default function Header() {
                 fill
                 className="object-contain"
                 priority
+                sizes="56px"
               />
             </div>
             <div className="flex flex-col leading-none">

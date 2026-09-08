@@ -1,58 +1,25 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedAdmin } from "@/lib/auth/admin";
-import { updateProduct, deleteProduct, getProductBySlug } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
+import { withAuth } from "@/lib/api/helpers";
 
-export async function GET(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = withAuth("products:read", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  try {
-    const product = await getProductBySlug(id);
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-    return NextResponse.json({ product });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch product" }, { status: 500 });
-  }
-}
+  const product = await ProductService.getProductById(id);
+  if (!product) throw new Error("Product not found");
+  return NextResponse.json({ product });
+});
 
-export async function PUT(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const PUT = withAuth("products:write", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  try {
-    const body = await req.json();
-    const updated = await updateProduct(id, body);
-    if (!updated) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-    return NextResponse.json({ success: true, product: updated });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to update product" }, { status: 500 });
-  }
-}
+  const body = await req.json();
+  const updated = await ProductService.updateProduct(id, body);
+  if (!updated) throw new Error("Product not found");
+  return NextResponse.json({ success: true, product: updated });
+});
 
-export async function DELETE(req: Request, { params }: { params: Promise<{ id: string }> }) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const DELETE = withAuth("products:write", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
-  try {
-    const success = await deleteProduct(id);
-    if (!success) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-    return NextResponse.json({ success: true, message: "Product deleted" });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to delete product" }, { status: 500 });
-  }
-}
+  const success = await ProductService.deleteProduct(id);
+  if (!success) throw new Error("Product not found");
+  return NextResponse.json({ success: true, message: "Product deleted" });
+});

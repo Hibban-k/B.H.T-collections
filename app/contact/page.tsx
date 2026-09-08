@@ -2,8 +2,12 @@
 import type { Metadata } from "next";
 import { Phone, Mail, MapPin, MessageCircle, Clock, Building2, Globe } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
-import GCCLocationsMap from "@/components/contact/GCCLocationsMap";
+import dynamic from "next/dynamic";
 import { regionalOffices } from "@/lib/data";
+
+const GCCLocationsMap = dynamic(() => import("@/components/contact/GCCLocationsMap"), {
+  loading: () => <div className="h-96 rounded-3xl bg-slate-900 animate-pulse my-10" />
+});
 
 export const metadata: Metadata = {
   title: "Contact Us & Regional Offices | BLANKET HOUSE TRADING L.L.C.",

@@ -24,13 +24,22 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+import { ProductService } from "@/lib/services/product.service";
+
+export const revalidate = 3600; // Cache for 1 hour
+
+export default async function HomePage() {
+  const featuredProducts = await ProductService.getProducts({
+    showOnHomepage: true,
+    status: "published"
+  });
+
   return (
     <>
       <HeroSection />
       <TrustBenefits />
       <CategoryGrid />
-      <FeaturedProducts />
+      <FeaturedProducts initialProducts={featuredProducts.slice(0, 6)} />
       <ClienteleSection />
       <WhyBHT />
       <ServicesSection />

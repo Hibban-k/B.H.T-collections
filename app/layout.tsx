@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
+import AuthProvider from "@/components/providers/AuthProvider";
 
 const playfair = Playfair_Display({
   subsets: ["latin"],
@@ -19,6 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://blankethouse.ae"),
   title: {
     default: "BHTCOLLECTIONS | Premium Bedding & Blankets in UAE",
     template: "%s | BHTCOLLECTIONS",
@@ -52,23 +54,22 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
       <body className="relative bg-[#FAFAF7] text-[#0D1B2A] antialiased min-h-screen" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
-        {/* Global Single Watermark Background with Subtle Opacity */}
-        <div
-          aria-hidden="true"
-          className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center select-none overflow-hidden"
-        >
+          {/* Global Single Watermark Background with Subtle Opacity */}
           <div
-            className="w-[90vw] max-w-[700px] h-[500px] bg-contain bg-center bg-no-repeat opacity-[0.05]"
-            style={{ backgroundImage: "url('/bht-logo.jpg')" }}
-          />
-        </div>
-
-        <div className="relative z-10 flex flex-col min-h-screen">
-          <AnnouncementBar />
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+            aria-hidden="true"
+            className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center select-none overflow-hidden"
+          >
+            <div
+              className="w-[90vw] max-w-[700px] h-[500px] bg-contain bg-center bg-no-repeat opacity-[0.05]"
+              style={{ backgroundImage: "url('/bht-logo.jpg')" }}
+            />
+          </div>
+          <div className="relative z-10 flex flex-col min-h-screen">
+            <AnnouncementBar />
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
       </body>
     </html>
   );

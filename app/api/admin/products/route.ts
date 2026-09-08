@@ -1,41 +1,23 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedAdmin } from "@/lib/auth/admin";
-import { getProducts, createProduct } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
+import { withAuth } from "@/lib/api/helpers";
 
-export async function GET(req: Request) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = withAuth("products:read", async (req: Request) => {
   const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status") || undefined;
-  const categorySlug = searchParams.get("categorySlug") || undefined;
-  const search = searchParams.get("search") || undefined;
+  const products = await ProductService.getProducts({
+    status: searchParams.get("status") || undefined,
+    categorySlug: searchParams.get("categorySlug") || undefined,
+    search: searchParams.get("search") || undefined,
+  });
+  return NextResponse.json({ products });
+});
 
-  try {
-    const products = await getProducts({ status, categorySlug, search });
-    return NextResponse.json({ products });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch products" }, { status: 500 });
-  }
-}
-
-export async function POST(req: Request) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const POST = withAuth("products:write", async (req: Request) => {
+  const body = await req.json();
+  if (!body.name || !body.price) {
+    throw new Error("Product name and price are required");
   }
 
-  try {
-    const body = await req.json();
-    if (!body.name || !body.price) {
-      return NextResponse.json({ error: "Product name and price are required" }, { status: 400 });
-    }
-
-    const created = await createProduct(body);
-    return NextResponse.json({ success: true, product: created }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to create product" }, { status: 500 });
-  }
-}
+  const created = await ProductService.createProduct(body);
+  return NextResponse.json({ success: true, product: created }, { status: 201 });
+});

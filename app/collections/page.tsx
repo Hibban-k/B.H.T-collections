@@ -5,7 +5,10 @@ import Image from "next/image";
 import { ArrowRight, Star } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
-import { getProducts, getCategories } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
+import { CategoryService } from "@/lib/services/category.service";
+
+export const revalidate = 3600;
 
 export const metadata: Metadata = {
   title: "All Collections | B.H.T. COLLECTIONS",
@@ -15,8 +18,8 @@ export const metadata: Metadata = {
 
 export default async function CollectionsPage() {
   const [products, categories] = await Promise.all([
-    getProducts({ status: "published", showOnCollection: true }),
-    getCategories(),
+    ProductService.getProducts({ status: "published", showOnCollection: true }),
+    CategoryService.getCategories(),
   ]);
 
   return (
