@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getProducts } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,7 +10,7 @@ export async function GET(req: Request) {
   const search = searchParams.get("search") || undefined;
 
   try {
-    const products = await getProducts({
+    const products = await ProductService.getProducts({
       status: "published",
       categorySlug: category,
       showOnHomepage: homepage,
@@ -19,7 +19,8 @@ export async function GET(req: Request) {
       search,
     });
     return NextResponse.json({ products });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch products" }, { status: 500 });
+  } catch (error) {
+    const msg = error instanceof Error ? error.message : "Failed to fetch products";
+    return NextResponse.json({ error: msg }, { status: 500 });
   }
 }

@@ -6,7 +6,10 @@ import Image from "next/image";
 import { Star } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
-import { getProducts, getCategories } from "@/lib/db/store";
+import { ProductService } from "@/lib/services/product.service";
+import { CategoryService } from "@/lib/services/category.service";
+
+export const revalidate = 3600;
 
 interface Props {
   params: Promise<{ category: string }>;
@@ -14,7 +17,7 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
-  const allCategories = await getCategories();
+  const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat) return {};
   return {
@@ -25,11 +28,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
-  const allCategories = await getCategories();
+  const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat) notFound();
 
-  const products = await getProducts({
+  const products = await ProductService.getProducts({
     status: "published",
     categorySlug: category,
     showOnCollection: true,

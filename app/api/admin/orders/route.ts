@@ -1,21 +1,12 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedAdmin } from "@/lib/auth/admin";
-import { getOrders } from "@/lib/db/store";
+import { OrderService } from "@/lib/services/order.service";
+import { withAuth } from "@/lib/api/helpers";
 
-export async function GET(req: Request) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
+export const GET = withAuth("orders:read", async (req: Request) => {
   const { searchParams } = new URL(req.url);
-  const status = searchParams.get("status") || undefined;
-  const search = searchParams.get("search") || undefined;
-
-  try {
-    const orders = await getOrders({ status, search });
-    return NextResponse.json({ orders });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch orders" }, { status: 500 });
-  }
-}
+  const orders = await OrderService.getOrders({
+    status: searchParams.get("status") || undefined,
+    search: searchParams.get("search") || undefined,
+  });
+  return NextResponse.json({ orders });
+});

@@ -1,9 +1,11 @@
 "use client";
 // app/admin/layout.tsx
+import AuthProvider from "@/components/providers/AuthProvider";
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
+import { signOut } from "next-auth/react";
 import {
   LayoutDashboard,
   ShoppingCart,
@@ -38,9 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const handleLogout = async () => {
     setLoggingOut(true);
     try {
-      await fetch("/api/admin/auth/logout", { method: "POST" });
-      router.push("/admin/login");
-      router.refresh();
+      await signOut({ redirectTo: "/admin/login" });
     } catch {
       router.push("/admin/login");
     } finally {
@@ -54,7 +54,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <div
+    <AuthProvider>
+      <div
       className="min-h-screen bg-[#F8F9FA] text-[#0B131F] flex flex-col md:flex-row"
       style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
     >
@@ -232,6 +233,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Dynamic Page Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">{children}</main>
       </div>
-    </div>
+      </div>
+    </AuthProvider>
   );
 }

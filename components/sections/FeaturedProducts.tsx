@@ -1,37 +1,18 @@
 "use client";
 // components/sections/FeaturedProducts.tsx
-import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
-import { getFeaturedProducts } from "@/lib/data";
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
 
-export default function FeaturedProducts() {
-  const [products, setProducts] = useState<any[]>(() => getFeaturedProducts().slice(0, 6));
+interface FeaturedProductsProps {
+  initialProducts: any[];
+}
 
-  useEffect(() => {
-    let mounted = true;
-    async function loadLiveProducts() {
-      try {
-        const res = await fetch("/api/store/products?homepage=true");
-        if (res.ok) {
-          const data = await res.json();
-          if (mounted && data.products && data.products.length > 0) {
-            setProducts(data.products.slice(0, 6));
-          }
-        }
-      } catch (e) {
-        console.error("Storefront dynamic sync error", e);
-      }
-    }
-    loadLiveProducts();
-    return () => {
-      mounted = false;
-    };
-  }, []);
+export default function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
+  const products = initialProducts || [];
 
   return (
     <section className="section-padding bg-transparent relative overflow-hidden">

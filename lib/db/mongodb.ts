@@ -8,7 +8,6 @@ interface MongooseCache {
 }
 
 declare global {
-  // eslint-disable-next-line no-var
   var mongooseCache: MongooseCache | undefined;
 }
 
@@ -18,15 +17,11 @@ if (!global.mongooseCache) {
   global.mongooseCache = cached;
 }
 
-export async function connectToDatabase(): Promise<typeof mongoose | null> {
-  // If no URI or contains default placeholder brackets, use local persistent store
-  if (
-    !MONGODB_URI ||
-    MONGODB_URI.includes("<username>") ||
-    MONGODB_URI.includes("<password>") ||
-    MONGODB_URI.trim() === ""
-  ) {
-    return null;
+export async function connectToDatabase(): Promise<typeof mongoose> {
+  if (!MONGODB_URI || MONGODB_URI.trim() === "") {
+    throw new Error(
+      "MONGODB_URI environment variable is not set. MongoDB is required."
+    );
   }
 
   if (cached.conn) {
@@ -47,8 +42,8 @@ export async function connectToDatabase(): Promise<typeof mongoose | null> {
   try {
     cached.conn = await cached.promise;
     return cached.conn;
-  } catch (e) {
+  } catch {
     cached.promise = null;
-    return null;
+    throw new Error("Failed to connect to MongoDB. Ensure MONGODB_URI is valid.");
   }
 }

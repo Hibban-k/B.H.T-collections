@@ -1,36 +1,18 @@
 import { NextResponse } from "next/server";
-import { getAuthenticatedAdmin } from "@/lib/auth/admin";
-import { getCategories, createCategory } from "@/lib/db/store";
+import { CategoryService } from "@/lib/services/category.service";
+import { withAuth } from "@/lib/api/helpers";
 
-export async function GET() {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+export const GET = withAuth("categories:read", async () => {
+  const categories = await CategoryService.getCategories();
+  return NextResponse.json({ categories });
+});
+
+export const POST = withAuth("categories:write", async (req: Request) => {
+  const body = await req.json();
+  if (!body.name) {
+    throw new Error("Category name is required");
   }
 
-  try {
-    const categories = await getCategories();
-    return NextResponse.json({ categories });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to fetch categories" }, { status: 500 });
-  }
-}
-
-export async function POST(req: Request) {
-  const admin = await getAuthenticatedAdmin();
-  if (!admin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const body = await req.json();
-    if (!body.name) {
-      return NextResponse.json({ error: "Category name is required" }, { status: 400 });
-    }
-
-    const created = await createCategory(body);
-    return NextResponse.json({ success: true, category: created }, { status: 201 });
-  } catch (error: any) {
-    return NextResponse.json({ error: error.message || "Failed to create category" }, { status: 500 });
-  }
-}
+  const created = await CategoryService.createCategory(body);
+  return NextResponse.json({ success: true, category: created }, { status: 201 });
+});
