@@ -44,7 +44,8 @@ async function main() {
   }
 
   console.log("Connecting to MongoDB Atlas...");
-  await mongoose.connect(MONGODB_URI);
+  const { connectToDatabase } = await import("../lib/db/mongodb");
+  await connectToDatabase();
   console.log("Connected successfully.");
 
   const db = mongoose.connection.db;

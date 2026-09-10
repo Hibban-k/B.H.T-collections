@@ -46,7 +46,8 @@ async function seed() {
   }
 
   console.log("Connecting to MongoDB...");
-  await mongoose.connect(MONGODB_URI);
+  const { connectToDatabase } = await import("../lib/db/mongodb");
+  await connectToDatabase();
   console.log("Connected.");
 
   const UserSchema = new mongoose.Schema(
