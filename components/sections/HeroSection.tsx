@@ -23,7 +23,7 @@ export default function HeroSection() {
         <div className="absolute inset-0 bg-gradient-to-r from-[#0B131F]/90 via-[#0B131F]/65 to-[#0B131F]/30" />
       </div>
 
-    
+
 
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-20 md:py-32 w-full">
@@ -91,23 +91,6 @@ export default function HeroSection() {
           </motion.div>
         </div>
       </div>
-
-      {/* Scroll indicator */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 0.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2"
-      >
-        <div className="w-0.5 h-12 bg-white/30 relative overflow-hidden rounded-full">
-          <motion.div
-            className="absolute top-0 left-0 w-full bg-[#D92626]"
-            animate={{ height: ["0%", "100%"] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }}
-          />
-        </div>
-        <span className="text-white/60 text-[10px] font-semibold tracking-widest uppercase">Scroll</span>
-      </motion.div>
     </section>
   );
 }
