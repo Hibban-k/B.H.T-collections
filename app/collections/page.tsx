@@ -13,7 +13,7 @@ export const revalidate = 3600;
 export const metadata: Metadata = {
   title: "All Collections | B.H.T. COLLECTIONS",
   description:
-    "Browse our full range of premium blankets, bed linen, comforters and bedspreads. Quality home textiles for every bedroom across the UAE.",
+    "Browse our full range of premium blankets, bed linens, comforters and bedspreads. Quality home textiles for every bedroom across the UAE.",
 };
 
 export default async function CollectionsPage() {
