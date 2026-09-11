@@ -20,7 +20,7 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://blankethouse.ae"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
     default: "BHTCOLLECTIONS | Premium Bedding & Blankets in UAE",
     template: "%s | BHTCOLLECTIONS",

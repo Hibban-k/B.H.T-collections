@@ -6,11 +6,13 @@ import { Award, Users, Globe, ShieldCheck, Warehouse, Sparkles, Building2, Brief
 import LogoWatermark from "@/components/ui/LogoWatermark";
 import { clientele, regionalOffices } from "@/lib/data";
 
-export const metadata: Metadata = {
-  title: "About Us | BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections)",
-  description:
-    "Established in 2009 in Dubai. BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections) has 15+ years experience, 4 exclusive GCC factories, 50,000+ sqft warehouse, and serves 500+ clients across 6 GCC countries.",
-};
+import { constructMetadata } from "@/lib/seo/metadata";
+
+export const metadata: Metadata = constructMetadata({
+  title: "About Us | B.H.T. Collections",
+  description: "Established in 2009 in Dubai. BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections) has 15+ years experience, 4 exclusive GCC factories, 50,000+ sqft warehouse, and serves 500+ clients across 6 GCC countries.",
+  path: "/about",
+});
 
 const values = [
   {

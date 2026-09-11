@@ -21,6 +21,7 @@ interface CategoryItem {
   slug: string;
   description: string;
   image: string;
+  type: "primary" | "secondary";
   status: "active" | "disabled";
   productCount: number;
 }
@@ -30,6 +31,7 @@ const defaultFormData = {
   slug: "",
   description: "",
   image: "",
+  type: "primary",
   status: "active",
 };
 
@@ -82,6 +84,7 @@ export default function AdminCategoriesPage() {
       slug: category.slug,
       description: category.description,
       image: category.image,
+      type: category.type || "primary",
       status: category.status,
     });
     setErrorMsg("");
@@ -260,10 +263,15 @@ export default function AdminCategoriesPage() {
                 {/* Content */}
                 <div className="p-4 space-y-2">
                   <h3
-                    className="text-base font-bold text-[#0B131F]"
+                    className="text-base font-bold text-[#0B131F] flex items-center justify-between"
                     style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)" }}
                   >
-                    {cat.name}
+                    <span>{cat.name}</span>
+                    {cat.type === "secondary" && (
+                      <span className="text-[9px] font-sans font-bold bg-[#FAF8F5] text-[#D4AF37] border border-[#E8DFC8] px-2 py-0.5 rounded uppercase tracking-widest">
+                        Programmatic
+                      </span>
+                    )}
                   </h3>
                   <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed">
                     {cat.description || "No description provided."}
@@ -341,17 +349,32 @@ export default function AdminCategoriesPage() {
                 />
               </div>
 
-              <div>
-                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
-                  Category Slug
-                </label>
-                <input
-                  type="text"
-                  value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                  placeholder="e.g. blankets (auto-generated if blank)"
-                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
-                />
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Category Slug
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                    placeholder="e.g. blankets"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
+                  />
+                </div>
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Category Type
+                  </label>
+                  <select
+                    value={formData.type}
+                    onChange={(e) => setFormData({ ...formData, type: e.target.value })}
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  >
+                    <option value="primary">Primary (Main Taxonomies)</option>
+                    <option value="secondary">Secondary / Programmatic Tag</option>
+                  </select>
+                </div>
               </div>
 
               {/* IMAGE UPLOAD SECTION */}
