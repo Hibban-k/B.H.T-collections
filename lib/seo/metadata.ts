@@ -1,7 +1,7 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getAbsoluteUrl } from "./urls";
 
-interface ConstructMetadataParams {
+interface MetadataInput {
   title?: string;
   description?: string;
   image?: string;
@@ -10,46 +10,42 @@ interface ConstructMetadataParams {
 }
 
 export function constructMetadata({
-  title = "BHTCOLLECTIONS | Premium Bedding & Blankets in UAE",
-  description = "Shop premium blankets, bed linen, comforters and bedspreads from BHTCOLLECTIONS. Elevate your comfort with quality home textiles delivered across the UAE.",
+  title = "Blanket House Trading L.L.C. | Premium Home Textiles Dubai",
+  description = "Wholesale & retail supplier of premium Korean blankets, bed linen, comforters, and hotel textiles in Dubai & across GCC.",
   image = "/bht-logo.jpg",
   path = "",
   noIndex = false,
-}: ConstructMetadataParams = {}): Metadata {
+}: MetadataInput = {}): Metadata {
   const url = getAbsoluteUrl(path);
-  const absoluteImage = getAbsoluteUrl(image);
 
   return {
     title,
     description,
     metadataBase: new URL(getAbsoluteUrl("")),
-    alternates: {
-      canonical: url,
-      languages: {
-        'en-AE': url,
-        'en-SA': getAbsoluteUrl(`/sa${path}`),
-        'x-default': url,
-      }
-    },
     openGraph: {
       title,
       description,
       url,
-      siteName: "B.H.T. Collections",
-      images: [{ url: absoluteImage }],
+      images: [{ url: getAbsoluteUrl(image) }],
       type: "website",
+      siteName: "B.H.T. Collections",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
-      images: [absoluteImage],
+      images: [getAbsoluteUrl(image)],
     },
-    ...(noIndex && {
-      robots: {
-        index: false,
-        follow: false,
+    alternates: {
+      canonical: url,
+      languages: {
+        "en-AE": getAbsoluteUrl(path),
+        "en-SA": getAbsoluteUrl(`/sa${path}`),
+        "x-default": getAbsoluteUrl(path),
       },
-    }),
+    },
+    robots: noIndex
+      ? { index: false, follow: false }
+      : { index: true, follow: true },
   };
 }

@@ -9,11 +9,14 @@ const GCCLocationsMap = dynamic(() => import("@/components/contact/GCCLocationsM
   loading: () => <div className="h-96 rounded-3xl bg-slate-900 animate-pulse my-10" />
 });
 
-export const metadata: Metadata = {
-  title: "Contact Us & Regional Offices | BLANKET HOUSE TRADING L.L.C.",
-  description:
-    "Get in touch with BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections). Head office in Dubai, UAE, with regional branches in Oman, Qatar, Bahrain, Kuwait, and Saudi Arabia.",
-};
+import { constructMetadata } from "@/lib/seo/metadata";
+import { generateOrganizationSchema } from "@/lib/seo/schema";
+
+export const metadata: Metadata = constructMetadata({
+  title: "Contact Us & Regional Offices | B.H.T. Collections",
+  description: "Get in touch with BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections). Head office in Dubai, UAE, with regional branches in Oman, Qatar, Bahrain, Kuwait, and Saudi Arabia.",
+  path: "/contact",
+});
 
 const contactDetails = [
   {
@@ -68,7 +71,11 @@ const contactDetails = [
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-[#FAF8F5]">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationSchema()) }}
+      />
       {/* ── Page Hero ───────────────────────────────────── */}
       <section className="relative overflow-hidden bg-[#0B131F] py-20 md:py-28 text-center px-4">
 

@@ -39,6 +39,7 @@ interface ProductItem {
   featured: boolean;
   showOnHomepage: boolean;
   showOnCollection: boolean;
+  additionalCategories?: string[];
   status: "published" | "draft" | "disabled";
 }
 
@@ -56,6 +57,7 @@ const defaultFormData = {
   featured: false,
   showOnHomepage: true,
   showOnCollection: true,
+  additionalCategories: [],
   status: "published",
 };
 
@@ -125,6 +127,7 @@ export default function AdminProductsPage() {
       featured: product.featured,
       showOnHomepage: product.showOnHomepage,
       showOnCollection: product.showOnCollection,
+      additionalCategories: product.additionalCategories || [],
       status: product.status,
     });
     setErrorMsg("");
@@ -540,7 +543,7 @@ export default function AdminProductsPage() {
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
-                    Category *
+                    Primary Category *
                   </label>
                   <select
                     value={formData.category}
@@ -568,6 +571,19 @@ export default function AdminProductsPage() {
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />
                 </div>
+              </div>
+
+              <div>
+                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                  Additional Categories / Tags (comma separated slugs)
+                </label>
+                <input
+                  type="text"
+                  value={formData.additionalCategories?.join(", ") || ""}
+                  onChange={(e) => setFormData({ ...formData, additionalCategories: e.target.value.split(",").map(s => s.trim()).filter(s => s) })}
+                  placeholder="e.g. hotel-collection, summer-sale"
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                />
               </div>
 
               {/* Price & Original/Sale Price */}

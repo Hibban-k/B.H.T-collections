@@ -15,22 +15,30 @@ interface Props {
   params: Promise<{ category: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo/metadata";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
-  if (!cat) return {};
-  return {
-    title: `${cat.name} Collection | B.H.T. COLLECTIONS`,
+  if (!cat || cat.status !== "active") return {};
+  
+  return constructMetadata({
+    title: `${cat.name} Collection | B.H.T. Collections`,
     description: `${cat.description}. Premium quality home textiles, delivered across UAE.`,
-  };
+    image: cat.image,
+    path: `/collections/${cat.slug}`
+  });
 }
+
+import { generateBreadcrumbSchema, generateItemListSchema, generateFaqSchema } from "@/lib/seo/schema";
+import { getAbsoluteUrl } from "@/lib/seo/urls";
 
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
-  if (!cat) notFound();
+  if (!cat || cat.status !== "active") notFound();
 
   const products = await ProductService.getProducts({
     status: "published",
@@ -38,8 +46,28 @@ export default async function CategoryPage({ params }: Props) {
     showOnCollection: true,
   });
 
+  const breadcrumbItems = [
+    { name: "Home", path: "/" },
+    { name: "Collections", path: "/collections" },
+    { name: cat.name, path: `/collections/${cat.slug}` }
+  ];
+
   return (
     <div className="min-h-screen bg-transparent">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListSchema(products, getAbsoluteUrl(`/collections/${cat.slug}`))) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
+      />
+      {cat.faq && cat.faq.length > 0 && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqSchema(cat.faq)) }}
+        />
+      )}
       {/* Breadcrumb */}
       <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/80 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs text-[#64748B]">
@@ -179,6 +207,30 @@ export default async function CategoryPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        {/* SEO Category Description */}
+        {cat.longDescription && (
+          <div className="mt-16 pt-10 border-t border-[#F2EBDC] max-w-4xl text-[#64748B]">
+            <div dangerouslySetInnerHTML={{ __html: cat.longDescription }} className="prose prose-sm sm:prose-base max-w-none prose-headings:font-playfair prose-headings:text-[#0B131F] prose-a:text-[#1C75BC] prose-a:no-underline hover:prose-a:underline" />
+          </div>
+        )}
+
+        {/* FAQ Section */}
+        {cat.faq && cat.faq.length > 0 && (
+          <div className="mt-12 pt-10 border-t border-[#F2EBDC] max-w-4xl">
+            <h2 className="text-2xl font-bold text-[#0B131F] mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>
+              Frequently Asked Questions
+            </h2>
+            <div className="space-y-4">
+              {cat.faq.map((item, i) => (
+                <div key={i} className="bg-white p-5 rounded-xl border border-[#F2EBDC]">
+                  <h3 className="font-bold text-[#0B131F] mb-2">{item.question}</h3>
+                  <p className="text-[#64748B] text-sm leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

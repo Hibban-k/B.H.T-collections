@@ -5,7 +5,9 @@ export interface CreateCategoryInput {
   name: string;
   slug?: string;
   description?: string;
+  longDescription?: string;
   image?: string;
+  type?: "primary" | "secondary";
   status?: "active" | "disabled";
 }
 
@@ -35,7 +37,9 @@ export class CategoryService {
       name: input.name || "New Category",
       slug,
       description: input.description || "",
+      longDescription: input.longDescription || "",
       image: input.image || "/collections/korean-super-soft-blanket.png",
+      type: input.type || "primary",
       status: input.status || "active",
       productCount: 0,
     };

@@ -8,13 +8,17 @@ import LogoWatermark from "@/components/ui/LogoWatermark";
 import { ProductService } from "@/lib/services/product.service";
 import { CategoryService } from "@/lib/services/category.service";
 
+import { constructMetadata } from "@/lib/seo/metadata";
+import { generateItemListSchema, generateBreadcrumbSchema } from "@/lib/seo/schema";
+import { getAbsoluteUrl } from "@/lib/seo/urls";
+
 export const revalidate = 3600;
 
-export const metadata: Metadata = {
-  title: "All Collections | B.H.T. COLLECTIONS",
-  description:
-    "Browse our full range of premium blankets, bed linens, comforters and bedspreads. Quality home textiles for every bedroom across the UAE.",
-};
+export const metadata: Metadata = constructMetadata({
+  title: "All Collections | B.H.T. Collections",
+  description: "Browse our full range of premium blankets, bed linen, comforters and bedspreads. Quality home textiles for every bedroom across the UAE.",
+  path: "/collections",
+});
 
 export default async function CollectionsPage() {
   const [products, categories] = await Promise.all([
@@ -22,8 +26,21 @@ export default async function CollectionsPage() {
     CategoryService.getCategories(),
   ]);
 
+  const breadcrumbItems = [
+    { name: "Home", path: "/" },
+    { name: "Collections", path: "/collections" }
+  ];
+
   return (
     <div className="min-h-screen bg-transparent">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListSchema(products, getAbsoluteUrl("/collections"))) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
+      />
       {/* Page Hero */}
       <div className="relative overflow-hidden bg-[#0B131F] text-white py-16 md:py-20">
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center">
