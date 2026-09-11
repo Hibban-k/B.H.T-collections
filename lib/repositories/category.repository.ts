@@ -7,7 +7,10 @@ export interface SerializedCategory {
   name: string;
   slug: string;
   description: string;
+  longDescription?: string;
+  faq?: { question: string; answer: string }[];
   image: string;
+  type: "primary" | "secondary";
   status: "active" | "disabled";
   productCount: number;
   createdAt: Date;

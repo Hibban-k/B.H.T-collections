@@ -12,22 +12,27 @@ import { CategoryService } from "@/lib/services/category.service";
 export const revalidate = 3600;
 
 interface Props {
-  params: Promise<{ category: string }>;
+  params: Promise<{ region: string; category: string }>;
 }
 
 import { constructMetadata } from "@/lib/seo/metadata";
+import { RegionService } from "@/lib/services/region.service";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { category } = await params;
+  const { region, category } = await params;
+  
+  const regionData = await RegionService.getRegionByCode(region);
+  if (!regionData) return {};
+
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat || cat.status !== "active") return {};
   
   return constructMetadata({
-    title: `${cat.name} Collection | B.H.T. Collections`,
-    description: `${cat.description}. Premium quality home textiles, delivered across UAE.`,
+    title: `${cat.name} Collection in ${regionData.name} | B.H.T. Collections`,
+    description: `Shop premium ${cat.name.toLowerCase()} online in ${regionData.name}. Discover elegant designs and unparalleled comfort delivered across ${regionData.name}.`,
     image: cat.image,
-    path: `/collections/${cat.slug}`
+    path: `/${region}/collections/${cat.slug}`
   });
 }
 
@@ -35,7 +40,11 @@ import { generateBreadcrumbSchema, generateItemListSchema, generateFaqSchema } f
 import { getAbsoluteUrl } from "@/lib/seo/urls";
 
 export default async function CategoryPage({ params }: Props) {
-  const { category } = await params;
+  const { region, category } = await params;
+
+  const regionData = await RegionService.getRegionByCode(region);
+  if (!regionData) notFound();
+
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat || cat.status !== "active") notFound();
@@ -71,9 +80,9 @@ export default async function CategoryPage({ params }: Props) {
       {/* Breadcrumb */}
       <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/80 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs text-[#64748B]">
-          <Link href="/" className="hover:text-[#1C75BC] transition-colors">Home</Link>
+          <Link href={`/${region}`} className="hover:text-[#1C75BC] transition-colors">Home</Link>
           <span>/</span>
-          <Link href="/collections" className="hover:text-[#1C75BC] transition-colors">Collections</Link>
+          <Link href={`/${region}/collections`} className="hover:text-[#1C75BC] transition-colors">Collections</Link>
           <span>/</span>
           <span className="text-[#0B131F] font-bold">{cat.name}</span>
         </div>
@@ -96,7 +105,7 @@ export default async function CategoryPage({ params }: Props) {
             className="text-[#D92626] text-xs tracking-[0.25em] font-bold uppercase mb-3 bg-[#D92626]/20 px-3 py-1 rounded"
             style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
           >
-            B.H.T. COLLECTIONS
+            B.H.T. COLLECTIONS {regionData.name.toUpperCase()}
           </p>
           <h1
             className="text-3xl md:text-5xl font-bold text-white mb-2"
@@ -112,7 +121,7 @@ export default async function CategoryPage({ params }: Props) {
       <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/90 backdrop-blur-md shadow-xs sticky top-[80px] z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap gap-2.5">
           <Link
-            href="/collections"
+            href={`/${region}/collections`}
             className="tag-badge !bg-white !text-[#0B131F] !border-[#E2E8F0] hover:!bg-[#0B131F] hover:!text-white !py-2.5 !px-5 text-xs font-semibold transition-all shadow-xs"
           >
             All Collections
@@ -120,7 +129,7 @@ export default async function CategoryPage({ params }: Props) {
           {allCategories.filter((c) => c.status === "active").map((c) => (
             <Link
               key={c._id}
-              href={`/collections/${c.slug}`}
+              href={`/${region}/collections/${c.slug}`}
               className={`tag-badge !py-2.5 !px-5 text-xs font-semibold transition-all shadow-xs ${c.slug === category
                   ? "!bg-[#0B131F] !text-white !border-[#0B131F] font-bold"
                   : "!bg-white !text-[#0B131F] !border-[#E2E8F0] hover:!bg-[#1C75BC] hover:!text-white hover:!border-[#1C75BC]"
@@ -149,7 +158,7 @@ export default async function CategoryPage({ params }: Props) {
               {products.map((product) => (
                 <article key={product._id}>
                   <Link
-                    href={`/collections/${product.categorySlug}/${product.slug}`}
+                    href={`/${region}/collections/${product.categorySlug}/${product.slug}`}
                     className="group block h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30"
                   >
                     <div className="relative aspect-square bg-[#FAF8F3] overflow-hidden rounded-lg mb-3">

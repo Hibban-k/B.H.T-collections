@@ -25,6 +25,7 @@ export interface CreateProductInput {
   bestseller?: boolean;
   showOnHomepage?: boolean;
   showOnCollection?: boolean;
+  additionalCategories?: string[];
   status?: "published" | "draft" | "disabled";
 }
 
@@ -35,6 +36,10 @@ export class ProductService {
 
   static async getProductBySlug(slug: string): Promise<SerializedProduct | null> {
     return ProductRepository.findBySlug(slug);
+  }
+
+  static async getProductsBySlugs(slugs: string[]): Promise<SerializedProduct[]> {
+    return ProductRepository.findBySlugs(slugs);
   }
 
   static async getRelatedProducts(categorySlug: string, excludeSlug: string, limit = 4) {
@@ -88,6 +93,7 @@ export class ProductService {
         input.showOnCollection !== undefined
           ? Boolean(input.showOnCollection)
           : true,
+      additionalCategories: input.additionalCategories || [],
       status: input.status || "published",
     };
 

@@ -7,6 +7,7 @@ import { Star, CheckCircle2, MessageCircle, Phone, Truck, RotateCcw } from "luci
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
 import { ProductService } from "@/lib/services/product.service";
+import { generateProductSchema, generateBreadcrumbSchema } from "@/lib/seo/schema";
 
 export const revalidate = 3600;
 
@@ -14,14 +15,19 @@ interface Props {
   params: Promise<{ category: string; slug: string }>;
 }
 
+import { constructMetadata } from "@/lib/seo/metadata";
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await ProductService.getProductBySlug(slug);
-  if (!product) return {};
-  return {
-    title: `${product.name} | B.H.T. COLLECTIONS`,
+  if (!product || product.status !== "published") return {};
+  
+  return constructMetadata({
+    title: `${product.name} | B.H.T. Collections`,
     description: (product.shortDescription || product.description) + " · Premium UAE bedding from B.H.T. Collections.",
-  };
+    image: product.image,
+    path: `/collections/${product.categorySlug}/${product.slug}`
+  });
 }
 
 export default async function ProductPage({ params }: Props) {
@@ -31,14 +37,35 @@ export default async function ProductPage({ params }: Props) {
     notFound();
   }
 
-  const related = await ProductService.getRelatedProducts(
+  let crossSells: typeof product[] = [];
+  if (product.crossSellSlugs && product.crossSellSlugs.length > 0) {
+    crossSells = await ProductService.getProductsBySlugs(product.crossSellSlugs);
+  }
+
+  const related = crossSells.length > 0 ? crossSells : await ProductService.getRelatedProducts(
     product.categorySlug,
     product.slug,
     4
   );
 
+  const breadcrumbItems = [
+    { name: "Home", path: "/" },
+    { name: "Collections", path: "/collections" },
+    { name: product.category, path: `/collections/${product.categorySlug}` },
+    { name: product.name, path: `/collections/${product.categorySlug}/${product.slug}` }
+  ];
+
   return (
     <div className="min-h-screen bg-transparent">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateProductSchema(product)) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
+      />
+      
       {/* Breadcrumb */}
       <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/80 backdrop-blur-xs">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs text-[#64748B] flex-wrap">
@@ -231,7 +258,7 @@ export default async function ProductPage({ params }: Props) {
               className="text-2xl font-bold text-[#0B131F] mb-8"
               style={{ fontFamily: "var(--font-playfair-display)" }}
             >
-              You May Also Like
+              {crossSells.length > 0 ? "Frequently Bought Together" : "You May Also Like"}
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
               {related.map((rel) => (

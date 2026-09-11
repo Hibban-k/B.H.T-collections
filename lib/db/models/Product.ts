@@ -23,6 +23,8 @@ export interface IProduct extends Document {
   bestseller: boolean;
   showOnHomepage: boolean;
   showOnCollection: boolean;
+  crossSellSlugs?: string[];
+  additionalCategories?: string[];
   status: "published" | "draft" | "disabled";
   createdAt: Date;
   updatedAt: Date;
@@ -52,6 +54,8 @@ const ProductSchema = new Schema<IProduct>(
     bestseller: { type: Boolean, default: false },
     showOnHomepage: { type: Boolean, default: true },
     showOnCollection: { type: Boolean, default: true },
+    crossSellSlugs: { type: [String], default: [] },
+    additionalCategories: { type: [String], default: [] },
     status: { type: String, enum: ["published", "draft", "disabled"], default: "published" },
   },
   { timestamps: true }

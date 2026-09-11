@@ -12,19 +12,15 @@ import ContactCTA from "@/components/sections/ContactCTA";
 import ClienteleSection from "@/components/sections/ClienteleSection";
 import ServicesSection from "@/components/sections/ServicesSection";
 
-export const metadata: Metadata = {
-  title: "BHTCOLLECTIONS | Blanket House Trading L.L.C. Dubai",
-  description:
-    "Shop premium blankets, bed linen, comforters, and explore our trading portfolio. Blanket House Trading L.L.C. — Established in Dubai in 2009, serving 500+ clients across 6 GCC countries.",
-  openGraph: {
-    title: "BHTCOLLECTIONS | Blanket House Trading L.L.C. Dubai",
-    description:
-      "Built on Quality. Delivered with Care. We are more than just a blanket brand. Serving homes, hotels and retailers across the UAE & GCC.",
-    url: "https://blankethouse.ae",
-  },
-};
-
+import { constructMetadata } from "@/lib/seo/metadata";
+import { generateOrganizationSchema } from "@/lib/seo/schema";
 import { ProductService } from "@/lib/services/product.service";
+
+export const metadata: Metadata = constructMetadata({
+  title: "BHTCOLLECTIONS | Blanket House Trading L.L.C. Dubai",
+  description: "Shop premium blankets, bed linen, comforters, and explore our trading portfolio. Blanket House Trading L.L.C. — Established in Dubai in 2009, serving 500+ clients across 6 GCC countries.",
+  path: "/",
+});
 
 export const revalidate = 3600; // Cache for 1 hour
 
@@ -36,6 +32,10 @@ export default async function HomePage() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationSchema()) }}
+      />
       <HeroSection />
       <TrustBenefits />
       <CategoryGrid />
