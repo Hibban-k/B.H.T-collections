@@ -63,11 +63,11 @@ export default async function CollectionsPage() {
       </div>
 
       {/* Categories nav */}
-      <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/90 backdrop-blur-md shadow-xs sticky top-[80px] z-30">
+      <div className="border-b border-[#F2EBDC] bg-ivory/90 backdrop-blur-md shadow-xs sticky top-20 z-30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap gap-2.5">
           <Link
             href="/collections"
-            className="tag-badge !bg-[#0B131F] !text-white !border-[#0B131F] !py-2.5 !px-5 text-xs font-bold"
+            className="tag-badge bg-[#0B131F]! text-white! border-[#0B131F]! py-2.5! px-5! text-xs font-bold"
           >
             All Collections
           </Link>
@@ -75,7 +75,7 @@ export default async function CollectionsPage() {
             <Link
               key={cat._id}
               href={`/collections/${cat.slug}`}
-              className="tag-badge !bg-white !text-[#0B131F] !border-[#E2E8F0] hover:!bg-[#1C75BC] hover:!text-white hover:!border-[#1C75BC] !py-2.5 !px-5 text-xs font-semibold transition-all shadow-xs"
+              className="tag-badge bg-white! text-[#0B131F]! border-[#E2E8F0]! hover:bg-[#1C75BC]! hover:text-white! hover:border-[#1C75BC]! py-2.5! px-5! text-xs font-semibold transition-all shadow-xs"
             >
               {cat.name}
             </Link>
@@ -93,7 +93,7 @@ export default async function CollectionsPage() {
               <article key={product._id}>
                 <Link
                   href={`/collections/${product.categorySlug}/${product.slug}`}
-                  className="group block h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30"
+                  className="group h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30"
                 >
                   <div className="relative aspect-square bg-[#FAF8F3] overflow-hidden rounded-lg mb-3">
                     <Image
@@ -104,12 +104,12 @@ export default async function CollectionsPage() {
                       sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
                     {product.badge && (
-                      <div className="absolute top-2 left-2 tag-badge !bg-[#0B131F] !border-[#0B131F] !text-[9px] !px-2 !py-0.5">
+                      <div className="absolute top-2 left-2 tag-badge bg-[#0B131F]! border-[#0B131F]! text-[9px]! px-2! py-0.5!">
                         {product.badge}
                       </div>
                     )}
                     {product.originalPrice && (
-                      <div className="absolute top-2 right-2 tag-badge !bg-[#D92626] !border-[#D92626] !text-[9px] !px-2 !py-0.5 shadow-sm">
+                      <div className="absolute top-2 right-2 tag-badge bg-[#D92626]! border-[#D92626]! text-[9px]! px-2! py-0.5! shadow-sm">
                         -{calculateDiscount(product.price, product.originalPrice)}%
                       </div>
                     )}
