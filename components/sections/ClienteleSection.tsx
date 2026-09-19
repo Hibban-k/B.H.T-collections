@@ -7,7 +7,7 @@ import { CheckCircle2, Users } from "lucide-react";
 
 export default function ClienteleSection() {
   return (
-    <section className="py-16 md:py-20 bg-[#FAF8F5] border-y border-[#F2EBDC] relative overflow-hidden">
+    <section className="py-16 md:py-20 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
@@ -70,7 +70,7 @@ export default function ClienteleSection() {
         </div>
 
         {/* Unified Banner Container as in PDF Page 7 */}
-        <div className="bg-[#FAF8F5] border border-[#EAE3D2] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+        <div className="bg-white border border-[#EAE3D2] rounded-2xl p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 rounded-xl bg-[#0B131F] text-[#E6C687] flex items-center justify-center shrink-0 shadow-sm">
               <Users className="w-6 h-6" />

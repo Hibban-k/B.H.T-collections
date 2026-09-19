@@ -10,7 +10,6 @@ import Testimonials from "@/components/sections/Testimonials";
 import ContactCTA from "@/components/sections/ContactCTA";
 
 import ClienteleSection from "@/components/sections/ClienteleSection";
-import ServicesSection from "@/components/sections/ServicesSection";
 
 import { constructMetadata } from "@/lib/seo/metadata";
 import { generateOrganizationSchema } from "@/lib/seo/schema";
@@ -42,7 +41,6 @@ export default async function HomePage() {
       <FeaturedProducts initialProducts={featuredProducts.slice(0, 6)} />
       <ClienteleSection />
       <WhyBHT />
-      <ServicesSection />
       <UAEBanner />
       <Testimonials />
       <ContactCTA />

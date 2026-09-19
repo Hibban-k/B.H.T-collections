@@ -1,74 +1,106 @@
 "use client";
 // components/sections/TrustBenefits.tsx
 import { motion } from "framer-motion";
-import { Award, Leaf, Shield, Truck } from "lucide-react";
+import { Gem, ShieldCheck, Truck, Heart } from "lucide-react";
 
 const benefits = [
   {
-    icon: Award,
+    icon: Gem,
     title: "Premium Quality",
-    description: "Carefully selected fabrics and multi-ply thermal materials",
+    description: "Long lasting comfort",
+    accentLeft: "#E12620",
+    accentRight: "#1598D0",
   },
   {
-    icon: Leaf,
-    title: "Soft & Comfortable",
-    description: "Gentle on skin with ultra-soft microfibre & cotton",
-  },
-  {
-    icon: Shield,
-    title: "Durable & Reliable",
-    description: "Anti-pilling treatment built for everyday luxury",
+    icon: ShieldCheck,
+    title: "Trusted Brand",
+    description: "Your Comfort, Our Priority",
+    accentLeft: "#1598D0",
+    accentRight: "#E12620",
   },
   {
     icon: Truck,
-    title: "Fast UAE Delivery",
-    description: "Express delivery across Dubai and all 7 Emirates",
+    title: "Fast & Reliable Delivery",
+    description: "Across UAE",
+    accentLeft: "#16845E",
+    accentRight: "#E12620",
+  },
+  {
+    icon: Heart,
+    title: "Customer Satisfaction",
+    description: "Thousands of Happy Homes",
+    accentLeft: "#16845E",
+    accentRight: "#1598D0",
   },
 ];
 
 export default function TrustBenefits() {
   return (
-    <section className="bg-transparent border-b border-[#F2EBDC] py-8 md:py-10 relative z-10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
-          {benefits.map((benefit, index) => {
-            const Icon = benefit.icon;
-            return (
-              <motion.div
-                key={benefit.title}
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.4, delay: index * 0.06 }}
-                className="group flex items-center gap-3.5"
-              >
-                {/* Premium Luxury Icon Container */}
-                <div className="relative shrink-0 w-12 h-12 rounded-xl bg-gradient-to-b from-[#FAF8F5] to-[#F3EFE8] border border-[#E5DFD3] shadow-[0_2px_8px_rgba(0,0,0,0.04)] flex items-center justify-center group-hover:border-[#C5A869] group-hover:shadow-[0_4px_16px_rgba(197,168,105,0.18)] transition-all duration-300">
-                  {/* Subtle inner gold rim */}
-                  <div className="w-[38px] h-[38px] rounded-[9px] bg-white border border-[#EFE9DE] flex items-center justify-center group-hover:border-[#E8D8B0] transition-colors">
+    <section
+      className="relative z-20 bg-transparent pt-3 pb-12"
+      aria-label="Brand Benefits"
+    >
+      <div className="max-w-[1240px] mx-auto px-4 sm:px-6">
+        {/* Floating White Benefit Panel */}
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, ease: "easeOut" }}
+          className="bg-white rounded-2xl shadow-[0_6px_30px_rgba(0,0,0,0.06)] border border-[#ECECEC] overflow-hidden"
+        >
+          <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#EFEFEF]">
+            {benefits.map((benefit, index) => {
+              const Icon = benefit.icon;
+              return (
+                <motion.div
+                  key={benefit.title}
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: index * 0.06 }}
+                  className="group flex flex-col items-center text-center px-4 py-7 sm:px-6 sm:py-8 hover:bg-[#FAFAFC]/60 transition-colors duration-200"
+                >
+                  {/* Icon */}
+                  <div className="mb-3.5 text-[#122936] group-hover:text-[#E12620] transition-colors duration-200">
                     <Icon
-                      className="w-5 h-5 text-[#8C6D2B] group-hover:text-[#B58B35] group-hover:scale-110 transition-all duration-300"
-                      strokeWidth={1.5}
+                      className="w-[28px] h-[28px]"
+                      strokeWidth={1.6}
                     />
                   </div>
-                </div>
 
-                {/* Content */}
-                <div>
+                  {/* Title */}
                   <h3
-                    className="text-sm font-bold text-[#0B131F] mb-0.5 tracking-tight group-hover:text-[#8C6D2B] transition-colors"
+                    className="text-[13.5px] font-bold text-[#122936] mb-1.5 leading-snug"
                     style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
                   >
                     {benefit.title}
                   </h3>
-                  <p className="text-xs text-[#64748B] leading-snug hidden sm:block">
+
+                  {/* Description */}
+                  <p
+                    className="text-[11.5px] text-[#56636A] leading-snug mb-3.5"
+                    style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
+                  >
                     {benefit.description}
                   </p>
-                </div>
-              </motion.div>
-            );
-          })}
-        </div>
+
+                  {/* Two-tone accent indicator */}
+                  <div className="flex gap-[3px] items-center mt-auto">
+                    <div
+                      className="h-[2px] w-6 rounded-full"
+                      style={{ backgroundColor: benefit.accentLeft }}
+                    />
+                    <div
+                      className="h-[2px] w-4 rounded-full"
+                      style={{ backgroundColor: benefit.accentRight }}
+                    />
+                  </div>
+                </motion.div>
+              );
+            })}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

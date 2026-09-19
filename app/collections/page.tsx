@@ -155,7 +155,7 @@ export default async function CollectionsPage() {
       </div>
 
       {/* Contact CTA */}
-      <div className="bg-[#F2EBDC]/60 py-12 text-center border-t border-[#F2EBDC]">
+      <div className=" py-12 text-center border-t border-[#F2EBDC]">
         <h3
           className="text-2xl font-bold text-[#0B131F] mb-3"
           style={{ fontFamily: "var(--font-playfair-display)" }}

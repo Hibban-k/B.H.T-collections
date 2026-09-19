@@ -48,7 +48,7 @@ const companyMetrics = [
 
 export default function ServicesSection() {
   return (
-    <section className="section-padding bg-[#FAF8F5] relative overflow-hidden">
+    <section className="section-padding relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div

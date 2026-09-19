@@ -18,24 +18,26 @@ export default function StoreLayoutShell({
   }
 
   return (
-    <>
-      {/* Global Single Watermark Background with Subtle Opacity for Store Pages */}
+    <div className="relative min-h-screen flex flex-col bg-[#FAFAFC]">
+      {/* Global Repeating Watermark Background on Every Page */}
       <div
         aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-0 flex items-center justify-center select-none overflow-hidden"
-      >
-        <div
-          className="w-[90vw] max-w-[700px] h-[500px] bg-contain bg-center bg-no-repeat opacity-[0.05]"
-          style={{ backgroundImage: "url('/bht-logo.jpg')" }}
-        />
-      </div>
+        className="fixed inset-0 pointer-events-none z-0 select-none"
+        style={{
+          backgroundImage: "url('/watermark-bg.png')",
+          backgroundRepeat: "repeat",
+          backgroundSize: "550px auto",
+          opacity: 0.95,
+        }}
+      />
 
-      <div className="relative z-10 flex flex-col min-h-screen">
+      {/* Main App Content on top of background */}
+      <div className="relative z-10 flex flex-col min-h-screen flex-1">
         <AnnouncementBar />
         <Header />
         <main className="flex-1">{children}</main>
         <Footer />
       </div>
-    </>
+    </div>
   );
 }

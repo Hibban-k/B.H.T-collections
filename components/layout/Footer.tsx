@@ -19,7 +19,7 @@ const company = [
 
 export default function Footer() {
   return (
-    <footer className="relative bg-[#0B131F] text-white overflow-hidden">
+    <footer className="relative bg-black text-white overflow-hidden">
 
       {/* Main Footer */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16">
@@ -27,27 +27,27 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-1">
             <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-12 h-12 overflow-hidden rounded-md bg-white/10 p-1">
+              <div className="relative w-12 h-12 shrink-0">
                 <Image
-                  src="/bht-logo.jpg"
+                  src="/bht-flower-transparent.png"
                   alt="B.H.T. Collections Logo"
                   fill
                   className="object-contain"
                   sizes="48px"
                 />
               </div>
-              <div className="flex flex-col leading-none">
+              <div className="flex flex-col leading-tight">
                 <span
-                  className="text-lg font-bold tracking-wider text-white"
-                  style={{ fontFamily: "var(--font-playfair-display)" }}
+                  className="text-[17px] font-extrabold tracking-wide text-white leading-none"
+                  style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
                 >
                   B.H.T. COLLECTIONS
                 </span>
                 <span
-                  className="text-[10px] tracking-widest text-[#D92626] font-semibold mt-1"
-                  style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
+                  className="text-[12px] text-[#E12620] font-bold leading-tight mt-1 text-center"
+                  style={{ fontFamily: "var(--font-playfair-display, 'Noto Naskh Arabic', serif)", direction: "rtl" }}
                 >
-                  بيت البطانيات مجموعات
+                  بيت البطانيات<br />مجموعات
                 </span>
               </div>
             </div>
@@ -174,7 +174,7 @@ export default function Footer() {
       </div>
 
       {/* Bottom bar */}
-      <div className="relative z-10 border-t border-[#1A2433] bg-[#080E17]">
+      <div className="relative z-10 border-t border-[#1A2433] bg-black">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-[#94A3B8]">
             © {new Date().getFullYear()} BLANKET HOUSE TRADING L.L.C. (B.H.T. COLLECTIONS). All rights reserved.

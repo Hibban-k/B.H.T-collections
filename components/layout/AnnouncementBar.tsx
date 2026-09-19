@@ -1,41 +1,88 @@
 "use client";
 // components/layout/AnnouncementBar.tsx
-import { Phone } from "lucide-react";
+import { MapPin } from "lucide-react";
+
+// Inline SVG icons for social media
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
+
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
+    </svg>
+  );
+}
+
+function YoutubeIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      <path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.95-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z" />
+      <polygon points="9.75,15.02 15.5,12 9.75,8.98 9.75,15.02" fill="currentColor" stroke="none" />
+    </svg>
+  );
+}
 
 export default function AnnouncementBar() {
   return (
     <div
-      className="bg-[#0B131F] py-2.5 px-4 border-b border-[#1A2433]"
-      style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
+      className="bg-white border-b border-[#EBEBEB] relative z-20"
+      style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)", height: "38px" }}
     >
-      <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-        {/* Left: Phone Contact in Pure White */}
-        <div className="flex items-center gap-2 shrink-0">
-          <Phone className="w-3.5 h-3.5 shrink-0 text-[#D92626]" />
-          <a
-            href="tel:+97142266095"
-            className="text-[11.5px] font-bold tracking-wide hover:text-[#D92626] transition-colors"
-            style={{ color: "#FFFFFF" }}
-          >
-            +971 4 2266 095 / +971 55 887 9237
-          </a>
+      <div className="max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between h-full">
+        {/* Left: Brand tagline */}
+        <div className="flex items-center gap-3 text-[10.5px] font-medium text-[#56636A]">
+          <span className="flex items-center gap-1.5">
+            <span className="text-[#E12620] text-xs leading-none">✣</span>
+            <span className="font-semibold text-[#122936] tracking-wide">Premium Bedding &amp; Home Textiles</span>
+          </span>
+          <span className="hidden sm:inline text-[#D0D0D0] select-none">|</span>
+          <span className="hidden sm:inline text-[#56636A] tracking-wide">Comfort for Every Home</span>
         </div>
 
-        {/* Centre: Free Delivery */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-2">
-          <span className="bg-[#D92626] text-white text-[9px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-sm">
-            Free Delivery
-          </span>
-          <span className="text-[11px] font-medium tracking-wide text-center" style={{ color: "#FFFFFF" }}>
-            across UAE &amp; GCC on orders over AED 150
-          </span>
-        </div>
-
-        {/* Right: Working Hours */}
-        <div className="hidden sm:block shrink-0">
-          <span className="text-[11px] font-medium" style={{ color: "rgba(255, 255, 255, 0.75)" }}>
-            Mon–Sat · 9am–6pm
-          </span>
+        {/* Right: Social + Location */}
+        <div className="flex items-center gap-4 text-[10.5px] text-[#56636A] font-medium">
+          <span className="hidden sm:inline tracking-wide text-[#56636A]">Follow Us</span>
+          <div className="flex items-center gap-2.5">
+            <a
+              href="https://instagram.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Instagram"
+              className="text-[#56636A] hover:text-[#E12620] transition-colors"
+            >
+              <InstagramIcon className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href="https://facebook.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow us on Facebook"
+              className="text-[#56636A] hover:text-[#1598D0] transition-colors"
+            >
+              <FacebookIcon className="w-3.5 h-3.5" />
+            </a>
+            <a
+              href="https://youtube.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Subscribe on YouTube"
+              className="text-[#56636A] hover:text-[#E12620] transition-colors"
+            >
+              <YoutubeIcon className="w-3.5 h-3.5" />
+            </a>
+          </div>
+          <div className="hidden sm:flex items-center gap-1">
+            <MapPin className="w-[11px] h-[11px] text-[#E12620]" strokeWidth={2} />
+            <span className="text-[10.5px] font-semibold text-[#122936]">UAE</span>
+          </div>
         </div>
       </div>
     </div>
