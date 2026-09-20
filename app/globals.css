@@ -224,3 +224,7 @@ img {
 .animate-infinite-scroll {
   animation: infinite-scroll 40s linear infinite;
 }
+
+.group:hover .animate-infinite-scroll {
+  animation-play-state: paused !important;
+}

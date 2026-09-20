@@ -48,7 +48,7 @@ export default function Testimonials() {
         <div className="absolute left-0 top-0 w-12 md:w-32 h-full bg-gradient-to-r from-[#0B131F] to-transparent z-20 pointer-events-none" />
         <div className="absolute right-0 top-0 w-12 md:w-32 h-full bg-gradient-to-l from-[#0B131F] to-transparent z-20 pointer-events-none" />
 
-        <div className="flex gap-6 animate-infinite-scroll group-hover:[animation-play-state:paused] w-max">
+        <div className="flex gap-6 animate-infinite-scroll w-max">
           {scrollItems.map((review, index) => (
             <div
               key={index}
