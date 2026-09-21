@@ -3,14 +3,10 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import LogoWatermark from "@/components/ui/LogoWatermark";
 
 export default function AboutUs() {
   return (
     <section className="section-padding bg-white relative overflow-hidden">
-      {/* Background Watermark */}
-      <LogoWatermark opacity={0.05} position="right" size={600} />
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
           {/* Content */}
@@ -57,13 +53,13 @@ export default function AboutUs() {
           >
             <div className="relative aspect-[4/5] lg:aspect-square overflow-hidden rounded-2xl shadow-2xl border border-[#E5E5E5]">
               <Image
-                src="https://images.unsplash.com/photo-1615876234886-fd1a88df4bf6?q=80&w=1000&auto=format&fit=crop"
-                alt="BHT Collections Office and Textiles"
+                src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop"
+                alt="Premium Bedding and Textiles"
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, 50vw"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark)]/40 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark)]/40 to-transparent pointer-events-none" />
               
               {/* Floating Badge */}
               <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-xl border border-white shadow-lg">

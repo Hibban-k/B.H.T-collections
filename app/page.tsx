@@ -1,4 +1,4 @@
-// app/page.tsx
+﻿// app/page.tsx
 import type { Metadata } from "next";
 import HeroSection from "@/components/sections/HeroSection";
 import TrustBenefits from "@/components/sections/TrustBenefits";
@@ -41,7 +41,7 @@ export default async function HomePage() {
       <CategoryGrid />
       <AboutUs />
       <WhyBHT />
-      <FeaturedProducts initialProducts={featuredProducts.slice(0, 6)} />
+      <FeaturedProducts initialProducts={featuredProducts.slice(0, 8)} />
       <ClienteleSection />
       <UAEBanner />
       <Testimonials />
