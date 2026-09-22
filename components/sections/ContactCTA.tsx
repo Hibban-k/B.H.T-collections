@@ -45,8 +45,7 @@ export default function ContactCTA() {
 
             <Link
               href="/collections"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-md border border-white/60 text-white text-sm font-semibold tracking-wide transition-all duration-200 hover:bg-white hover:text-[#13233A]"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              className="btn-secondary-white"
             >
               Browse Collections
             </Link>
@@ -96,8 +95,7 @@ export default function ContactCTA() {
               href="https://wa.me/971558879237"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-7 py-3 rounded-md bg-[#D02E30] text-white text-sm font-semibold tracking-wide transition-all duration-200 hover:bg-[#b02628] hover:shadow-lg"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              className="btn-primary"
             >
               <MessageCircle className="w-4 h-4" strokeWidth={2} />
               Enquire on WhatsApp
