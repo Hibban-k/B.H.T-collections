@@ -55,18 +55,19 @@
   inset: 0;
   z-index: 0;
   background-image: url('/watermark-bg.png');
-  background-repeat: repeat;
-  background-size: 720px auto;
-  background-position: center top;
-  opacity: 0.08;
+  background-repeat: no-repeat;
+  background-position: right -15vw bottom -15vh;
+  background-size: max(800px, 70vw);
+  opacity: 0.05;
   pointer-events: none;
   user-select: none;
 }
 
 @media (max-width: 767px) {
   .site-watermark {
-    background-size: 450px auto;
-    opacity: 0.05;
+    background-size: 150vw auto;
+    background-position: right -30vw bottom -10vh;
+    opacity: 0.03;
   }
 }
 
