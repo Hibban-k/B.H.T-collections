@@ -5,13 +5,7 @@ import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, MessageCircle, Clock, Building2, ChevronDown } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
-import dynamic from "next/dynamic";
 import { regionalOffices } from "@/lib/data";
-
-const GCCLocationsMap = dynamic(() => import("@/components/contact/GCCLocationsMap"), {
-  ssr: false,
-  loading: () => <div className="w-full h-full min-h-[400px] bg-[#E8E2D5]/30 animate-pulse rounded-2xl" />
-});
 
 const fadeUp = {
   hidden: { opacity: 0, y: 16 },
@@ -168,7 +162,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-4">
+        <div className="grid md:grid-cols-2 gap-4 items-start">
           {regionalOffices.map((office) => (
             <div 
               key={office.country} 
@@ -221,11 +215,6 @@ export default function ContactPage() {
             </div>
           ))}
         </div>
-      </section>
-
-      {/* ── GCC Map ────────────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6">
-        <GCCLocationsMap />
       </section>
     </div>
   );
