@@ -1,286 +1,217 @@
+"use client";
 // app/contact/page.tsx
-import type { Metadata } from "next";
-import { Phone, Mail, MapPin, MessageCircle, Clock, Building2, Globe } from "lucide-react";
+import { useState } from "react";
+import { motion } from "framer-motion";
+import { Phone, Mail, MapPin, MessageCircle, Clock, Building2, ChevronDown } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
 import dynamic from "next/dynamic";
 import { regionalOffices } from "@/lib/data";
 
 const GCCLocationsMap = dynamic(() => import("@/components/contact/GCCLocationsMap"), {
-  loading: () => <div className="h-96 rounded-3xl bg-slate-900 animate-pulse my-10" />
+  loading: () => <div className="h-96 rounded-2xl bg-white/50 animate-pulse my-10 border border-[#D8DCE2]" />
 });
 
-import { constructMetadata } from "@/lib/seo/metadata";
-import { generateOrganizationSchema } from "@/lib/seo/schema";
-
-export const metadata: Metadata = constructMetadata({
-  title: "Contact Us & Regional Offices | B.H.T. Collections",
-  description: "Get in touch with BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections). Head office in Dubai, UAE, with regional branches in Oman, Qatar, Bahrain, Kuwait, and Saudi Arabia.",
-  path: "/contact",
-});
-
-const contactDetails = [
-  {
-    Icon: MessageCircle,
-    label: "WhatsApp",
-    value: "+971 55 887 9237",
-    href: "https://wa.me/971558879237",
-    sub: "Direct Dubai sales & inquiry",
-    iconColor: "text-[#1BA14B]",
-  },
-  {
-    Icon: Phone,
-    label: "Landline Tel",
-    value: "+971 4 2266 095",
-    href: "tel:+97142266095",
-    sub: "Dubai Head Office (WASL Bldg R146)",
-    iconColor: "text-[#1C75BC]",
-  },
-  {
-    Icon: Phone,
-    label: "Mobile Tel",
-    value: "+971 55 887 9237",
-    href: "tel:+971558879237",
-    sub: "Mon – Sat, 9:00 AM – 6:00 PM",
-    iconColor: "text-[#D92626]",
-  },
-  {
-    Icon: Mail,
-    label: "Official Email",
-    value: "info@blankethouse.ae",
-    href: "mailto:info@blankethouse.ae",
-    sub: "We reply within 24 hours",
-    iconColor: "text-[#8C6D2B]",
-  },
-  {
-    Icon: MapPin,
-    label: "Dubai Head Office",
-    value: "Baniyas Square, Deira, Dubai",
-    href: null,
-    sub: "Office 204, Bldg R146 WASL (Gulf Optics Bldg)",
-    iconColor: "text-[#D92626]",
-  },
-  {
-    Icon: Clock,
-    label: "Business Hours",
-    value: "Mon – Sat: 9:00am – 6:00pm",
-    href: null,
-    sub: "Sunday: Closed",
-    iconColor: "text-[#1C75BC]",
-  },
-];
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function ContactPage() {
+  const [openOffice, setOpenOffice] = useState<string | null>(regionalOffices[0]?.country || null);
+
   return (
-    <div className="min-h-screen bg-[#FAF8F5]">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(generateOrganizationSchema()) }}
-      />
-      {/* ── Page Hero ───────────────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0B131F] py-20 md:py-28 text-center px-4">
+    <div className="min-h-screen bg-transparent pb-24">
+      {/* ── Page Header ────────────────────────────────────── */}
+      <header className="relative pt-12 pb-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+        <p className="text-[#D02E30] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
+          Get in Touch
+        </p>
+        <h1 
+          className="text-4xl md:text-5xl font-bold text-[#13233A] mb-5"
+          style={{ fontFamily: "var(--font-playfair-display)" }}
+        >
+          Contact Us
+        </h1>
+        <p className="text-[#25262C]/75 text-[15px] leading-relaxed max-w-xl mx-auto">
+          Whether you&apos;re shopping for your home or outfitting a hospitality group, our team in Dubai is ready to assist.
+        </p>
+      </header>
 
+      {/* ── Compact Contact Rail ───────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-16">
+        <div className="bg-white/96 border border-[#D8DCE2] rounded-2xl shadow-sm overflow-hidden flex flex-col md:flex-row md:divide-x divide-y md:divide-y-0 divide-[#D8DCE2]">
+          
+          <a href="https://wa.me/971558879237" className="flex-1 p-6 flex items-center justify-center gap-4 hover:bg-[#F8F7F4] transition-colors group">
+            <div className="w-10 h-10 rounded-full bg-[#1BA14B]/10 flex items-center justify-center text-[#1BA14B] group-hover:bg-[#1BA14B] group-hover:text-white transition-colors">
+              <MessageCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-widest font-bold text-[#25262C]/60 mb-1">WhatsApp</p>
+              <p className="font-semibold text-[#13233A]">+971 55 887 9237</p>
+            </div>
+          </a>
 
-        <div className="relative z-10">
-          <p
-            className="text-[#D92626] text-[11px] tracking-[0.25em] font-bold uppercase mb-4 bg-[#D92626]/20 inline-block px-3 py-1 rounded"
-            style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-          >
-            BLANKET HOUSE TRADING L.L.C.
-          </p>
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-3 leading-tight"
-            style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)", color: "#FFFFFF" }}
-          >
-            Contact &amp; Regional Offices
-          </h1>
-          <p
-            className="text-white/80 text-sm md:text-base max-w-xl mx-auto leading-relaxed"
-            style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-          >
-            Headquartered in Dubai with dedicated regional branches across the UAE, Oman, Qatar, Bahrain, Kuwait, and Saudi Arabia.
-          </p>
+          <a href="tel:+97142266095" className="flex-1 p-6 flex items-center justify-center gap-4 hover:bg-[#F8F7F4] transition-colors group">
+            <div className="w-10 h-10 rounded-full bg-[#13233A]/5 flex items-center justify-center text-[#13233A] group-hover:bg-[#13233A] group-hover:text-white transition-colors">
+              <Phone className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-widest font-bold text-[#25262C]/60 mb-1">Dubai Landline</p>
+              <p className="font-semibold text-[#13233A]">+971 4 2266 095</p>
+            </div>
+          </a>
+
+          <a href="mailto:info@bhtcollections.com" className="flex-1 p-6 flex items-center justify-center gap-4 hover:bg-[#F8F7F4] transition-colors group">
+            <div className="w-10 h-10 rounded-full bg-[#3C97C5]/10 flex items-center justify-center text-[#3C97C5] group-hover:bg-[#3C97C5] group-hover:text-white transition-colors">
+              <Mail className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-widest font-bold text-[#25262C]/60 mb-1">Email</p>
+              <p className="font-semibold text-[#13233A]">info@bhtcollections.com</p>
+            </div>
+          </a>
+
         </div>
       </section>
 
-      {/* ── Main Content Form & Info ─────────────────────── */}
-      <section className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-20">
-        <div className="relative z-10 grid lg:grid-cols-5 gap-12 lg:gap-16 mb-20">
-
-          {/* Left — Contact Info */}
-          <aside className="lg:col-span-2 space-y-4">
-            <div className="mb-6">
-              <p
-                className="text-[#D92626] text-[11px] tracking-[0.2em] font-bold uppercase mb-2"
-                style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-              >
-                DUBAI HEADQUARTERS
-              </p>
-              <h2
-                className="text-2xl md:text-3xl font-bold text-[#0B131F] mb-3 leading-tight"
-                style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)" }}
-              >
-                Let&apos;s Connect
-              </h2>
-              <p className="text-[#64748B] text-sm leading-relaxed">
-                For wholesale blankets, institutional camp supplies, travel luggage, footwear orders, or general inquiries.
-              </p>
-            </div>
-
-            <div className="grid sm:grid-cols-2 lg:grid-cols-1 gap-3">
-              {contactDetails.map(({ Icon, label, value, href, sub, iconColor }) => (
-                <div
-                  key={label}
-                  className="flex items-start gap-3.5 p-4 bg-white border border-[#F2EBDC] rounded-xl shadow-xs hover:border-[#1C75BC]/40 transition-colors"
-                >
-                  <div className={`w-10 h-10 bg-[#FAF8F3] border border-[#F2EBDC] rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${iconColor}`}>
-                    <Icon className="w-5 h-5" />
-                  </div>
-                  <div className="min-w-0 flex-1">
-                    <p
-                      className="text-[10px] font-bold text-[#0B131F] tracking-[0.15em] uppercase mb-0.5"
-                      style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                    >
-                      {label}
-                    </p>
-                    {href ? (
-                      <a
-                        href={href}
-                        target={href.startsWith("http") ? "_blank" : undefined}
-                        rel={href.startsWith("http") ? "noopener noreferrer" : undefined}
-                        className="text-sm font-bold text-[#0B131F] hover:text-[#1C75BC] transition-colors block truncate"
-                      >
-                        {value}
-                      </a>
-                    ) : (
-                      <p className="text-sm font-bold text-[#0B131F]">{value}</p>
-                    )}
-                    <p className="text-[11px] text-[#64748B] mt-0.5">{sub}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* WhatsApp CTA card */}
-            <div className="p-6 bg-[#0B131F] text-white rounded-xl shadow-md mt-2 border border-[#1A2433]">
-              <p
-                className="text-white text-sm font-bold mb-1"
-                style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)", color: "#FFFFFF" }}
-              >
-                Fastest Response via WhatsApp
-              </p>
-              <p className="text-[#94A3B8] text-xs mb-4 leading-relaxed">
-                Connect directly with our Dubai sales and quotation desk.
-              </p>
-              <a
-                href="https://wa.me/971558879237"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-[#D92626] text-white px-5 py-2.5 rounded text-xs font-semibold tracking-wider hover:bg-[#B91C1C] transition-colors shadow-sm"
-              >
-                <MessageCircle className="w-4 h-4" />
-                CHAT ON WHATSAPP (+971 55 887 9237)
-              </a>
-            </div>
-          </aside>
-
-          {/* Right — Form */}
-          <div className="lg:col-span-3 bg-white p-8 md:p-10 rounded-2xl border border-[#F2EBDC] shadow-sm">
-            <div className="mb-8">
-              <p
-                className="text-[#D92626] text-[11px] tracking-[0.2em] font-bold uppercase mb-3"
-                style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-              >
-                GET A QUOTE / ENQUIRE
-              </p>
-              <h2
-                className="text-2xl md:text-3xl font-bold text-[#0B131F] leading-tight"
-                style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)" }}
-              >
-                Send Us a Message
-              </h2>
-              <p className="text-[#64748B] text-sm mt-1">
-                Tell us about your requirements and we&apos;ll respond with a customized quotation.
-              </p>
-            </div>
+      {/* ── Form + Dubai HQ ────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-24">
+        <div className="flex flex-col lg:flex-row gap-8 lg:gap-12">
+          
+          {/* Form Side */}
+          <motion.div 
+            className="flex-1 bg-white/96 border border-[#D8DCE2] rounded-2xl shadow-sm p-6 md:p-10"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6 }}
+            variants={fadeUp}
+          >
+            <h2 className="text-2xl font-bold text-[#13233A] mb-2" style={{ fontFamily: "var(--font-playfair-display)" }}>Send a Message</h2>
+            <p className="text-[#25262C]/60 text-[14px] mb-8">We usually respond within 2 hours during business hours.</p>
             <ContactForm />
-          </div>
+          </motion.div>
 
-        </div>
-
-        {/* ── Interactive GCC Map & Location Highlights ────────── */}
-        <GCCLocationsMap />
-
-        {/* ── 6 Regional GCC Offices Directory from PDF Pages 4-5 ── */}
-        <div className="border-t border-[#F2EBDC] pt-16">
-          <div className="text-center max-w-3xl mx-auto mb-12">
-            <p
-              className="text-[#D92626] text-xs tracking-[0.25em] font-bold uppercase mb-2"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              REGIONAL CONTACT DIRECTORY
-            </p>
-            <h2
-              className="text-3xl font-bold text-[#0B131F]"
-              style={{ fontFamily: "var(--font-playfair-display)" }}
-            >
-              Our 6 GCC Regional Offices
-            </h2>
-            <p className="text-[#64748B] text-sm mt-2">
-              Reach out directly to our regional representatives across the Middle East.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {regionalOffices.map((office) => (
-              <div
-                key={office.country}
-                className={`p-6 rounded-2xl border transition-all ${office.isHeadquarters ? "bg-[#0B131F] text-white border-[#1A2433] shadow-lg" : "bg-white text-[#0B131F] border-[#F2EBDC] shadow-xs"}`}
-              >
-                <div className="flex items-center justify-between gap-2 mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center ${office.isHeadquarters ? "bg-[#D92626] text-white" : "bg-[#FAF8F5] border border-[#E8DFC8] text-[#8C6D2B]"}`}>
-                      <Building2 className="w-4 h-4" />
-                    </div>
-                    <h3
-                      className={`text-base font-bold ${office.isHeadquarters ? "text-white" : "text-[#0B131F]"}`}
-                      style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                    >
-                      {office.country}
-                    </h3>
+          {/* Dubai HQ Side */}
+          <motion.div 
+            className="lg:w-[400px] flex flex-col"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.1 }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            variants={fadeUp}
+          >
+            <div className="bg-[#13233A] rounded-2xl p-8 text-white flex-1 flex flex-col shadow-lg">
+              <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6">
+                <Building2 className="w-6 h-6 text-[#D02E30]" />
+              </div>
+              <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>Dubai Head Office</h2>
+              
+              <div className="space-y-6 flex-1">
+                <div className="flex gap-4">
+                  <MapPin className="w-5 h-5 text-[#238D7D] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-[15px] mb-1">BLANKET HOUSE TRADING L.L.C.</p>
+                    <p className="text-white/70 text-[14px] leading-relaxed">
+                      WASL Building R146<br />
+                      Shop No 14, Al Muteena<br />
+                      Deira, Dubai - UAE
+                    </p>
                   </div>
-                  {office.isHeadquarters && (
-                    <span className="text-[9px] bg-[#D92626] text-white font-bold px-2 py-0.5 rounded uppercase">HQ</span>
-                  )}
                 </div>
-
-                <p className={`text-xs font-bold mb-1 ${office.isHeadquarters ? "text-white/95" : "text-[#1C75BC]"}`}>{office.companyName}</p>
-                <p className={`text-xs leading-relaxed mb-4 ${office.isHeadquarters ? "text-white/70" : "text-[#64748B]"}`}>{office.address}</p>
-
-                <div className={`text-xs space-y-1.5 pt-3 border-t ${office.isHeadquarters ? "border-white/10 text-white/80" : "border-[#F2EBDC] text-[#64748B]"}`}>
-                  {office.contactPerson && <p><span className="font-semibold">Contact Person:</span> {office.contactPerson}</p>}
-                  {office.mobile && (
-                    <p>
-                      <span className="font-semibold">Mobile:</span>{" "}
-                      <a href={`tel:${office.mobile.replace(/\s+/g, "")}`} className="hover:underline font-medium">
-                        {office.mobile}
-                      </a>
+                
+                <div className="flex gap-4">
+                  <Clock className="w-5 h-5 text-[#3C97C5] shrink-0 mt-0.5" />
+                  <div>
+                    <p className="font-semibold text-[15px] mb-1">Business Hours</p>
+                    <p className="text-white/70 text-[14px] leading-relaxed">
+                      Mon - Sat: 9:00 AM - 9:00 PM<br />
+                      Sunday: Closed
                     </p>
-                  )}
-                  {office.tel && <p><span className="font-semibold">Tel:</span> {office.tel}</p>}
-                  {office.email && (
-                    <p>
-                      <span className="font-semibold">Email:</span>{" "}
-                      <a href={`mailto:${office.email}`} className="hover:underline">
-                        {office.email}
-                      </a>
-                    </p>
-                  )}
-                  {office.crNo && <p className="text-[11px] opacity-75"><span className="font-semibold">CR No.:</span> {office.crNo}</p>}
+                  </div>
                 </div>
               </div>
-            ))}
-          </div>
+
+              <a 
+                href="https://wa.me/971558879237"
+                className="mt-8 btn-red w-full"
+              >
+                Chat with Dubai Office
+              </a>
+            </div>
+          </motion.div>
         </div>
+      </section>
+
+      {/* ── Regional Offices ───────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-20">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-bold text-[#13233A]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+            GCC Regional Presence
+          </h2>
+          <p className="text-[#25262C]/60 text-[15px] mt-3">
+            Select a region to view local contact details.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+          {regionalOffices.map((office) => (
+            <div 
+              key={office.country} 
+              className={`bg-white/96 border rounded-xl overflow-hidden transition-all ${
+                openOffice === office.country ? "border-[#13233A] shadow-md" : "border-[#D8DCE2] hover:border-[#9CA3AF]"
+              }`}
+            >
+              <button
+                onClick={() => setOpenOffice(openOffice === office.country ? null : office.country)}
+                className="w-full flex items-center justify-between p-5 text-left"
+              >
+                <div className="flex items-center gap-3">
+                  <span className="font-bold text-[#13233A]">{office.country}</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-[#25262C]/50 transition-transform ${openOffice === office.country ? "rotate-180" : ""}`} />
+              </button>
+              
+              {openOffice === office.country && (
+                <div className="px-5 pb-5 pt-2 border-t border-[#D8DCE2]/50 bg-[#F8F7F4]/50">
+                  <div className="space-y-3 mt-3">
+                    <div className="flex items-start gap-3">
+                      <Building2 className="w-4 h-4 text-[#13233A] mt-1 shrink-0" />
+                      <p className="text-[14px] font-semibold text-[#13233A]">{office.companyName}</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <MapPin className="w-4 h-4 text-[#D02E30] mt-1 shrink-0" />
+                      <p className="text-[14px] text-[#25262C]/80 leading-relaxed">{office.address}</p>
+                    </div>
+                    {office.mobile && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
+                        <p className="text-[14px] font-semibold text-[#13233A]">{office.mobile}</p>
+                      </div>
+                    )}
+                    {office.tel && (
+                      <div className="flex items-center gap-3">
+                        <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
+                        <p className="text-[14px] font-semibold text-[#13233A]">{office.tel}</p>
+                      </div>
+                    )}
+                    {office.email && (
+                      <div className="flex items-center gap-3">
+                        <Mail className="w-4 h-4 text-[#3C97C5] shrink-0" />
+                        <p className="text-[14px] text-[#13233A]">{office.email}</p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── GCC Map ────────────────────────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6">
+        <GCCLocationsMap />
       </section>
     </div>
   );

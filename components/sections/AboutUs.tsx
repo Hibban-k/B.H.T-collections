@@ -1,79 +1,104 @@
-﻿"use client";
-// components/sections/AboutUs.tsx
+"use client";
+// components/sections/AboutUs.tsx — design-patch: editorial split with stats
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 
+const stats = [
+  { value: "2009", label: "Established" },
+  { value: "500+", label: "GCC Clients" },
+  { value: "50K+", label: "Sq Ft Warehouse" },
+];
+
 export default function AboutUs() {
   return (
-    <section className="section-padding bg-white relative overflow-hidden">
+    <section className="section-padding bg-transparent relative overflow-hidden">
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         <div className="grid md:grid-cols-2 gap-12 lg:gap-20 items-center">
-          {/* Content */}
+
+          {/* Image column */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut" }}
+            initial={{ opacity: 0, scale: 0.97 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.75, ease: "easeOut" }}
+            className="relative order-2 md:order-1"
           >
-            <p
-              className="text-[var(--color-primary)] text-xs tracking-[0.2em] font-bold uppercase mb-4"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
+            <div className="relative aspect-[4/5] overflow-hidden rounded-3xl shadow-2xl">
+              <Image
+                src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200&auto=format&fit=crop"
+                alt="B.H.T. Collections premium bedding warehouse and showroom"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, 50vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#13233A]/60 via-transparent to-transparent pointer-events-none" />
+            </div>
+
+            {/* Floating stat badge */}
+            <div className="absolute -bottom-4 -right-4 md:bottom-6 md:right-6 bg-white rounded-2xl p-5 shadow-xl border border-[#D8DCE2]">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 bg-[#D02E30] text-white rounded-xl flex items-center justify-center font-bold text-lg shrink-0"
+                  style={{ fontFamily: "var(--font-playfair-display)" }}>
+                  15+
+                </div>
+                <div>
+                  <p className="text-[11px] font-bold text-[#13233A] uppercase tracking-wider">Years of Excellence</p>
+                  <p className="text-[11px] text-[#6B7280] mt-0.5">Trusted across the GCC</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Content column */}
+          <motion.div
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.75, ease: "easeOut", delay: 0.1 }}
+            className="order-1 md:order-2"
+          >
+            {/* Tri-colour stripe */}
+            <div className="flex h-[3px] w-16 mb-8 overflow-hidden rounded-full">
+              <span className="flex-1 bg-[#D02E30]" />
+              <span className="flex-1 bg-[#238D7D]" />
+              <span className="flex-1 bg-[#3C97C5]" />
+            </div>
+
+            <p className="text-[#D02E30] text-[11px] tracking-[0.22em] font-bold uppercase mb-4">
               Our Heritage
             </p>
             <h2
-              className="text-3xl md:text-5xl font-bold text-[var(--color-dark)] mb-6 leading-tight"
+              className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#13233A] mb-6 leading-tight"
               style={{ fontFamily: "var(--font-playfair-display)" }}
             >
               A Legacy of Quality Since 2009
             </h2>
-            
-            <div className="space-y-4 text-sm text-[#64748B] leading-relaxed mb-8">
+
+            <div className="space-y-4 text-[15px] text-[#6B7280] leading-relaxed mb-8">
               <p>
-                Blanket House Trading L.L.C. was established in Dubai with a singular vision: to bring the world's finest home textiles and trading goods to the GCC. Over the past decade, we have grown from a specialized blanket supplier into a comprehensive trading powerhouse.
+                Blanket House Trading L.L.C. was established in Dubai by an industry veteran with deep roots in Korean textile manufacturing. From a specialist blanket supplier, we grew into a comprehensive GCC trading powerhouse trusted by 500+ clients.
               </p>
               <p>
-                Today, we serve over 500+ esteemed clients across 6 GCC countries, spanning major hypermarkets, 5-star hospitality projects, and massive B2B labour camp setups. Our commitment remains unchanged: delivering uncompromised quality, exceptional durability, and outstanding value.
+                Operating from a 50,000+ sq ft Dubai warehouse with four exclusive GCC factory partnerships, we deliver uncompromised quality directly — no middlemen, no shortcuts.
               </p>
+            </div>
+
+            {/* Stats row */}
+            <div className="flex gap-8 mb-10">
+              {stats.map((s, i) => (
+                <div key={i}>
+                  <p className="text-2xl font-bold text-[#13233A]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+                    {s.value}
+                  </p>
+                  <p className="text-[11px] text-[#6B7280] uppercase tracking-wider mt-0.5">{s.label}</p>
+                </div>
+              ))}
             </div>
 
             <Link href="/about" className="btn-primary">
               Discover Our Story
             </Link>
-          </motion.div>
-
-          {/* Image */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }}
-            className="relative"
-          >
-            <div className="relative aspect-[4/5] lg:aspect-square overflow-hidden rounded-2xl shadow-2xl border border-[#E5E5E5]">
-              <Image
-                src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop"
-                alt="Premium Bedding and Textiles"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[var(--color-dark)]/40 to-transparent pointer-events-none" />
-              
-              {/* Floating Badge */}
-              <div className="absolute bottom-6 left-6 right-6 bg-white/95 backdrop-blur-md p-5 rounded-xl border border-white shadow-lg">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-[var(--color-primary)] text-white rounded-full flex items-center justify-center font-bold text-xl shrink-0" style={{ fontFamily: "var(--font-playfair-display)" }}>
-                    15+
-                  </div>
-                  <div>
-                    <h4 className="text-sm font-bold text-[var(--color-dark)]">Years of Excellence</h4>
-                    <p className="text-xs text-[#64748B] mt-0.5">Trusted across the Middle East</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>

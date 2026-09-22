@@ -51,10 +51,15 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${playfair.variable} ${montserrat.variable}`}>
-      <body className="relative bg-[#FAFAF7] text-[#0D1B2A] antialiased min-h-screen" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
-        <AuthProvider>
-          <StoreLayoutShell>{children}</StoreLayoutShell>
-        </AuthProvider>
+      <body className="bg-[#F8F7F4] text-[#25262C] antialiased min-h-screen" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
+        {/* Global fixed watermark — single layer for entire site per design spec */}
+        <div className="site-watermark" aria-hidden="true" />
+        {/* All page content above watermark */}
+        <div className="page-content">
+          <AuthProvider>
+            <StoreLayoutShell>{children}</StoreLayoutShell>
+          </AuthProvider>
+        </div>
       </body>
     </html>
   );

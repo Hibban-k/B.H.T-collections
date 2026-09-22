@@ -1,105 +1,92 @@
 "use client";
 // components/sections/TrustBenefits.tsx
-import { motion } from "framer-motion";
-import { Gem, ShieldCheck, Truck, Heart } from "lucide-react";
+import { motion, useInView } from "framer-motion";
+import { useRef } from "react";
 
-const benefits = [
-  {
-    icon: Gem,
-    title: "Premium Quality",
-    description: "Long lasting comfort",
-    accentLeft: "#E12620",
-    accentRight: "#1598D0",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Trusted Brand",
-    description: "Your Comfort, Our Priority",
-    accentLeft: "#1598D0",
-    accentRight: "#E12620",
-  },
-  {
-    icon: Truck,
-    title: "Fast & Reliable Delivery",
-    description: "Across UAE",
-    accentLeft: "#16845E",
-    accentRight: "#E12620",
-  },
-  {
-    icon: Heart,
-    title: "Customer Satisfaction",
-    description: "Thousands of Happy Homes",
-    accentLeft: "#16845E",
-    accentRight: "#1598D0",
-  },
+const stats = [
+  { label: "Established", value: "Since 2009" },
+  { label: "GCC Clients", value: "500+" },
+  { label: "Sourcing", value: "Direct Factory Supply" },
+  { label: "Shipping", value: "UAE Delivery" },
 ];
 
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: {
+    opacity: 1,
+    y: 0,
+  },
+};
+
 export default function TrustBenefits() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.15 });
+
   return (
     <section
-      className="relative z-20 bg-transparent pt-3 pb-12"
-      aria-label="Brand Benefits"
+      ref={ref}
+      aria-label="Trust proof rail"
+      className="relative z-20 w-full"
     >
-      <div className="max-w-[1240px] mx-auto px-4 sm:px-6">
-        {/* Floating White Benefit Panel */}
+      {/* Tri-colour top border: red → teal → sky */}
+      <div className="flex w-full" aria-hidden="true">
+        <div className="h-[3px] flex-1 bg-[#D02E30]" />
+        <div className="h-[3px] flex-1 bg-[#238D7D]" />
+        <div className="h-[3px] flex-1 bg-[#3C97C5]" />
+      </div>
+
+      {/* Content surface */}
+      <div className="bg-white/96 backdrop-blur-sm w-full py-6">
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, ease: "easeOut" }}
-          className="bg-white rounded-2xl shadow-[0_6px_30px_rgba(0,0,0,0.06)] border border-[#ECECEC] overflow-hidden"
+          variants={containerVariants}
+          initial="hidden"
+          animate={inView ? "visible" : "hidden"}
+          className="
+            max-w-[1240px] mx-auto px-4 sm:px-6
+            grid grid-cols-2 md:grid-cols-4
+            divide-y md:divide-y-0 md:divide-x divide-[#D8DCE2]
+          "
         >
-          <div className="grid grid-cols-2 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-[#EFEFEF]">
-            {benefits.map((benefit, index) => {
-              const Icon = benefit.icon;
-              return (
-                <motion.div
-                  key={benefit.title}
-                  initial={{ opacity: 0, y: 10 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: index * 0.06 }}
-                  className="group flex flex-col items-center text-center px-4 py-7 sm:px-6 sm:py-8 hover:bg-[#FAFAFC]/60 transition-colors duration-200"
-                >
-                  {/* Icon */}
-                  <div className="mb-3.5 text-[#122936] group-hover:text-[#E12620] transition-colors duration-200">
-                    <Icon
-                      className="w-[28px] h-[28px]"
-                      strokeWidth={1.6}
-                    />
-                  </div>
+          {stats.map((stat) => (
+            <motion.div
+              key={stat.label}
+              variants={itemVariants}
+              className="flex flex-col items-center justify-center text-center py-4 md:py-0 px-4 sm:px-6"
+            >
+              {/* Uppercase label */}
+              <span
+                className="block mb-1 tracking-widest uppercase"
+                style={{
+                  fontFamily: "var(--font-montserrat, Montserrat, sans-serif)",
+                  fontSize: "10px",
+                  color: "rgba(37,38,44,0.50)",
+                  letterSpacing: "0.12em",
+                }}
+              >
+                {stat.label}
+              </span>
 
-                  {/* Title */}
-                  <h3
-                    className="text-[13.5px] font-bold text-[#122936] mb-1.5 leading-snug"
-                    style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                  >
-                    {benefit.title}
-                  </h3>
-
-                  {/* Description */}
-                  <p
-                    className="text-[11.5px] text-[#56636A] leading-snug mb-3.5"
-                    style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                  >
-                    {benefit.description}
-                  </p>
-
-                  {/* Two-tone accent indicator */}
-                  <div className="flex gap-[3px] items-center mt-auto">
-                    <div
-                      className="h-[2px] w-6 rounded-full"
-                      style={{ backgroundColor: benefit.accentLeft }}
-                    />
-                    <div
-                      className="h-[2px] w-4 rounded-full"
-                      style={{ backgroundColor: benefit.accentRight }}
-                    />
-                  </div>
-                </motion.div>
-              );
-            })}
-          </div>
+              {/* Primary value */}
+              <span
+                className="font-bold leading-tight text-[#13233A]"
+                style={{
+                  fontFamily: "var(--font-montserrat, Montserrat, sans-serif)",
+                  fontSize: "18px",
+                }}
+              >
+                {stat.value}
+              </span>
+            </motion.div>
+          ))}
         </motion.div>
       </div>
     </section>

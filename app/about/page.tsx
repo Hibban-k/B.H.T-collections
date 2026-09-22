@@ -1,351 +1,270 @@
+"use client";
 // app/about/page.tsx
-import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Award, Users, Globe, ShieldCheck, Warehouse, Sparkles, Building2, Briefcase, Footprints, Hotel, CheckCircle2 } from "lucide-react";
-import LogoWatermark from "@/components/ui/LogoWatermark";
-import { clientele, regionalOffices } from "@/lib/data";
-
-import { constructMetadata } from "@/lib/seo/metadata";
-
-export const metadata: Metadata = constructMetadata({
-  title: "About Us | B.H.T. Collections",
-  description: "Established in 2009 in Dubai. BLANKET HOUSE TRADING L.L.C. (B.H.T. Collections) has 15+ years experience, 4 exclusive GCC factories, 50,000+ sqft warehouse, and serves 500+ clients across 6 GCC countries.",
-  path: "/about",
-});
+import { motion } from "framer-motion";
+import { Award, Warehouse, Sparkles, ShieldCheck } from "lucide-react";
+import { clientele } from "@/lib/data";
 
 const values = [
   {
     icon: Award,
-    title: "15+ Years Industry Expertise",
-    description: "Founded in 2009 in Dubai by a seasoned industry expert with extensive experience working with leading Korean suppliers.",
+    title: "15+ Years Expertise",
+    description: "Founded in 2009 by an industry expert with extensive Korean supply chain experience.",
   },
   {
     icon: Warehouse,
-    title: "50,000+ SQFT Warehouse",
-    description: "Massive storage and logistics hub in Dubai ensuring immediate dispatch and uninterrupted supply across the region.",
+    title: "50,000 Sq Ft Warehouse",
+    description: "Massive storage and logistics hub in Dubai ensuring immediate dispatch across the GCC.",
   },
   {
     icon: Sparkles,
-    title: "4 Exclusive GCC Factories",
-    description: "Direct manufacturing partnerships with four major factories dedicated to our brands and quality standards.",
+    title: "4 Exclusive Factories",
+    description: "Direct manufacturing partnerships dedicated strictly to our brands and standards.",
   },
   {
     icon: ShieldCheck,
-    title: "Price Match Guarantee",
-    description: "Highest-grade materials delivered at honest competitive pricing without ever cutting corners on raw materials.",
+    title: "Honest Sourcing",
+    description: "Highest-grade materials at competitive pricing without ever cutting corners.",
   },
 ];
 
+const fadeUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0 },
+};
+
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-transparent">
-      {/* ── Page Hero ───────────────────────────────────── */}
-      <div className="relative h-80 md:h-[420px] overflow-hidden bg-[#0B131F]">
-        <Image
-          src="https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?w=1400&q=85"
-          alt="B.H.T. Collections & Blanket House Trading Story"
-          fill
-          className="object-cover opacity-35"
-          priority
-          sizes="100vw"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0B131F] via-[#0B131F]/80 to-transparent" />
+    <div className="min-h-screen bg-transparent pb-24">
+      {/* ── Compact Editorial Header ───────────────────────── */}
+      <header className="relative pt-16 pb-12 text-center px-4 sm:px-6 max-w-4xl mx-auto">
+        <motion.p
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          transition={{ duration: 0.6 }}
+          className="text-[#D02E30] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4"
+        >
+          Our Heritage
+        </motion.p>
+        <motion.h1
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#13233A] mb-5 leading-tight"
+          style={{ fontFamily: "var(--font-playfair-display)" }}
+        >
+          Blanket House Trading
+        </motion.h1>
+        <motion.p
+          initial="hidden"
+          animate="visible"
+          variants={fadeUp}
+          transition={{ duration: 0.6, delay: 0.2 }}
+          className="text-[#25262C]/75 text-[15px] leading-relaxed max-w-2xl mx-auto"
+        >
+          From a specialist supplier in 2009 to a comprehensive GCC trading powerhouse. We build direct factory relationships to bring you uncompromising quality.
+        </motion.p>
+      </header>
 
-
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10">
-          <p
-            className="text-[#D92626] text-xs tracking-[0.25em] font-bold uppercase mb-3 bg-[#D92626]/20 px-3 py-1 rounded"
-            style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-          >
-            BUILT ON QUALITY · DELIVERED WITH CARE
-          </p>
-          <h1
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-3"
-            style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
-          >
-            About Blanket House Trading
-          </h1>
-          <p className="text-white/80 text-sm md:text-base font-medium max-w-xl">
-            Established in 2009 in Dubai | Trusted Partner in Warmth &amp; Quality Across 6 GCC Countries
-          </p>
-        </div>
-      </div>
-
-      {/* ── Corporate Story & Mission ───────────────────── */}
-      <section className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24">
-        <LogoWatermark opacity={0.03} position="right" size={650} />
-
-        <div className="relative z-10 grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          <div>
-            <p
-              className="text-[#D92626] text-xs tracking-[0.2em] font-bold uppercase mb-3"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              ABOUT US &amp; HERITAGE
-            </p>
-            <h2
-              className="text-3xl md:text-4xl font-bold text-[#0B131F] mb-6 leading-tight"
-              style={{ fontFamily: "var(--font-playfair-display)" }}
-            >
-              More Than Just a Blanket Brand
-            </h2>
-
-            <p className="text-[#64748B] text-sm md:text-base leading-relaxed mb-4">
-              Established in <strong>2009 in the vibrant city of Dubai</strong>, <strong>BLANKET HOUSE TRADING L.L.C.</strong> was founded by a seasoned industry expert with over 15 years of hands-on experience in the blanket and home textiles sector.
-            </p>
-            <p className="text-[#64748B] text-sm md:text-base leading-relaxed mb-4">
-              Prior to launching our venture, our founder spent more than a decade working directly with leading Korean suppliers, mastering the art of sourcing premium materials and building strong international partnerships. This deep-rooted knowledge and trusted network laid the foundation for a business dedicated to excellence in quality and value.
-            </p>
-            <p className="text-[#64748B] text-sm md:text-base leading-relaxed mb-6">
-              Today, we source directly from top-tier international partners, with <strong>four major factories working exclusively for BLANKET HOUSE TRADING L.L.C.</strong> in the GCC region, bringing world-class blankets and textiles to homes, hotels, and retailers.
-            </p>
-
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 pt-4 border-t border-[#F2EBDC]">
-              <div className="p-3 bg-white border border-[#F2EBDC] rounded-xl text-center">
-                <div className="text-2xl font-bold text-[#D92626]" style={{ fontFamily: "var(--font-playfair-display)" }}>2009</div>
-                <div className="text-xs text-[#64748B] font-bold">Est. in Dubai</div>
-              </div>
-              <div className="p-3 bg-white border border-[#F2EBDC] rounded-xl text-center">
-                <div className="text-2xl font-bold text-[#1C75BC]" style={{ fontFamily: "var(--font-playfair-display)" }}>50,000+</div>
-                <div className="text-xs text-[#64748B] font-bold">SQFT Warehouse</div>
-              </div>
-              <div className="p-3 bg-white border border-[#F2EBDC] rounded-xl text-center">
-                <div className="text-2xl font-bold text-[#1BA14B]" style={{ fontFamily: "var(--font-playfair-display)" }}>500+</div>
-                <div className="text-xs text-[#64748B] font-bold">GCC Clients</div>
-              </div>
+      {/* ── 3 Stat Callouts ────────────────────────────────── */}
+      <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-20">
+        <div className="bg-white/96 border border-[#D8DCE2] rounded-2xl shadow-sm p-8 md:p-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4 divide-y md:divide-y-0 md:divide-x divide-[#D8DCE2] text-center">
+            <div className="pt-4 md:pt-0">
+              <p className="text-[#13233A] text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>2009</p>
+              <p className="text-[#25262C]/60 text-[10px] uppercase tracking-widest font-bold">Established</p>
             </div>
-          </div>
-
-          {/* Mission Card */}
-          <div className="bg-[#0B131F] text-white p-8 md:p-10 rounded-2xl shadow-xl border border-[#1A2433] relative overflow-hidden">
-            <LogoWatermark opacity={0.08} position="right" size={400} isDarkBg />
-            <div className="relative z-10">
-              <span className="text-[#D92626] text-xs font-bold tracking-widest uppercase bg-[#D92626]/20 px-3 py-1 rounded inline-block mb-4">
-                OUR MISSION &amp; PROMISE
-              </span>
-              <h3
-                className="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight"
-                style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
-              >
-                Quality Craftsmanship Without Overpaying
-              </h3>
-              <p className="text-white/80 text-sm leading-relaxed mb-6">
-                Our mission is simple yet resolute: to provide our valued customers with the highest-grade blankets available, crafted from superior materials and offered at fair, reasonable prices.
-              </p>
-              <p className="text-white/80 text-sm leading-relaxed mb-8">
-                Backed by our <strong>Price Match Guarantee</strong>, we ensure you always receive exceptional quality without overpaying. We stand behind every product, committed to your complete satisfaction and comfort.
-              </p>
-
-              <div className="space-y-3 pt-6 border-t border-white/10">
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#1BA14B] shrink-0" />
-                  <span className="text-sm font-medium text-white/90">Never cutting corners on raw materials</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#1BA14B] shrink-0" />
-                  <span className="text-sm font-medium text-white/90">Four exclusive dedicated manufacturing facilities</span>
-                </div>
-                <div className="flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-[#1BA14B] shrink-0" />
-                  <span className="text-sm font-medium text-white/90">Price Match Guarantee across UAE &amp; GCC</span>
-                </div>
-              </div>
+            <div className="pt-4 md:pt-0">
+              <p className="text-[#13233A] text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>500+</p>
+              <p className="text-[#25262C]/60 text-[10px] uppercase tracking-widest font-bold">GCC Clients</p>
+            </div>
+            <div className="pt-4 md:pt-0">
+              <p className="text-[#13233A] text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>50K+</p>
+              <p className="text-[#25262C]/60 text-[10px] uppercase tracking-widest font-bold">Sq Ft Warehouse</p>
+            </div>
+            <div className="pt-4 md:pt-0">
+              <p className="text-[#13233A] text-3xl font-bold mb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>4</p>
+              <p className="text-[#25262C]/60 text-[10px] uppercase tracking-widest font-bold">Exclusive Factories</p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* ── Key Company Pillars ─────────────────────────── */}
-      <section className="relative overflow-hidden bg-[#0B131F] py-16 md:py-20 text-white">
-        <LogoWatermark opacity={0.06} position="center" size={650} isDarkBg />
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center mb-12">
-            <p
-              className="text-[#D92626] text-xs tracking-[0.2em] font-bold uppercase mb-3 bg-[#D92626]/10 inline-block px-2.5 py-1 rounded"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              WHY CHOOSE US
-            </p>
-            <h2
-              className="text-3xl md:text-4xl font-bold text-white"
-              style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
-            >
-              Our Core Strengths
+      {/* ── Chronological Story ────────────────────────────── */}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 mb-24">
+        {/* Chapter 1 */}
+        <div className="grid md:grid-cols-2 gap-12 items-center mb-20">
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.6 }}
+            variants={fadeUp}
+            className="order-2 md:order-1"
+          >
+            <div className="flex h-[3px] w-12 mb-6 rounded-full overflow-hidden">
+              <div className="flex-1 bg-[#D02E30]" />
+              <div className="flex-1 bg-[#238D7D]" />
+              <div className="flex-1 bg-[#3C97C5]" />
+            </div>
+            <h2 className="text-3xl font-bold text-[#13233A] mb-5" style={{ fontFamily: "var(--font-playfair-display)" }}>
+              The 2009 Origin
             </h2>
+            <p className="text-[#25262C]/75 text-[15px] leading-relaxed mb-4">
+              Founded in Dubai, B.H.T. Collections began with a simple premise: bridge the gap between premium Korean textile manufacturing and the growing GCC market.
+            </p>
+            <p className="text-[#25262C]/75 text-[15px] leading-relaxed">
+              Our founder spent over a decade working directly with leading suppliers before launching Blanket House Trading. This deep-rooted knowledge of materials, weaving techniques, and factory relationships became our competitive advantage.
+            </p>
+          </motion.div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.8 }}
+            className="order-1 md:order-2 relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#D8DCE2] shadow-md"
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?q=80&w=1200&auto=format&fit=crop"
+              alt="Premium bedding textiles"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </motion.div>
+        </div>
+
+        {/* Chapter 2 */}
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.8 }}
+            className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-[#D8DCE2] shadow-md"
+          >
+            <Image
+              src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?q=80&w=1200&auto=format&fit=crop"
+              alt="Warehouse and logistics"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+            />
+          </motion.div>
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            transition={{ duration: 0.6 }}
+            variants={fadeUp}
+          >
+            <div className="flex h-[3px] w-12 mb-6 rounded-full overflow-hidden">
+              <div className="flex-1 bg-[#D02E30]" />
+              <div className="flex-1 bg-[#238D7D]" />
+              <div className="flex-1 bg-[#3C97C5]" />
+            </div>
+            <h2 className="text-3xl font-bold text-[#13233A] mb-5" style={{ fontFamily: "var(--font-playfair-display)" }}>
+              Scale &amp; Distribution
+            </h2>
+            <p className="text-[#25262C]/75 text-[15px] leading-relaxed mb-4">
+              Today, we operate from a massive 50,000+ square foot logistics hub in Dubai. This allows us to hold significant inventory and ensure immediate dispatch.
+            </p>
+            <p className="text-[#25262C]/75 text-[15px] leading-relaxed">
+              We manage four exclusive manufacturing partnerships. This means we control the quality from raw yarn to final stitch, supplying over 500 hypermarkets, hotels, and retailers across the UAE, Oman, Qatar, Bahrain, Kuwait, and Saudi Arabia.
+            </p>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ── Values Grid ────────────────────────────────────── */}
+      <section className="bg-[#13233A] py-24 mb-24">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4" style={{ fontFamily: "var(--font-playfair-display)" }}>
+              How We Operate
+            </h2>
+            <p className="text-white/70 max-w-2xl mx-auto">
+              Concrete operational advantages that translate to better quality and pricing for you.
+            </p>
           </div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {values.map((val) => {
+          <div className="grid sm:grid-cols-2 gap-6">
+            {values.map((val, idx) => {
               const Icon = val.icon;
               return (
-                <div
-                  key={val.title}
-                  className="bg-[#111C2E] border border-[#1A2433] p-6 rounded-xl shadow-lg hover:border-[#1C75BC]/50 transition-colors"
+                <motion.div
+                  key={idx}
+                  initial="hidden"
+                  whileInView="visible"
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.5, delay: idx * 0.1 }}
+                  variants={fadeUp}
+                  className="bg-white/05 border border-white/10 rounded-2xl p-8"
                 >
-                  <div className="w-12 h-12 bg-[#1C75BC]/20 border border-[#1C75BC]/40 rounded-xl flex items-center justify-center mb-4 text-[#1C75BC]">
-                    <Icon className="w-6 h-6" strokeWidth={1.75} />
+                  <div className="w-12 h-12 bg-[#D02E30]/20 rounded-xl flex items-center justify-center mb-6">
+                    <Icon className="w-6 h-6 text-[#D02E30]" />
                   </div>
-                  <h3
-                    className="text-base font-bold text-white mb-2"
-                    style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
-                  >
+                  <h3 className="text-xl font-bold text-white mb-3" style={{ fontFamily: "var(--font-playfair-display)" }}>
                     {val.title}
                   </h3>
-                  <p className="text-[#94A3B8] text-xs leading-relaxed">
+                  <p className="text-white/60 text-[15px] leading-relaxed">
                     {val.description}
                   </p>
-                </div>
+                </motion.div>
               );
             })}
           </div>
         </div>
       </section>
 
-      {/* ── Other Product Portfolio & Services ──────────── */}
-      <section className="section-padding bg-transparent relative overflow-hidden border-b border-[#F2EBDC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="text-center max-w-3xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 bg-[#0B131F] text-white px-4 py-1 rounded text-xs font-bold tracking-[0.2em] uppercase mb-3 shadow-xs">
-              DIVERSIFIED SERVICES
-            </div>
-            <h2
-              className="text-3xl md:text-4xl font-bold text-[#0B131F] mb-4"
-              style={{ fontFamily: "var(--font-playfair-display)" }}
+      {/* ── Client Proof (Monochrome) ──────────────────────── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-24">
+        <div className="text-center mb-12">
+          <p className="text-[#238D7D] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-3">
+            B2B &amp; Institutional
+          </p>
+          <h2 className="text-3xl font-bold text-[#13233A]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+            Trusted by Industry Leaders
+          </h2>
+        </div>
+
+        <div className="bg-white/96 border border-[#D8DCE2] rounded-2xl p-10 flex flex-wrap justify-center gap-10 md:gap-16 items-center shadow-sm">
+          {clientele.filter(c => c.logo).map((client, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ duration: 0.5, delay: idx * 0.05 }}
+              className="relative w-28 h-12 md:w-36 md:h-16 grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-300"
             >
-              Commercial &amp; Institutional Product Categories
-            </h2>
-            <p className="text-[#64748B] text-sm md:text-base leading-relaxed">
-              BLANKET HOUSE TRADING L.L.C. has expanded across multiple essential commercial categories to serve businesses, contractors, and retail partners.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="p-7 bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#C5A869] rounded-2xl transition-all shadow-xs hover:bg-white flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#0C1220] border border-[#D4AF37]/30 flex items-center justify-center text-[#E6C687]">
-                    <Building2 className="w-6 h-6" strokeWidth={1.5} />
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#8C6D2B] bg-[#F7F2E7] px-2 py-0.5 rounded border border-[#E9DCBF]">
-                    Labour Camp B2B
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-[#0B131F] mb-2 leading-snug">Complete Labour Camp Supplies</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  Heavy-duty bunker beds, steel lockers, industrial blankets, certified foam mattresses &amp; pillows.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-7 bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#C5A869] rounded-2xl transition-all shadow-xs hover:bg-white flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#0C1220] border border-[#D4AF37]/30 flex items-center justify-center text-[#E6C687]">
-                    <Briefcase className="w-6 h-6" strokeWidth={1.5} />
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#8C6D2B] bg-[#F7F2E7] px-2 py-0.5 rounded border border-[#E9DCBF]">
-                    Travel Luggage
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-[#0B131F] mb-2 leading-snug">Travel Suitcases &amp; Luggage</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  PP, ABS hard-shell and heavy-duty fabric luggage engineered for maximum durability across the GCC.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-7 bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#C5A869] rounded-2xl transition-all shadow-xs hover:bg-white flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#0C1220] border border-[#D4AF37]/30 flex items-center justify-center text-[#E6C687]">
-                    <Footprints className="w-6 h-6" strokeWidth={1.5} />
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#8C6D2B] bg-[#F7F2E7] px-2 py-0.5 rounded border border-[#E9DCBF]">
-                    Distribution
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-[#0B131F] mb-2 leading-snug">Footwear Distribution</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  Distributor for renowned brands <strong>ADDA (Thailand)</strong> &amp; <strong>Paragon (India)</strong>, plus Arabic slippers.
-                </p>
-              </div>
-            </div>
-
-            <div className="p-7 bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#C5A869] rounded-2xl transition-all shadow-xs hover:bg-white flex flex-col justify-between">
-              <div>
-                <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-[#0C1220] border border-[#D4AF37]/30 flex items-center justify-center text-[#E6C687]">
-                    <Hotel className="w-6 h-6" strokeWidth={1.5} />
-                  </div>
-                  <span className="text-[9px] font-bold uppercase tracking-wider text-[#8C6D2B] bg-[#F7F2E7] px-2 py-0.5 rounded border border-[#E9DCBF]">
-                    Hospitality
-                  </span>
-                </div>
-                <h3 className="text-base font-bold text-[#0B131F] mb-2 leading-snug">Hospitality &amp; Hotel Bedding</h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  Five-star duvets, comforters, high-thread-count cotton sheets, and luxury multi-ply blankets.
-                </p>
-              </div>
-            </div>
-          </div>
+              <Image
+                src={client.logo!}
+                alt={client.name}
+                fill
+                className="object-contain"
+                sizes="150px"
+              />
+            </motion.div>
+          ))}
         </div>
       </section>
 
-
-
-      {/* ── Clientele Hypermarkets ───────────────────────── */}
-      <section className="py-16 bg-transparent border-t border-[#F2EBDC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <div className="inline-flex items-center gap-2 bg-[#0B131F] text-white px-4 py-1 rounded text-xs font-bold tracking-[0.2em] uppercase mb-3 shadow-xs">
-            OUR CLIENTELE
-          </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-[#0B131F] mb-3" style={{ fontFamily: "var(--font-playfair-display)" }}>
-            Serving 500+ Valued Partners Across the GCC
-          </h2>
-          <p className="text-[#64748B] text-sm max-w-xl mx-auto mb-10">
-            Trusted supplier to major hypermarket chains, department stores, and retail groups.
-          </p>
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-            {clientele.map((c) => (
-              <div key={c.name} className="p-4 bg-[#FAF8F5] border border-[#E8E2D5] hover:border-[#D4AF37] rounded-xl flex flex-col items-center justify-between min-h-[140px] shadow-xs hover:bg-white transition-all">
-                <div className="relative w-full h-14 flex items-center justify-center p-1">
-                  <Image
-                    src={c.logo}
-                    alt={`${c.name} logo`}
-                    fill
-                    className="object-contain"
-                    sizes="160px"
-                  />
-                </div>
-                <div className="pt-2 border-t border-[#EFE9DE] w-full">
-                  <p className="text-xs font-bold text-[#0B131F] truncate">{c.name}</p>
-                  <p className="text-[10px] text-[#8A95A5]">{c.category}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── CTA Banner ──────────────────────────────────── */}
-      <section className="bg-transparent py-16 text-center border-t border-[#F2EBDC]">
-        <div className="max-w-3xl mx-auto px-4">
-          <h2 className="text-3xl font-bold text-[#0B131F] mb-4" style={{ fontFamily: "var(--font-playfair-display)" }}>
-            Partner with Blanket House Trading L.L.C.
-          </h2>
-          <p className="text-[#64748B] text-sm mb-8 leading-relaxed">
-            Whether for retail distribution, hotel projects, labour camp requirements, or retail bedding — our team in Dubai and across the GCC is at your service.
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/collections" className="btn-primary">
-              EXPLORE COLLECTIONS
-            </Link>
-            <Link href="/contact" className="btn-secondary">
-              CONTACT OUR REGIONAL OFFICES
-            </Link>
-          </div>
+      {/* ── Contact CTA ────────────────────────────────────── */}
+      <section className="max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <h2 className="text-3xl font-bold text-[#13233A] mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>
+          Ready to experience the quality?
+        </h2>
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link href="/collections" className="btn-primary">
+            Shop for Home
+          </Link>
+          <Link href="/contact" className="btn-secondary">
+            Wholesale Enquiries
+          </Link>
         </div>
       </section>
     </div>
