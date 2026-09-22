@@ -11,8 +11,8 @@ const fadeUp = {
 
 export default function ContactCTA() {
   return (
-    <section className="w-full bg-[#13233A] py-24">
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+    <section className="w-full bg-transparent py-24 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-stretch gap-0">
 
           {/* Left: Shop for Home */}
@@ -24,19 +24,19 @@ export default function ContactCTA() {
             transition={{ duration: 0.6, delay: 0 }}
             variants={fadeUp}
           >
-            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full border border-white/20 bg-white/5">
-              <ShoppingBag className="w-6 h-6 text-[#F8F7F4]" strokeWidth={1.5} />
+            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#13233A]/10 bg-[#13233A]/5">
+              <ShoppingBag className="w-6 h-6 text-[#13233A]" strokeWidth={1.5} />
             </div>
 
             <h2
-              className="text-3xl lg:text-4xl font-bold text-white mb-4"
+              className="text-3xl lg:text-4xl font-bold text-[#13233A] mb-4"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Shop for Home
             </h2>
 
             <p
-              className="text-[#F8F7F4]/75 text-base leading-relaxed max-w-xs mb-8"
+              className="text-[#25262C]/75 text-base leading-relaxed max-w-xs mb-8"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               Discover our curated range of premium textiles crafted for every
@@ -45,7 +45,7 @@ export default function ContactCTA() {
 
             <Link
               href="/collections"
-              className="btn-secondary-white"
+              className="btn-secondary"
             >
               Browse Collections
             </Link>
@@ -72,19 +72,19 @@ export default function ContactCTA() {
             transition={{ duration: 0.6, delay: 0.15 }}
             variants={fadeUp}
           >
-            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full border border-white/20 bg-white/5">
-              <MessageCircle className="w-6 h-6 text-[#F8F7F4]" strokeWidth={1.5} />
+            <div className="mb-6 inline-flex items-center justify-center w-14 h-14 rounded-full border border-[#13233A]/10 bg-[#13233A]/5">
+              <MessageCircle className="w-6 h-6 text-[#13233A]" strokeWidth={1.5} />
             </div>
 
             <h2
-              className="text-3xl lg:text-4xl font-bold text-white mb-4"
+              className="text-3xl lg:text-4xl font-bold text-[#13233A] mb-4"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Wholesale &amp; Hospitality
             </h2>
 
             <p
-              className="text-[#F8F7F4]/75 text-base leading-relaxed max-w-xs mb-8"
+              className="text-[#25262C]/75 text-base leading-relaxed max-w-xs mb-8"
               style={{ fontFamily: "'Montserrat', sans-serif" }}
             >
               Outfitting a hotel, resort, or business? Talk to us directly for
