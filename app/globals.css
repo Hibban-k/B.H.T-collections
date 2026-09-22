@@ -54,7 +54,7 @@
   position: fixed;
   inset: 0;
   z-index: 0;
-  background-image: url('/watermark-bg.png');
+  background-image: url('/bht-flower-transparent.png');
   background-repeat: no-repeat;
   background-position: right -15vw bottom -15vh;
   background-size: max(800px, 70vw);
