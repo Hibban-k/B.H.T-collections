@@ -57,17 +57,17 @@
   background-image: url('/watermark-bg.png');
   background-repeat: repeat;
   background-position: center top;
-  /* Massively scale up the grid so logos are bigger and fewer appear */
-  background-size: 1600px auto; 
-  opacity: 0.08;
+  /* Slightly larger than old 550px size to reduce count */
+  background-size: 800px auto; 
+  opacity: 0.85; /* restored high opacity because the image itself is faint */
   pointer-events: none;
   user-select: none;
 }
 
 @media (max-width: 767px) {
   .site-watermark {
-    background-size: 1000px auto;
-    opacity: 0.05;
+    background-size: 550px auto;
+    opacity: 0.75;
   }
 }
 
