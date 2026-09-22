@@ -1,6 +1,7 @@
 "use client";
 // app/contact/page.tsx
 import { useState } from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Phone, Mail, MapPin, MessageCircle, Clock, Building2, ChevronDown } from "lucide-react";
 import ContactForm from "@/components/contact/ContactForm";
@@ -8,21 +9,22 @@ import dynamic from "next/dynamic";
 import { regionalOffices } from "@/lib/data";
 
 const GCCLocationsMap = dynamic(() => import("@/components/contact/GCCLocationsMap"), {
-  loading: () => <div className="h-96 rounded-2xl bg-white/50 animate-pulse my-10 border border-[#D8DCE2]" />
+  ssr: false,
+  loading: () => <div className="w-full h-full min-h-[400px] bg-[#E8E2D5]/30 animate-pulse rounded-2xl" />
 });
 
 const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
+  hidden: { opacity: 0, y: 16 },
   visible: { opacity: 1, y: 0 },
 };
 
 export default function ContactPage() {
-  const [openOffice, setOpenOffice] = useState<string | null>(regionalOffices[0]?.country || null);
+  const [openOffice, setOpenOffice] = useState<string | null>(null);
 
   return (
     <div className="min-h-screen bg-transparent pb-24">
       {/* ── Page Header ────────────────────────────────────── */}
-      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[40vh] flex flex-col items-center justify-center overflow-hidden mb-12">
+      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden mb-12">
         <Image 
           src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop" 
           alt="Modern office" 

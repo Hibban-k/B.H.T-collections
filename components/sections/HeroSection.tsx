@@ -126,21 +126,21 @@ export default function HeroSection() {
               whileInView="visible"
               viewport={{ once: true, amount: 0.15 }}
               transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-wrap gap-3"
+              className="flex flex-row flex-nowrap gap-3 items-center"
             >
               {/* btn-primary */}
               <Link
                 href="/collections"
-                className="btn-primary"
+                className="btn-primary !px-4 sm:!px-6 !py-2.5 !min-h-[42px] !text-[10px] sm:!text-xs whitespace-nowrap"
               >
                 Explore Collections
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 duration-200" />
+                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 duration-200" />
               </Link>
 
               {/* btn-secondary */}
               <Link
                 href="/contact"
-                className="btn-secondary"
+                className="btn-secondary !px-4 sm:!px-6 !py-2.5 !min-h-[42px] !text-[10px] sm:!text-xs whitespace-nowrap"
               >
                 Wholesale Enquiries
               </Link>

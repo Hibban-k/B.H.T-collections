@@ -52,7 +52,7 @@ export default async function CollectionsPage() {
       />
 
       {/* Editorial Header with Background Image */}
-      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[40vh] flex flex-col items-center justify-center overflow-hidden">
+      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden">
         <Image 
           src="https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop" 
           alt="Premium textiles" 

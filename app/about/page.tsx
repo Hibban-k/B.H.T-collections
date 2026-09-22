@@ -38,7 +38,7 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-transparent pb-24">
       {/* ── Compact Editorial Header ───────────────────────── */}
-      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[45vh] flex flex-col items-center justify-center overflow-hidden mb-12">
+      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden mb-12">
         <Image 
           src="https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?q=80&w=2000&auto=format&fit=crop" 
           alt="Premium interiors" 
