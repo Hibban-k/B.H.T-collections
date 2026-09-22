@@ -18,19 +18,7 @@ export default function StoreLayoutShell({
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#FAFAFC]">
-      {/* Global Repeating Watermark Background on Every Page */}
-      <div
-        aria-hidden="true"
-        className="fixed inset-0 pointer-events-none z-0 select-none"
-        style={{
-          backgroundImage: "url('/watermark-bg.png')",
-          backgroundRepeat: "repeat",
-          backgroundSize: "550px auto",
-          opacity: 0.95,
-        }}
-      />
-
+    <div className="relative min-h-screen flex flex-col bg-transparent">
       {/* Main App Content on top of background */}
       <div className="relative z-10 flex flex-col min-h-screen flex-1">
         <AnnouncementBar />
