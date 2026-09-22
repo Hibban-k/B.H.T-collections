@@ -58,7 +58,7 @@
   background-repeat: repeat;
   background-size: 720px auto;
   background-position: center top;
-  opacity: 0.26;
+  opacity: 0.08;
   pointer-events: none;
   user-select: none;
 }
@@ -66,7 +66,7 @@
 @media (max-width: 767px) {
   .site-watermark {
     background-size: 450px auto;
-    opacity: 0.15;
+    opacity: 0.05;
   }
 }
 
@@ -152,13 +152,13 @@ a {
 
 /* ─── Button System ──────────────────────────────────────────────── */
 
-/* Primary: midnight navy */
+/* Primary: orange/red */
 .btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
-  background-color: #13233A;
+  background-color: #D02E30;
   color: #ffffff;
   font-family: var(--font-montserrat-var, system-ui, sans-serif);
   font-weight: 600;
@@ -166,7 +166,7 @@ a {
   text-transform: uppercase;
   padding: 0.875rem 2rem;
   font-size: 0.75rem;
-  border: 2px solid #13233A;
+  border: 2px solid #D02E30;
   border-radius: 8px;
   min-height: 48px;
   transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
@@ -174,8 +174,8 @@ a {
 }
 
 .btn-primary:hover {
-  background-color: #D02E30;
-  border-color: #D02E30;
+  background-color: #A82224;
+  border-color: #A82224;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(208, 46, 48, 0.25);
 }
