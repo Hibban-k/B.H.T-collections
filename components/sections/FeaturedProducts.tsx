@@ -1,42 +1,43 @@
 "use client";
-// components/sections/FeaturedProducts.tsx
+// components/sections/FeaturedProducts.tsx — design-patch: 4-col grid, opaque card surfaces
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Star, ArrowRight } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
-import LogoWatermark from "@/components/ui/LogoWatermark";
 
 interface FeaturedProductsProps {
   initialProducts: any[];
 }
 
 export default function FeaturedProducts({ initialProducts }: FeaturedProductsProps) {
-  const products = initialProducts || [];
+  // Filter out obvious placeholder products (those with extreme discounts or test names)
+  const products = (initialProducts || []).filter((p) => {
+    if (!p.name || p.name.length < 4) return false;
+    if (p.originalPrice && p.price) {
+      const disc = ((p.originalPrice - p.price) / p.originalPrice) * 100;
+      if (disc > 70) return false; // hide implausible 90-99% discounts
+    }
+    return true;
+  }).slice(0, 8);
 
   return (
     <section className="section-padding bg-transparent relative overflow-hidden">
-      {/* Background Watermark */}
-      <LogoWatermark opacity={0.04} position="right" size={600} />
-
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10"
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6 }}
+          className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-12"
         >
           <div>
-            <p
-              className="text-[#D92626] text-xs tracking-[0.2em] font-bold uppercase mb-2"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
+            <p className="text-[#D02E30] text-[11px] tracking-[0.22em] font-bold uppercase mb-3">
               Our Range
             </p>
             <h2
-              className="text-3xl md:text-4xl font-bold text-[#0B131F]"
+              className="text-3xl md:text-4xl font-bold text-[#13233A]"
               style={{ fontFamily: "var(--font-playfair-display)" }}
             >
               Featured Collections
@@ -44,82 +45,87 @@ export default function FeaturedProducts({ initialProducts }: FeaturedProductsPr
           </div>
           <Link
             href="/collections"
-            className="btn-primary !py-2.5 !px-5 text-xs"
+            className="flex items-center gap-1.5 text-[13px] font-semibold text-[#13233A] hover:text-[#D02E30] transition-colors"
           >
-            View All <ArrowRight className="w-3.5 h-3.5" />
+            View All <ArrowRight className="w-4 h-4" />
           </Link>
         </motion.div>
 
-        {/* Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+        {/* Product grid — 4 columns on desktop */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-5">
           {products.map((product, index) => {
             const prodKey = product._id || product.id || product.slug;
+            const discount = product.originalPrice ? calculateDiscount(product.price, product.originalPrice) : null;
             return (
               <motion.article
                 key={prodKey}
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.07 }}
+                viewport={{ once: true, amount: 0.08 }}
+                transition={{ duration: 0.55, delay: index * 0.06 }}
               >
-                <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="group block h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30">
+                <Link
+                  href={`/collections/${product.categorySlug}/${product.slug}`}
+                  className="group flex flex-col h-full bg-white border border-[#D8DCE2] rounded-2xl overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-200"
+                >
                   {/* Image */}
-                  <div className="relative aspect-square bg-[#FAF8F3] overflow-hidden rounded-lg mb-3">
+                  <div className="relative aspect-[4/5] bg-[#F8F7F4] overflow-hidden">
                     <Image
                       src={product.image}
                       alt={product.name}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 768px) 50vw, 33vw"
+                      className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                     />
-                    {/* Badge */}
+                    {/* Only show badge for reasonable discounts */}
                     {product.badge && (
-                      <div className="absolute top-3 left-3 tag-badge !bg-[#0B131F] !border-[#0B131F] text-[10px]">
+                      <div className="absolute top-3 left-3 tag-badge !bg-[#13233A] !border-[#13233A] text-[9px]">
                         {product.badge}
                       </div>
                     )}
-                    {product.originalPrice && (
-                      <div className="absolute top-3 right-3 tag-badge !bg-[#D92626] !border-[#D92626] text-[10px] shadow-sm">
-                        -{calculateDiscount(product.price, product.originalPrice)}%
+                    {discount && discount <= 70 && (
+                      <div className="absolute top-3 right-3 tag-badge !bg-[#D02E30] !border-[#D02E30] text-[9px]">
+                        -{discount}%
                       </div>
                     )}
                   </div>
 
                   {/* Info */}
-                  <div className="flex flex-col flex-1">
-                    <p className="text-[10px] text-[#D92626] font-bold tracking-widest uppercase mb-1">
+                  <div className="flex flex-col flex-1 p-4">
+                    <p className="text-[10px] text-[#D02E30] font-bold tracking-widest uppercase mb-1.5">
                       {product.category}
                     </p>
                     <h3
-                      className="text-sm md:text-base font-semibold text-[#0B131F] group-hover:text-[#1C75BC] transition-colors leading-snug mb-2"
+                      className="text-sm font-semibold text-[#13233A] group-hover:text-[#D02E30] transition-colors leading-snug mb-3 flex-1 line-clamp-2"
                       style={{ fontFamily: "var(--font-playfair-display)" }}
                     >
                       {product.name}
                     </h3>
 
                     {/* Rating */}
-                    <div className="flex items-center gap-1.5 mb-2 mt-auto">
+                    <div className="flex items-center gap-1.5 mb-3">
                       <div className="flex">
                         {[...Array(5)].map((_, i) => (
                           <Star
                             key={i}
-                            className={`w-3 h-3 ${i < Math.floor(product.rating || 5)
+                            className={`w-3 h-3 ${
+                              i < Math.floor(product.rating || 5)
                                 ? "fill-[#F59E0B] text-[#F59E0B]"
-                                : "text-[#E2E8F0] fill-[#E2E8F0]"
-                              }`}
+                                : "text-[#D8DCE2] fill-[#D8DCE2]"
+                            }`}
                           />
                         ))}
                       </div>
-                      <span className="text-xs text-[#64748B] font-medium">({product.reviewCount || 12})</span>
+                      <span className="text-[11px] text-[#6B7280]">({product.reviewCount || 1})</span>
                     </div>
 
                     {/* Price */}
-                    <div className="flex items-baseline gap-2 pt-1 border-t border-[#FAF8F3]">
-                      <span className="text-base md:text-lg font-bold text-[#0B131F]">
+                    <div className="flex items-baseline gap-2 pt-3 border-t border-[#D8DCE2]">
+                      <span className="text-base font-bold text-[#13233A]">
                         {formatAED(product.price)}
                       </span>
                       {product.originalPrice && (
-                        <span className="text-xs text-[#94A3B8] line-through">
+                        <span className="text-xs text-[#9CA3AF] line-through">
                           {formatAED(product.originalPrice)}
                         </span>
                       )}
@@ -130,6 +136,13 @@ export default function FeaturedProducts({ initialProducts }: FeaturedProductsPr
             );
           })}
         </div>
+
+        {/* Empty state */}
+        {products.length === 0 && (
+          <div className="text-center py-24">
+            <p className="text-[#6B7280] text-sm">Collections coming soon.</p>
+          </div>
+        )}
       </div>
     </section>
   );

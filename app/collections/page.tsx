@@ -4,7 +4,6 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, Star } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
-import LogoWatermark from "@/components/ui/LogoWatermark";
 import { ProductService } from "@/lib/services/product.service";
 import { CategoryService } from "@/lib/services/category.service";
 
@@ -21,10 +20,20 @@ export const metadata: Metadata = constructMetadata({
 });
 
 export default async function CollectionsPage() {
-  const [products, categories] = await Promise.all([
+  const [initialProducts, categories] = await Promise.all([
     ProductService.getProducts({ status: "published", showOnCollection: true }),
     CategoryService.getCategories(),
   ]);
+
+  // Filter out placeholder products (discounts > 70% or short names)
+  const products = (initialProducts || []).filter((p) => {
+    if (!p.name || p.name.length < 4) return false;
+    if (p.originalPrice && p.price) {
+      const disc = ((p.originalPrice - p.price) / p.originalPrice) * 100;
+      if (disc > 70) return false; // hide implausible discounts
+    }
+    return true;
+  });
 
   const breadcrumbItems = [
     { name: "Home", path: "/" },
@@ -32,7 +41,7 @@ export default async function CollectionsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <div className="min-h-screen bg-transparent pb-24">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListSchema(products, getAbsoluteUrl("/collections"))) }}
@@ -41,146 +50,147 @@ export default async function CollectionsPage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
       />
-      {/* Page Hero */}
-      <div className="relative overflow-hidden bg-[#0B131F] text-white py-16 md:py-20">
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 text-center">
-          <p
-            className="text-[#D92626] text-xs tracking-[0.25em] font-bold uppercase mb-4 bg-[#D92626]/20 inline-block px-3 py-1 rounded"
-            style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-          >
-            B.H.T. COLLECTIONS
+
+      {/* Editorial Header with Background Image */}
+      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden">
+        <Image 
+          src="https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop" 
+          alt="Premium textiles" 
+          fill 
+          className="object-cover object-center z-0"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
+        
+        <div className="relative z-20 max-w-4xl mx-auto">
+          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
+            B.H.T. Collections
           </p>
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-4"
-            style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
+          <h1 
+            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
+            style={{ fontFamily: "var(--font-playfair-display)" }}
           >
             Our Collections
           </h1>
-          <p className="text-white/70 text-sm max-w-xl mx-auto">
-            Premium home textiles designed for exceptional comfort, warmth, and everyday elegance
+          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto">
+            Premium home textiles designed for exceptional comfort, warmth, and everyday elegance.
           </p>
         </div>
-      </div>
+      </header>
 
-      {/* Categories nav */}
-      <div className="border-b border-[#F2EBDC] bg-ivory/90 backdrop-blur-md shadow-xs sticky top-20 z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap gap-2.5">
-          <Link
-            href="/collections"
-            className="tag-badge bg-[#0B131F]! text-white! border-[#0B131F]! py-2.5! px-5! text-xs font-bold"
-          >
-            All Collections
-          </Link>
-          {categories.filter((c) => c.status === "active").map((cat) => (
+      {/* Category Filter Bar */}
+      <div className="sticky top-[72px] z-30 bg-white/97 backdrop-blur-md border-y border-[#D8DCE2] shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex overflow-x-auto hide-scrollbar py-3.5 gap-2 snap-x">
             <Link
-              key={cat._id}
-              href={`/collections/${cat.slug}`}
-              className="tag-badge bg-white! text-[#0B131F]! border-[#E2E8F0]! hover:bg-[#1C75BC]! hover:text-white! hover:border-[#1C75BC]! py-2.5! px-5! text-xs font-semibold transition-all shadow-xs"
+              href="/collections"
+              className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#13233A] text-white text-[13px] font-bold tracking-wide transition-colors"
             >
-              {cat.name}
+              All Collections
             </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Products */}
-      <div className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="relative z-10">
-          <p className="text-sm font-semibold text-[#64748B] mb-8">{products.length} products available</p>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-            {products.map((product) => (
-              <article key={product._id}>
-                <Link
-                  href={`/collections/${product.categorySlug}/${product.slug}`}
-                  className="group h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30"
-                >
-                  <div className="relative aspect-square bg-[#FAF8F3] overflow-hidden rounded-lg mb-3">
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
-                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                    />
-                    {product.badge && (
-                      <div className="absolute top-2 left-2 tag-badge bg-[#0B131F]! border-[#0B131F]! text-[9px]! px-2! py-0.5!">
-                        {product.badge}
-                      </div>
-                    )}
-                    {product.originalPrice && (
-                      <div className="absolute top-2 right-2 tag-badge bg-[#D92626]! border-[#D92626]! text-[9px]! px-2! py-0.5! shadow-sm">
-                        -{calculateDiscount(product.price, product.originalPrice)}%
-                      </div>
-                    )}
-                  </div>
-                  <p className="text-[9px] text-[#D92626] font-bold tracking-widest uppercase mb-1">
-                    {product.category}
-                  </p>
-                  <h2
-                    className="text-sm font-semibold text-[#0B131F] group-hover:text-[#1C75BC] transition-colors leading-snug mb-1.5"
-                    style={{ fontFamily: "var(--font-playfair-display)" }}
-                  >
-                    {product.name}
-                  </h2>
-                  <div className="flex items-center gap-1 mb-2 mt-auto">
-                    <div className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className={`w-2.5 h-2.5 ${i < Math.floor(product.rating || 5)
-                            ? "fill-[#F59E0B] text-[#F59E0B]"
-                            : "text-[#E2E8F0] fill-[#E2E8F0]"
-                            }`}
-                        />
-                      ))}
-                    </div>
-                    <span className="text-[10px] text-[#64748B] font-medium">({product.reviewCount || 12})</span>
-                  </div>
-                  <div className="flex items-baseline gap-2 pt-1 border-t border-[#FAF8F3]">
-                    <span className="text-sm font-bold text-[#0B131F]">
-                      {formatAED(product.price)}
-                    </span>
-                    {product.originalPrice && (
-                      <span className="text-xs text-[#94A3B8] line-through">
-                        {formatAED(product.originalPrice)}
-                      </span>
-                    )}
-                  </div>
-                </Link>
-              </article>
+            {categories.filter((c) => c.status === "active").map((cat) => (
+              <Link
+                key={cat._id}
+                href={`/collections/${cat.slug}`}
+                className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#F8F7F4] text-[#13233A] text-[13px] font-bold tracking-wide border border-[#D8DCE2] hover:border-[#13233A] transition-colors"
+              >
+                {cat.name}
+              </Link>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Contact CTA */}
-      <div className=" py-12 text-center border-t border-[#F2EBDC]">
-        <h3
-          className="text-2xl font-bold text-[#0B131F] mb-3"
-          style={{ fontFamily: "var(--font-playfair-display)" }}
-        >
-          Looking for a Specific Blanket or Collection?
-        </h3>
-        <p className="text-[#64748B] text-sm mb-6 max-w-md mx-auto">
-          Contact our team via WhatsApp or message — we&apos;re happy to assist with sizes, custom options, or bulk orders.
-        </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
-          <a
-            href="https://wa.me/971558879237"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="btn-primary"
-          >
-            WhatsApp Us
-          </a>
-          <Link
-            href="/contact"
-            className="btn-secondary"
-          >
-            Contact Form <ArrowRight className="w-4 h-4" />
-          </Link>
+      {/* Product Grid */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-[#25262C]/60 text-sm font-semibold uppercase tracking-wider">
+            {products.length} Products
+          </p>
         </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+          {products.map((product) => {
+            const discount = product.originalPrice ? calculateDiscount(product.price, product.originalPrice) : null;
+            return (
+                <article key={product._id}>
+                  <Link
+                    href={`/collections/${product.categorySlug}/${product.slug}`}
+                    className="group flex flex-col h-full bg-white border border-[#D8DCE2] rounded-2xl overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-200"
+                  >
+                    {/* Image */}
+                    <div className="relative aspect-[4/5] bg-[#F8F7F4] overflow-hidden">
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fill
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                      />
+                      {/* Badge priority: Discount first, then product.badge */}
+                      {discount && discount <= 70 ? (
+                        <div className="absolute top-3 right-3 tag-badge !bg-[#D02E30] !border-[#D02E30] text-[9px]">
+                          -{discount}%
+                        </div>
+                      ) : product.badge ? (
+                        <div className="absolute top-3 left-3 tag-badge !bg-[#13233A] !border-[#13233A] text-[9px]">
+                          {product.badge}
+                        </div>
+                      ) : null}
+                    </div>
+
+                    {/* Info */}
+                    <div className="flex flex-col flex-1 p-4">
+                      <p className="text-[10px] text-[#D02E30] font-bold tracking-widest uppercase mb-1.5">
+                        {product.category}
+                      </p>
+                      <h3
+                        className="text-sm font-semibold text-[#13233A] group-hover:text-[#D02E30] transition-colors leading-snug mb-3 flex-1 line-clamp-2"
+                        style={{ fontFamily: "var(--font-playfair-display)" }}
+                      >
+                        {product.name}
+                      </h3>
+
+                      {/* Rating */}
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < Math.floor(product.rating || 5)
+                                  ? "fill-[#F59E0B] text-[#F59E0B]"
+                                  : "text-[#D8DCE2] fill-[#D8DCE2]"
+                              }`}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[11px] text-[#6B7280]">({product.reviewCount || 1})</span>
+                      </div>
+
+                      {/* Price */}
+                      <div className="flex items-baseline gap-2 pt-3 border-t border-[#D8DCE2]">
+                        <span className="text-base font-bold text-[#13233A]">
+                          {formatAED(product.price)}
+                        </span>
+                        {product.originalPrice && (
+                          <span className="text-xs text-[#9CA3AF] line-through">
+                            {formatAED(product.originalPrice)}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  </Link>
+                </article>
+            );
+          })}
+        </div>
+
+        {products.length === 0 && (
+          <div className="text-center py-20 bg-white rounded-2xl border border-[#D8DCE2] mt-8">
+            <p className="text-[#25262C]/60 text-[15px]">No products found in this collection.</p>
+          </div>
+        )}
       </div>
     </div>
   );

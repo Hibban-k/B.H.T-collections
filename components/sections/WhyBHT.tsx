@@ -1,81 +1,82 @@
 "use client";
-// components/sections/WhyBHT.tsx
+// components/sections/WhyBHT.tsx — design-patch: B2B/client proof on navy
 import { motion } from "framer-motion";
-import { ShieldCheck, Truck, Heart, Headphones } from "lucide-react";
+import { Factory, ShieldCheck, Truck, Globe } from "lucide-react";
 
-const features = [
+const proofPoints = [
+  {
+    icon: Factory,
+    stat: "4",
+    label: "Exclusive GCC Factories",
+    detail: "Direct manufacturing partnerships dedicated to our brand standards",
+  },
   {
     icon: ShieldCheck,
-    title: "Premium Quality",
-    description: "Only the best for your home",
+    stat: "15+",
+    label: "Years of Excellence",
+    detail: "Founded 2009. Trusted supplier to major hypermarkets & hospitality groups",
+  },
+  {
+    icon: Globe,
+    stat: "6",
+    label: "GCC Countries",
+    detail: "UAE, Oman, Qatar, Bahrain, Kuwait & Saudi Arabia — fully served",
   },
   {
     icon: Truck,
-    title: "Fast & Reliable Delivery",
-    description: "On time, every time",
-  },
-  {
-    icon: Heart,
-    title: "Customer Satisfaction",
-    description: "Your happiness matters",
-  },
-  {
-    icon: Headphones,
-    title: "Dedicated Support",
-    description: "We're here to help",
+    stat: "50K+",
+    label: "Sq Ft Warehouse",
+    detail: "Dubai logistics hub ensuring immediate dispatch, no supply gaps",
   },
 ];
 
 export default function WhyBHT() {
   return (
-    <section className="section-padding  relative overflow-hidden">
+    <section className="section-padding bg-[#13233A] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         {/* Header */}
         <motion.div
-          initial={{ opacity: 0, y: 16 }}
+          initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="text-center mb-12"
+          viewport={{ once: true, amount: 0.15 }}
+          transition={{ duration: 0.6 }}
+          className="text-center mb-14"
         >
-          <h2
-            className="text-3xl md:text-4xl font-bold text-[#0B131F] mb-3"
-            style={{ fontFamily: "var(--font-playfair-display)" }}
-          >
-            Why Choose Us
-          </h2>
-          <p className="text-[#D92626] text-lg font-semibold mb-2">
-            Quality You Can Trust
+          <p className="text-[#238D7D] text-[11px] tracking-[0.22em] font-bold uppercase mb-4">
+            Why Choose B.H.T.
           </p>
-          <p className="text-[#64748B] text-sm max-w-2xl mx-auto">
-            The B.H.T. COLLECTIONS Difference
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+            The BHT Difference
+          </h2>
+          <p className="text-white/60 text-sm max-w-2xl mx-auto leading-relaxed">
+            Premium quality, direct factory supply, and uninterrupted GCC logistics — built on 15 years of trusted trade relationships.
           </p>
         </motion.div>
 
-        {/* Features Grid */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {features.map((feature, index) => {
-            const Icon = feature.icon;
+        {/* Stats grid */}
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          {proofPoints.map((pt, index) => {
+            const Icon = pt.icon;
             return (
               <motion.div
-                key={feature.title}
-                initial={{ opacity: 0, y: 20 }}
+                key={pt.label}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                className="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-all duration-300 border border-gray-100 hover:border-gray-200"
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                className="bg-white/05 border border-white/10 rounded-2xl p-7 hover:bg-white/08 hover:border-white/20 transition-all"
               >
-                <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center shadow-md">
-                  <Icon className="w-8 h-8 text-[#D92626]" strokeWidth={1.5} />
+                <div className="w-11 h-11 rounded-xl bg-[#D02E30]/15 border border-[#D02E30]/20 flex items-center justify-center mb-5">
+                  <Icon className="w-5 h-5 text-[#D02E30]" strokeWidth={1.5} />
                 </div>
-                <h3
-                  className="text-sm font-bold text-[#0B131F] mb-2"
-                  style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                >
-                  {feature.title}
-                </h3>
-                <p className="text-xs text-[#64748B] leading-relaxed">
-                  {feature.description}
+                <p className="text-4xl font-bold text-white mb-1" style={{ fontFamily: "var(--font-playfair-display)" }}>
+                  {pt.stat}
+                </p>
+                <p className="text-[#238D7D] text-xs font-bold uppercase tracking-wider mb-3">
+                  {pt.label}
+                </p>
+                <p className="text-white/55 text-xs leading-relaxed">
+                  {pt.detail}
                 </p>
               </motion.div>
             );
@@ -85,4 +86,3 @@ export default function WhyBHT() {
     </section>
   );
 }
-
