@@ -68,77 +68,70 @@ export default async function CategoryPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqSchema(cat.faq)) }}
         />
       )}
-      {/* Breadcrumb */}
-      <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/80 backdrop-blur-xs">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center gap-2 text-xs text-[#64748B]">
-          <Link href="/" className="hover:text-[#1C75BC] transition-colors">Home</Link>
-          <span>/</span>
-          <Link href="/collections" className="hover:text-[#1C75BC] transition-colors">Collections</Link>
-          <span>/</span>
-          <span className="text-[#0B131F] font-bold">{cat.name}</span>
-        </div>
-      </div>
-
-      {/* Category Hero */}
-      <div className="relative h-56 md:h-72 overflow-hidden bg-[#0B131F]">
+      {/* Editorial Header with Background Image */}
+      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden">
         <Image
-          src={cat.image || "/categories/bedsheets.png"}
+          src={cat.image || "https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop"}
           alt={cat.name}
           fill
-          className="object-cover opacity-35"
+          className="object-cover object-center z-0"
           priority
-          sizes="100vw"
         />
-        <div className="absolute inset-0 bg-[#0B131F]/60" />
+        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
 
-        <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10">
-          <p
-            className="text-[#D92626] text-xs tracking-[0.25em] font-bold uppercase mb-3 bg-[#D92626]/20 px-3 py-1 rounded"
-            style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-          >
-            B.H.T. COLLECTIONS
+        <div className="relative z-20 max-w-4xl mx-auto">
+          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
+            B.H.T. Collections
           </p>
           <h1
-            className="text-3xl md:text-5xl font-bold text-white mb-2"
-            style={{ fontFamily: "var(--font-playfair-display)", color: "#FFFFFF" }}
+            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
+            style={{ fontFamily: "var(--font-playfair-display)" }}
           >
             {cat.name}
           </h1>
-          <p className="text-white/80 text-sm max-w-sm font-medium">{cat.description}</p>
+          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto">
+            {cat.description}
+          </p>
         </div>
-      </div>
+      </header>
 
-      {/* Categories nav */}
-      <div className="border-b border-[#F2EBDC] bg-[#FAFAF7]/90 backdrop-blur-md shadow-xs sticky top-[80px] z-30">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap gap-2.5">
-          <Link
-            href="/collections"
-            className="tag-badge !bg-white !text-[#0B131F] !border-[#E2E8F0] hover:!bg-[#0B131F] hover:!text-white !py-2.5 !px-5 text-xs font-semibold transition-all shadow-xs"
-          >
-            All Collections
-          </Link>
-          {allCategories.filter((c) => c.status === "active").map((c) => (
+      {/* Category Filter Bar */}
+      <div className="sticky top-[72px] z-30 bg-white/97 backdrop-blur-md border-y border-[#D8DCE2] shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="flex overflow-x-auto hide-scrollbar py-3.5 gap-2 snap-x">
             <Link
-              key={c._id}
-              href={`/collections/${c.slug}`}
-              className={`tag-badge !py-2.5 !px-5 text-xs font-semibold transition-all shadow-xs ${c.slug === category
-                  ? "!bg-[#0B131F] !text-white !border-[#0B131F] font-bold"
-                  : "!bg-white !text-[#0B131F] !border-[#E2E8F0] hover:!bg-[#1C75BC] hover:!text-white hover:!border-[#1C75BC]"
-                }`}
+              href="/collections"
+              className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#F8F7F4] text-[#13233A] text-[13px] font-bold tracking-wide border border-[#D8DCE2] hover:border-[#13233A] transition-colors"
             >
-              {c.name}
+              All Collections
             </Link>
-          ))}
+            {allCategories.filter((c) => c.status === "active").map((c) => (
+              <Link
+                key={c._id}
+                href={`/collections/${c.slug}`}
+                className={`snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full text-[13px] font-bold tracking-wide border transition-colors ${
+                  c.slug === category
+                    ? "bg-[#13233A] text-white border-[#13233A]"
+                    : "bg-[#F8F7F4] text-[#13233A] border-[#D8DCE2] hover:border-[#13233A]"
+                }`}
+              >
+                {c.name}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
 
       {/* Products */}
-      <div className="relative overflow-hidden max-w-7xl mx-auto px-4 sm:px-6 py-12">
-        <div className="relative z-10">
-          <p className="text-sm font-semibold text-[#64748B] mb-8">{products.length} products in {cat.name}</p>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-20">
+        <div className="flex items-center justify-between mb-8">
+          <p className="text-[#25262C]/60 text-sm font-semibold uppercase tracking-wider">
+            {products.length} Products in {cat.name}
+          </p>
+        </div>
 
-          {products.length === 0 ? (
-            <div className="text-center py-20 bg-white rounded-2xl border border-[#F2EBDC]">
+        {products.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-2xl border border-[#D8DCE2]">
               <p className="text-[#64748B] mb-4">No products found in this collection yet.</p>
               <Link href="/collections" className="btn-primary">
                 View all collections
@@ -150,85 +143,103 @@ export default async function CategoryPage({ params }: Props) {
                 <article key={product._id}>
                   <Link
                     href={`/collections/${product.categorySlug}/${product.slug}`}
-                    className="group block h-full flex flex-col bg-white p-3 rounded-xl border border-[#F2EBDC] shadow-sm hover:shadow-lg transition-all hover:border-[#1C75BC]/30"
+                    className="group flex flex-col h-full bg-white border border-[#D8DCE2] rounded-2xl overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-200"
                   >
-                    <div className="relative aspect-square bg-[#FAF8F3] overflow-hidden rounded-lg mb-3">
+                    {/* Image */}
+                    <div className="relative aspect-[4/5] bg-[#F8F7F4] overflow-hidden">
                       <Image
                         src={product.image}
                         alt={product.name}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-105"
+                        className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
                         sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       />
-                      {product.badge && (
-                        <div className="absolute top-2 left-2 tag-badge !bg-[#0B131F] !border-[#0B131F] !text-[9px] !px-2 !py-0.5">
-                          {product.badge}
-                        </div>
-                      )}
-                      {product.originalPrice && (
-                        <div className="absolute top-2 right-2 tag-badge !bg-[#D92626] !border-[#D92626] !text-[9px] !px-2 !py-0.5 shadow-sm">
+                      {/* Badge priority: Discount first, then product.badge */}
+                      {product.originalPrice && calculateDiscount(product.price, product.originalPrice) <= 70 ? (
+                        <div className="absolute top-3 right-3 tag-badge !bg-[#D02E30] !border-[#D02E30] text-[9px]">
                           -{calculateDiscount(product.price, product.originalPrice)}%
                         </div>
-                      )}
+                      ) : product.badge ? (
+                        <div className="absolute top-3 left-3 tag-badge !bg-[#13233A] !border-[#13233A] text-[9px]">
+                          {product.badge}
+                        </div>
+                      ) : null}
                     </div>
-                    <h2
-                      className="text-sm font-semibold text-[#0B131F] group-hover:text-[#1C75BC] transition-colors leading-snug mb-2"
-                      style={{ fontFamily: "var(--font-playfair-display)" }}
-                    >
-                      {product.name}
-                    </h2>
-                    <div className="flex items-center gap-1 mb-2 mt-auto">
-                      <div className="flex">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            className={`w-2.5 h-2.5 ${i < Math.floor(product.rating || 5)
-                                ? "fill-[#F59E0B] text-[#F59E0B]"
-                                : "text-[#E2E8F0] fill-[#E2E8F0]"
+
+                    {/* Info */}
+                    <div className="flex flex-col flex-1 p-4">
+                      <p className="text-[10px] text-[#D02E30] font-bold tracking-widest uppercase mb-1.5">
+                        {product.category || cat.name}
+                      </p>
+                      <h3
+                        className="text-sm font-semibold text-[#13233A] group-hover:text-[#D02E30] transition-colors leading-snug mb-3 flex-1 line-clamp-2"
+                        style={{ fontFamily: "var(--font-playfair-display)" }}
+                      >
+                        {product.name}
+                      </h3>
+
+                      {/* Rating */}
+                      <div className="flex items-center gap-1.5 mb-3">
+                        <div className="flex">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`w-3 h-3 ${
+                                i < Math.floor(product.rating || 5)
+                                  ? "fill-[#F59E0B] text-[#F59E0B]"
+                                  : "text-[#D8DCE2] fill-[#D8DCE2]"
                               }`}
-                          />
-                        ))}
+                            />
+                          ))}
+                        </div>
+                        <span className="text-[11px] text-[#6B7280]">({product.reviewCount || 1})</span>
                       </div>
-                      <span className="text-[10px] text-[#64748B] font-medium">({product.reviewCount || 12})</span>
-                    </div>
-                    <div className="flex items-baseline gap-2 pt-1 border-t border-[#FAF8F3]">
-                      <span className="text-sm font-bold text-[#0B131F]">
-                        {formatAED(product.price)}
-                      </span>
-                      {product.originalPrice && (
-                        <span className="text-xs text-[#94A3B8] line-through">
-                          {formatAED(product.originalPrice)}
+
+                      {/* Price */}
+                      <div className="flex items-baseline gap-2 pt-3 border-t border-[#D8DCE2]">
+                        <span className="text-base font-bold text-[#13233A]">
+                          {formatAED(product.price)}
                         </span>
-                      )}
+                        {product.originalPrice && (
+                          <span className="text-xs text-[#9CA3AF] line-through">
+                            {formatAED(product.originalPrice)}
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </Link>
                 </article>
               ))}
             </div>
           )}
-        </div>
 
-        {/* SEO Category Description */}
-        {cat.longDescription && (
-          <div className="mt-16 pt-10 border-t border-[#F2EBDC] max-w-4xl text-[#64748B]">
-            <div dangerouslySetInnerHTML={{ __html: cat.longDescription }} className="prose prose-sm sm:prose-base max-w-none prose-headings:font-playfair prose-headings:text-[#0B131F] prose-a:text-[#1C75BC] prose-a:no-underline hover:prose-a:underline" />
-          </div>
-        )}
+        {/* Collection SEO Details */}
+        {(cat.longDescription || (cat.faq && cat.faq.length > 0)) && (
+          <div className="mt-20 pt-16 border-t border-[#D8DCE2] max-w-4xl mx-auto">
+            {cat.longDescription && (
+              <div className="mb-16">
+                <div 
+                  dangerouslySetInnerHTML={{ __html: cat.longDescription }} 
+                  className="prose prose-sm sm:prose-base max-w-none text-[#25262C]/80 prose-headings:font-playfair prose-headings:text-[#13233A] prose-headings:font-bold prose-headings:mb-4 prose-a:text-[#D02E30] prose-a:no-underline hover:prose-a:underline" 
+                />
+              </div>
+            )}
 
-        {/* FAQ Section */}
-        {cat.faq && cat.faq.length > 0 && (
-          <div className="mt-12 pt-10 border-t border-[#F2EBDC] max-w-4xl">
-            <h2 className="text-2xl font-bold text-[#0B131F] mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>
-              Frequently Asked Questions
-            </h2>
-            <div className="space-y-4">
-              {cat.faq.map((item, i) => (
-                <div key={i} className="bg-white p-5 rounded-xl border border-[#F2EBDC]">
-                  <h3 className="font-bold text-[#0B131F] mb-2">{item.question}</h3>
-                  <p className="text-[#64748B] text-sm leading-relaxed">{item.answer}</p>
+            {cat.faq && cat.faq.length > 0 && (
+              <div>
+                <h2 className="text-2xl font-bold text-[#13233A] mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>
+                  Frequently Asked Questions
+                </h2>
+                <div className="space-y-4">
+                  {cat.faq.map((item, i) => (
+                    <div key={i} className="bg-[#F8F7F4] p-5 sm:p-6 rounded-2xl border border-[#D8DCE2]">
+                      <h3 className="font-bold text-[#13233A] text-[15px] mb-2">{item.question}</h3>
+                      <p className="text-[#25262C]/70 text-[14px] leading-relaxed">{item.answer}</p>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>
