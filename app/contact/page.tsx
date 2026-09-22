@@ -22,19 +22,31 @@ export default function ContactPage() {
   return (
     <div className="min-h-screen bg-transparent pb-24">
       {/* ── Page Header ────────────────────────────────────── */}
-      <header className="relative pt-12 pb-10 text-center px-4 sm:px-6 max-w-4xl mx-auto">
-        <p className="text-[#D02E30] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
-          Get in Touch
-        </p>
-        <h1 
-          className="text-4xl md:text-5xl font-bold text-[#13233A] mb-5"
-          style={{ fontFamily: "var(--font-playfair-display)" }}
-        >
-          Contact Us
-        </h1>
-        <p className="text-[#25262C]/75 text-[15px] leading-relaxed max-w-xl mx-auto">
-          Whether you&apos;re shopping for your home or outfitting a hospitality group, our team in Dubai is ready to assist.
-        </p>
+      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[40vh] flex flex-col items-center justify-center overflow-hidden mb-12">
+        <Image 
+          src="https://images.unsplash.com/photo-1497366216548-37526070297c?q=80&w=2000&auto=format&fit=crop" 
+          alt="Modern office" 
+          fill 
+          className="object-cover object-center z-0"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
+        
+        <div className="relative z-20 max-w-4xl mx-auto">
+          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4 drop-shadow-sm">
+            Get in Touch
+          </p>
+          <h1 
+            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
+            style={{ fontFamily: "var(--font-playfair-display)" }}
+          >
+            Contact Us
+          </h1>
+          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto drop-shadow">
+            Whether you&apos;re shopping for your home or outfitting a hospitality group, our team in Dubai is ready 
+            to assist.
+          </p>
+        </div>
       </header>
 
       {/* ── Compact Contact Rail ───────────────────────────── */}

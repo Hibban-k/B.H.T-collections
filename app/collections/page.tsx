@@ -51,20 +51,31 @@ export default async function CollectionsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
       />
 
-      {/* Compact Editorial Header */}
-      <header className="relative pt-12 pb-8 md:pt-20 md:pb-12 text-center px-4 sm:px-6 max-w-4xl mx-auto">
-        <p className="text-[#D02E30] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
-          B.H.T. Collections
-        </p>
-        <h1 
-          className="text-4xl md:text-5xl font-bold text-[#13233A] mb-5"
-          style={{ fontFamily: "var(--font-playfair-display)" }}
-        >
-          Our Collections
-        </h1>
-        <p className="text-[#25262C]/75 text-[15px] leading-relaxed max-w-xl mx-auto">
-          Premium home textiles designed for exceptional comfort, warmth, and everyday elegance.
-        </p>
+      {/* Editorial Header with Background Image */}
+      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[40vh] flex flex-col items-center justify-center overflow-hidden">
+        <Image 
+          src="https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop" 
+          alt="Premium textiles" 
+          fill 
+          className="object-cover object-center z-0"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
+        
+        <div className="relative z-20 max-w-4xl mx-auto">
+          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
+            B.H.T. Collections
+          </p>
+          <h1 
+            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
+            style={{ fontFamily: "var(--font-playfair-display)" }}
+          >
+            Our Collections
+          </h1>
+          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto">
+            Premium home textiles designed for exceptional comfort, warmth, and everyday elegance.
+          </p>
+        </div>
       </header>
 
       {/* Category Filter Bar */}

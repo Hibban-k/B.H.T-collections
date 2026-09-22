@@ -38,35 +38,47 @@ export default function AboutPage() {
   return (
     <div className="min-h-screen bg-transparent pb-24">
       {/* ── Compact Editorial Header ───────────────────────── */}
-      <header className="relative pt-16 pb-12 text-center px-4 sm:px-6 max-w-4xl mx-auto">
-        <motion.p
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          transition={{ duration: 0.6 }}
-          className="text-[#D02E30] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4"
-        >
-          Our Heritage
-        </motion.p>
-        <motion.h1
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-4xl md:text-5xl lg:text-6xl font-bold text-[#13233A] mb-5 leading-tight"
-          style={{ fontFamily: "var(--font-playfair-display)" }}
-        >
-          Blanket House Trading
-        </motion.h1>
-        <motion.p
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-[#25262C]/75 text-[15px] leading-relaxed max-w-2xl mx-auto"
-        >
-          From a specialist supplier in 2009 to a comprehensive GCC trading powerhouse. We build direct factory relationships to bring you uncompromising quality.
-        </motion.p>
+      <header className="relative w-full pt-32 pb-24 md:pt-40 md:pb-32 text-center px-4 sm:px-6 min-h-[45vh] flex flex-col items-center justify-center overflow-hidden mb-12">
+        <Image 
+          src="https://images.unsplash.com/photo-1618221118493-9cfa1a1c00da?q=80&w=2000&auto=format&fit=crop" 
+          alt="Premium interiors" 
+          fill 
+          className="object-cover object-center z-0"
+          priority
+        />
+        <div className="absolute inset-0 bg-[#13233A]/80 z-10" />
+        
+        <div className="relative z-20 max-w-4xl mx-auto">
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            transition={{ duration: 0.6 }}
+            className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4"
+          >
+            Our Heritage
+          </motion.p>
+          <motion.h1
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-5 leading-tight drop-shadow-md"
+            style={{ fontFamily: "var(--font-playfair-display)" }}
+          >
+            Blanket House Trading
+          </motion.h1>
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeUp}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-white/80 text-[15px] leading-relaxed max-w-2xl mx-auto drop-shadow"
+          >
+            From a specialist supplier in 2009 to a comprehensive GCC trading powerhouse. We build direct factory 
+            relationships to bring you uncompromising quality.
+          </motion.p>
+        </div>
       </header>
 
       {/* ── 3 Stat Callouts ────────────────────────────────── */}
