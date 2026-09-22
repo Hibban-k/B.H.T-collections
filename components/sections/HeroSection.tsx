@@ -131,15 +131,7 @@ export default function HeroSection() {
               {/* btn-primary */}
               <Link
                 href="/collections"
-                className="
-                  inline-flex items-center gap-2 group
-                  bg-[#13233A] text-white
-                  text-[13px] font-bold tracking-[0.05em]
-                  px-7 py-3.5 rounded-[10px]
-                  hover:bg-[#1c3252]
-                  transition-colors duration-200
-                "
-                style={{ fontFamily: "var(--font-montserrat-var, Montserrat, sans-serif)" }}
+                className="btn-primary"
               >
                 Explore Collections
                 <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 duration-200" />
@@ -148,15 +140,7 @@ export default function HeroSection() {
               {/* btn-secondary */}
               <Link
                 href="/contact"
-                className="
-                  inline-flex items-center gap-2 group
-                  border border-[#13233A] text-[#13233A]
-                  text-[13px] font-bold tracking-[0.05em]
-                  px-7 py-3.5 rounded-[10px]
-                  hover:bg-[#13233A] hover:text-white
-                  transition-colors duration-200
-                "
-                style={{ fontFamily: "var(--font-montserrat-var, Montserrat, sans-serif)" }}
+                className="btn-secondary"
               >
                 Wholesale Enquiries
               </Link>

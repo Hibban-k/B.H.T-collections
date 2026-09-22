@@ -11,7 +11,7 @@ const fadeUp = {
 
 export default function ContactCTA() {
   return (
-    <section className="w-full bg-transparent py-24 relative overflow-hidden">
+    <section className="w-full bg-[#F8F7F4]/97 py-24 relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 relative z-10">
         <div className="flex flex-col lg:flex-row lg:items-stretch gap-0">
 
