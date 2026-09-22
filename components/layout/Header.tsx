@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, X, Search, User, ShoppingCart, ChevronDown } from "lucide-react";
+import { Menu, X, ChevronDown } from "lucide-react";
 
 type DropLink = { label: string; href: string };
 type NavItem = { label: string; href: string; children?: DropLink[] };
@@ -153,31 +153,8 @@ export default function Header() {
             )}
           </nav>
 
-          {/* ── Right Icons: Search, User, Cart ───────────────── */}
+          {/* 🔴 Right Icons Removed as pages are not created yet 🔴 */}
           <div className="hidden md:flex items-center gap-6 shrink-0">
-            <button
-              aria-label="Search"
-              className="text-[#122936] hover:text-[#E12620] transition-colors p-1"
-            >
-              <Search className="w-5 h-5" strokeWidth={1.8} />
-            </button>
-            <button
-              aria-label="Account"
-              className="text-[#122936] hover:text-[#E12620] transition-colors p-1"
-            >
-              <User className="w-5 h-5" strokeWidth={1.8} />
-            </button>
-            <Link
-              href="/cart"
-              aria-label="Shopping cart"
-              className="relative text-[#122936] hover:text-[#E12620] transition-colors p-1"
-            >
-              <ShoppingCart className="w-5 h-5" strokeWidth={1.8} />
-              {/* Solid red notification badge */}
-              <span className="absolute -top-1.5 -right-2 min-w-[17px] h-[17px] bg-[#E12620] text-white text-[9.5px] font-bold rounded-full flex items-center justify-center px-[3px] leading-none">
-                0
-              </span>
-            </Link>
           </div>
 
           {/* ── Mobile Burger ─────────────────────────────────── */}
@@ -241,25 +218,7 @@ export default function Header() {
                 </Link>
               )
             )}
-            {/* Mobile icons row */}
-            <div className="pt-4 pb-2 flex items-center justify-center gap-7">
-              <button aria-label="Search" className="text-[#122936] hover:text-[#E12620] transition-colors">
-                <Search className="w-5 h-5" strokeWidth={1.8} />
-              </button>
-              <button aria-label="Account" className="text-[#122936] hover:text-[#E12620] transition-colors">
-                <User className="w-5 h-5" strokeWidth={1.8} />
-              </button>
-              <Link
-                href="/cart"
-                aria-label="Cart"
-                className="relative text-[#122936] hover:text-[#E12620] transition-colors"
-              >
-                <ShoppingCart className="w-5 h-5" strokeWidth={1.8} />
-                <span className="absolute -top-1 -right-1 min-w-[16px] h-[16px] bg-[#E12620] text-white text-[9px] font-bold rounded-full flex items-center justify-center px-[3px]">
-                  0
-                </span>
-              </Link>
-            </div>
+            {/* Mobile icons row removed */}
           </div>
         </div>
       )}
