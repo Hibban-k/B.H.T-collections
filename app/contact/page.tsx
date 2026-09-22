@@ -151,71 +151,90 @@ export default function ContactPage() {
         </div>
       </section>
 
-      {/* ── Regional Offices ───────────────────────────────── */}
-      <section className="max-w-5xl mx-auto px-4 sm:px-6 mb-20">
-        <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-[#13233A]" style={{ fontFamily: "var(--font-playfair-display)" }}>
-            GCC Regional Presence
-          </h2>
-          <p className="text-[#25262C]/60 text-[15px] mt-3">
-            Select a region to view local contact details.
-          </p>
-        </div>
+        {/* ── Regional Offices & Map ───────────────────────── */}
+        <section className="max-w-7xl mx-auto px-4 sm:px-6 mb-20">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl font-bold text-[#13233A]" style={{ fontFamily: "var(--font-playfair-display)" }}>
+              GCC Regional Presence
+            </h2>
+            <p className="text-[#25262C]/60 text-[15px] mt-3">
+              Select a region to view local contact details.
+            </p>
+          </div>
 
-        <div className="grid md:grid-cols-2 gap-4 items-start">
-          {regionalOffices.map((office) => (
-            <div 
-              key={office.country} 
-              className={`bg-white/96 border rounded-xl overflow-hidden transition-all ${
-                openOffice === office.country ? "border-[#13233A] shadow-md" : "border-[#D8DCE2] hover:border-[#9CA3AF]"
-              }`}
-            >
-              <button
-                onClick={() => setOpenOffice(openOffice === office.country ? null : office.country)}
-                className="w-full flex items-center justify-between p-5 text-left"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="font-bold text-[#13233A]">{office.country}</span>
-                </div>
-                <ChevronDown className={`w-4 h-4 text-[#25262C]/50 transition-transform ${openOffice === office.country ? "rotate-180" : ""}`} />
-              </button>
-              
-              {openOffice === office.country && (
-                <div className="px-5 pb-5 pt-2 border-t border-[#D8DCE2]/50 bg-[#F8F7F4]/50">
-                  <div className="space-y-3 mt-3">
-                    <div className="flex items-start gap-3">
-                      <Building2 className="w-4 h-4 text-[#13233A] mt-1 shrink-0" />
-                      <p className="text-[14px] font-semibold text-[#13233A]">{office.companyName}</p>
+          <div className="flex flex-col lg:flex-row gap-8 items-start">
+            {/* Left Column: Accordion List */}
+            <div className="w-full lg:w-5/12 flex flex-col gap-3">
+              {regionalOffices.map((office) => (
+                <div 
+                  key={office.country} 
+                  className={`bg-white/96 border rounded-xl overflow-hidden transition-all ${
+                    openOffice === office.country ? "border-[#13233A] shadow-md" : "border-[#D8DCE2] hover:border-[#9CA3AF]"
+                  }`}
+                >
+                  <button
+                    onClick={() => setOpenOffice(openOffice === office.country ? null : office.country)}
+                    className="w-full flex items-center justify-between p-4 sm:p-5 text-left"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="font-bold text-[#13233A]">{office.country}</span>
                     </div>
-                    <div className="flex items-start gap-3">
-                      <MapPin className="w-4 h-4 text-[#D02E30] mt-1 shrink-0" />
-                      <p className="text-[14px] text-[#25262C]/80 leading-relaxed">{office.address}</p>
+                    <ChevronDown className={`w-4 h-4 text-[#25262C]/50 transition-transform ${openOffice === office.country ? "rotate-180" : ""}`} />
+                  </button>
+                  
+                  {openOffice === office.country && (
+                    <div className="px-5 pb-5 pt-2 border-t border-[#D8DCE2]/50 bg-[#F8F7F4]/50">
+                      <div className="space-y-3 mt-3">
+                        <div className="flex items-start gap-3">
+                          <Building2 className="w-4 h-4 text-[#13233A] mt-1 shrink-0" />
+                          <p className="text-[13px] sm:text-[14px] font-semibold text-[#13233A]">{office.companyName}</p>
+                        </div>
+                        <div className="flex items-start gap-3">
+                          <MapPin className="w-4 h-4 text-[#D02E30] mt-1 shrink-0" />
+                          <p className="text-[13px] sm:text-[14px] text-[#25262C]/80 leading-relaxed">{office.address}</p>
+                        </div>
+                        {office.mobile && (
+                          <div className="flex items-center gap-3">
+                            <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
+                            <p className="text-[13px] sm:text-[14px] font-semibold text-[#13233A]">{office.mobile}</p>
+                          </div>
+                        )}
+                        {office.tel && (
+                          <div className="flex items-center gap-3">
+                            <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
+                            <p className="text-[13px] sm:text-[14px] font-semibold text-[#13233A]">{office.tel}</p>
+                          </div>
+                        )}
+                        {office.email && (
+                          <div className="flex items-center gap-3">
+                            <Mail className="w-4 h-4 text-[#3C97C5] shrink-0" />
+                            <p className="text-[13px] sm:text-[14px] text-[#13233A]">{office.email}</p>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                    {office.mobile && (
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
-                        <p className="text-[14px] font-semibold text-[#13233A]">{office.mobile}</p>
-                      </div>
-                    )}
-                    {office.tel && (
-                      <div className="flex items-center gap-3">
-                        <Phone className="w-4 h-4 text-[#238D7D] shrink-0" />
-                        <p className="text-[14px] font-semibold text-[#13233A]">{office.tel}</p>
-                      </div>
-                    )}
-                    {office.email && (
-                      <div className="flex items-center gap-3">
-                        <Mail className="w-4 h-4 text-[#3C97C5] shrink-0" />
-                        <p className="text-[14px] text-[#13233A]">{office.email}</p>
-                      </div>
-                    )}
-                  </div>
+                  )}
                 </div>
-              )}
+              ))}
             </div>
-          ))}
-        </div>
-      </section>
+
+            {/* Right Column: Visual Map */}
+            <div className="w-full lg:w-7/12 lg:sticky lg:top-32">
+              <div className="relative w-full rounded-2xl group flex items-center justify-center p-4">
+                <Image
+                  src="/minimalist_gcc_map.jpg"
+                  alt="GCC Locations Map"
+                  width={800}
+                  height={600}
+                  priority
+                  className="w-full h-auto rounded-xl object-contain mix-blend-multiply opacity-85 hover:opacity-100 transition-opacity duration-500"
+                  sizes="(max-width: 1024px) 100vw, 60vw"
+                />
+              </div>
+            </div>
+            
+          </div>
+        </section>
     </div>
   );
 }
