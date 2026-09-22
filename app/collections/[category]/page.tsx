@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Star } from "lucide-react";
+import { Star, ArrowRight } from "lucide-react";
 import { formatAED, calculateDiscount } from "@/lib/utils";
 import LogoWatermark from "@/components/ui/LogoWatermark";
 import { ProductService } from "@/lib/services/product.service";
@@ -210,6 +210,25 @@ export default async function CategoryPage({ params }: Props) {
                   </Link>
                 </article>
               ))}
+
+              {/* View All Collections Card */}
+              <article>
+                <Link
+                  href="/collections"
+                  className="group flex flex-col h-full bg-white/40 border border-[#D8DCE2] border-dashed rounded-2xl overflow-hidden hover:bg-white hover:border-[#13233A] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-300 items-center justify-center p-8 min-h-[350px]"
+                >
+                  <div className="w-14 h-14 rounded-full bg-[#13233A]/5 text-[#13233A] group-hover:bg-[#13233A] group-hover:text-white flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110">
+                    <ArrowRight className="w-6 h-6" />
+                  </div>
+                  <h3 className="text-xl font-bold text-[#13233A] mb-2" style={{ fontFamily: "var(--font-playfair-display)" }}>
+                    View All
+                  </h3>
+                  <p className="text-[13px] text-[#25262C]/60 text-center font-medium">
+                    Explore all our premium collections
+                  </p>
+                </Link>
+              </article>
+
             </div>
           )}
 
