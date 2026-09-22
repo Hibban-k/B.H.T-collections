@@ -122,6 +122,33 @@ export default function CategoryGrid() {
               </Link>
             </motion.div>
           ))}
+
+          {/* View All Collections Tile to fill the empty spot */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.08 }}
+            transition={{ duration: 0.6, delay: (rest.length + 1) * 0.1 }}
+          >
+            <Link
+              href="/collections"
+              className="group relative flex flex-col h-full overflow-hidden rounded-2xl bg-white/40 border border-[#D8DCE2] border-dashed hover:bg-white hover:border-[#13233A] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-300 items-center justify-center p-5 text-center"
+            >
+              <div className="w-12 h-12 rounded-full bg-[#13233A]/5 text-[#13233A] group-hover:bg-[#13233A] group-hover:text-white flex items-center justify-center mb-3 transition-all duration-300 group-hover:scale-110">
+                <ArrowRight className="w-5 h-5" />
+              </div>
+              <h3
+                className="text-[17px] font-bold text-[#13233A] leading-tight mb-1"
+                style={{ fontFamily: "var(--font-playfair-display)" }}
+              >
+                View All
+              </h3>
+              <span className="text-[#25262C]/60 text-[10px] font-bold tracking-widest uppercase block">
+                Collections
+              </span>
+            </Link>
+          </motion.div>
+
         </div>
       </div>
     </section>
