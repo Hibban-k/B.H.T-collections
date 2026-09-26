@@ -54,7 +54,7 @@ export default function AdminLoginPage() {
         <div className="text-center mb-8">
           <div className="relative w-16 h-16 mx-auto mb-4 overflow-hidden rounded-xl bg-white/5 border border-white/10 p-2 shadow-inner">
             <Image
-              src="/bht-logo.jpg"
+              src="/bht-flower-icon.png"
               alt="B.H.T. Collections Logo"
               fill
               className="object-contain p-1.5"
