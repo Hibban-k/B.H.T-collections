@@ -44,3 +44,4 @@ This document outlines the prioritized execution steps to resolve the technical 
 **Action:**
 - Generate an IndexNow API key.
 - Create an API route (`app/api/seo/indexnow/route.ts`) that triggers a ping to `api.indexnow.org` whenever a product's status changes in MongoDB.
+

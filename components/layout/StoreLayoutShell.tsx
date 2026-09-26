@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
+import SeamlessWatermark from "@/components/ui/SeamlessWatermark";
 
 export default function StoreLayoutShell({
   children,
@@ -18,7 +19,10 @@ export default function StoreLayoutShell({
   }
 
   return (
-    <div className="relative min-h-screen flex flex-col bg-transparent">
+    <div className="relative min-h-screen flex flex-col bg-[#FDFCFA]">
+      {/* 100% Mathematically Seamless Watermark Background (Zero Seams, Perfect Alignment on Any Screen) */}
+      <SeamlessWatermark />
+
       {/* Main App Content on top of background */}
       <div className="relative z-10 flex flex-col min-h-screen flex-1">
         <AnnouncementBar />

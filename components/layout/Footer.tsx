@@ -1,188 +1,263 @@
-// components/layout/Footer.tsx
+"use client";
+
 import Link from "next/link";
 import Image from "next/image";
-import { Phone, Mail, MapPin } from "lucide-react";
-import LogoWatermark from "@/components/ui/LogoWatermark";
+import { Phone, Mail, MapPin, MessageSquare, ArrowUp, MapPin as UAEPin } from "lucide-react";
 
-const collections = [
-  { label: "Blankets", href: "/collections/blankets" },
-  { label: "Bed Linen", href: "/collections/bed-linen" },
-  { label: "Comforters", href: "/collections/comforters" },
-  { label: "Bedspreads", href: "/collections/bedspreads" },
-];
+function LinkedinIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.28 1.3v-1.11h-2.79v8.37h2.79v-4.93c0-.77.62-1.4 1.39-1.4a1.4 1.4 0 0 1 1.4 1.4v4.93h2.75M6.46 8.76a1.64 1.64 0 1 0 0-3.28 1.64 1.64 0 0 0 0 3.28m1.39 9.74v-8.37H5.07v8.37h2.78z" />
+    </svg>
+  );
+}
 
-const company = [
-  { label: "About Us", href: "/about" },
-  { label: "Our Collections", href: "/collections" },
-  { label: "Contact Us", href: "/contact" },
-];
+function FacebookIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
+      <path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c5.05-.5 9-4.76 9-9.95z" />
+    </svg>
+  );
+}
+
+function InstagramIcon({ className }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+      <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+      <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+    </svg>
+  );
+}
 
 export default function Footer() {
-  return (
-    <footer className="relative bg-black text-white overflow-hidden">
+  const scrollToTop = () => {
+    if (typeof window !== "undefined") {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  };
 
-      {/* Main Footer */}
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
-          {/* Brand */}
-          <div className="lg:col-span-1">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="relative w-12 h-12 shrink-0">
+  return (
+    <footer className="bg-[#0C1220] text-white pt-16 pb-8 border-t border-white/10 relative overflow-hidden font-sans">
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
+        
+        {/* 5-Column Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 pb-14 border-b border-white/10">
+          
+          {/* Column 1: Company Identity (4 cols) */}
+          <div className="lg:col-span-4">
+            <Link href="/" className="flex items-center gap-3 mb-4 group">
+              <div className="relative w-11 h-11 shrink-0">
                 <Image
-                  src="/bht-flower-transparent.png"
-                  alt="B.H.T. Collections Logo"
+                  src="/bht-flower-icon.png"
+                  alt="B.H.T. Emblem"
                   fill
                   className="object-contain"
-                  sizes="48px"
                 />
               </div>
               <div className="flex flex-col leading-tight">
-                <span
-                  className="text-[17px] font-extrabold tracking-wide text-white leading-none"
-                  style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-                >
+                <span className="text-[14px] font-extrabold tracking-[0.06em] text-white uppercase font-sans">
                   B.H.T. COLLECTIONS
                 </span>
-                <span
-                  className="text-[12px] text-[#E12620] font-bold leading-tight mt-1 text-center"
-                  style={{ fontFamily: "var(--font-playfair-display, 'Noto Naskh Arabic', serif)", direction: "rtl" }}
-                >
-                  بيت البطانيات<br />مجموعات
+                <span className="text-[12px] font-bold text-[#DE2628]" dir="rtl">
+                  بيت البطانيات مجموعات
+                </span>
+                <span className="text-[8.5px] font-semibold tracking-[0.14em] text-[#94A3B8] uppercase mt-0.5">
+                  BLANKET HOUSE TRADING L.L.C.
                 </span>
               </div>
-            </div>
-            <p className="text-[#94A3B8] text-sm leading-relaxed mb-6">
-              Premium home textiles crafted for exceptional comfort, warmth and everyday elegance. Trusted by families across the UAE and GCC.
+            </Link>
+
+            <p className="text-[13px] leading-[1.7] text-[#94A3B8] max-w-[320px] mb-6 font-sans">
+              Premium textiles, bedding, travel accessories and footwear, serving global markets with quality, reliability and excellence.
             </p>
-            <div className="flex gap-3">
+
+            {/* Social Icons */}
+            <div className="flex items-center gap-3">
               <a
                 href="https://instagram.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 border border-[#1A2433] bg-[#111C2E]/60 flex items-center justify-center hover:border-[#1C75BC] hover:text-[#1C75BC] hover:bg-[#1C75BC]/10 transition-colors rounded"
+                className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/80 hover:text-white hover:border-[#DE2628] hover:bg-[#DE2628] transition-all"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                </svg>
+                <InstagramIcon className="w-3.5 h-3.5" />
               </a>
               <a
                 href="https://facebook.com"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Facebook"
-                className="w-9 h-9 border border-[#1A2433] bg-[#111C2E]/60 flex items-center justify-center hover:border-[#1C75BC] hover:text-[#1C75BC] hover:bg-[#1C75BC]/10 transition-colors rounded"
+                className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/80 hover:text-white hover:border-[#298DCB] hover:bg-[#298DCB] transition-all"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
-                </svg>
+                <FacebookIcon className="w-3.5 h-3.5" />
               </a>
               <a
-                href="https://wa.me/971501234567"
+                href="https://linkedin.com"
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="WhatsApp"
-                className="w-9 h-9 border border-[#1A2433] bg-[#111C2E]/60 flex items-center justify-center hover:border-[#1BA14B] hover:text-[#1BA14B] hover:bg-[#1BA14B]/10 transition-colors rounded"
+                aria-label="LinkedIn"
+                className="w-8 h-8 rounded-full border border-white/15 flex items-center justify-center text-white/80 hover:text-white hover:border-white transition-all"
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                </svg>
+                <LinkedinIcon className="w-3.5 h-3.5" />
               </a>
             </div>
           </div>
 
-          {/* Collections */}
-          <div>
-            <h3
-              className="text-xs font-bold tracking-widest text-[#D92626] uppercase mb-5"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              Collections
-            </h3>
-            <ul className="space-y-3">
-              {collections.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-[#94A3B8] hover:text-[#1C75BC] transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Company */}
-          <div>
-            <h3
-              className="text-xs font-bold tracking-widest text-[#D92626] uppercase mb-5"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              Company
-            </h3>
-            <ul className="space-y-3">
-              {company.map((item) => (
-                <li key={item.label}>
-                  <Link
-                    href={item.href}
-                    className="text-sm text-[#94A3B8] hover:text-[#1C75BC] transition-colors"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Contact */}
-          <div>
-            <h3
-              className="text-xs font-bold tracking-widest text-[#D92626] uppercase mb-5"
-              style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-            >
-              Contact Us
-            </h3>
-            <ul className="space-y-4">
-              <li className="flex items-start gap-3 text-sm text-[#94A3B8]">
-                <MapPin className="w-4 h-4 text-[#D92626] mt-0.5 shrink-0" />
-                <span>Office 204, WASL Bldg R146, Baniyas Sq, Deira, Dubai, UAE</span>
+          {/* Column 2: COMPANY (2 cols) */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[11.5px] font-bold tracking-[0.16em] text-white uppercase mb-4 font-sans flex items-center gap-2">
+              <span>COMPANY</span>
+              <span className="w-3 h-[2px] bg-[#DE2628] rounded-full" />
+            </h4>
+            <ul className="space-y-2.5 text-[13px] text-[#94A3B8]">
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  About Us
+                </Link>
               </li>
-              <li className="flex items-center gap-3 text-sm text-[#94A3B8]">
-                <Phone className="w-4 h-4 text-[#D92626] shrink-0" />
-                <a href="tel:+97142266095" className="hover:text-white transition-colors">
-                  +971 4 2266 095 / +971 55 887 9237
+              <li>
+                <Link href="/about" className="hover:text-white transition-colors">
+                  Our Story
+                </Link>
+              </li>
+              <li>
+                <Link href="#strengths" className="hover:text-white transition-colors">
+                  Why Choose Us
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: COLLECTIONS (2 cols) */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[11.5px] font-bold tracking-[0.16em] text-white uppercase mb-4 font-sans flex items-center gap-2">
+              <span>COLLECTIONS</span>
+              <span className="w-3 h-[2px] bg-[#298DCB] rounded-full" />
+            </h4>
+            <ul className="space-y-2.5 text-[13px] text-[#94A3B8]">
+              <li>
+                <Link href="/collections/bed-linen" className="hover:text-white transition-colors">
+                  Bedsheets
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/comforters" className="hover:text-white transition-colors">
+                  Comforters
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections/blankets" className="hover:text-white transition-colors">
+                  Blankets
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections" className="hover:text-white transition-colors">
+                  Pillows &amp; Cushions
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: BUSINESS (2 cols) */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[11.5px] font-bold tracking-[0.16em] text-white uppercase mb-4 font-sans flex items-center gap-2">
+              <span>PORTFOLIO</span>
+              <span className="w-3 h-[2px] bg-[#149344] rounded-full" />
+            </h4>
+            <ul className="space-y-2.5 text-[13px] text-[#94A3B8]">
+              <li>
+                <Link href="/collections" className="hover:text-white transition-colors">
+                  Travel Suitcases
+                </Link>
+              </li>
+              <li>
+                <Link href="/collections" className="hover:text-white transition-colors">
+                  Comfort Footwear
+                </Link>
+              </li>
+              <li>
+                <Link href="#brands" className="hover:text-white transition-colors">
+                  Brands We Represent
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-white transition-colors">
+                  Regional Offices
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 5: CONTACT (2 cols) */}
+          <div className="lg:col-span-2">
+            <h4 className="text-[11.5px] font-bold tracking-[0.16em] text-white uppercase mb-4 font-sans flex items-center gap-2">
+              <span>CONTACT</span>
+              <span className="w-3 h-[2px] bg-[#DE2628] rounded-full" />
+            </h4>
+            <ul className="space-y-3 text-[12.5px] text-[#94A3B8]">
+              <li className="flex items-center gap-2">
+                <Phone className="w-3.5 h-3.5 text-[#DE2628] shrink-0" />
+                <a href="tel:+97142214567" className="hover:text-white transition-colors">
+                  +971 4 221 4567
                 </a>
               </li>
-              <li className="flex items-center gap-3 text-sm text-[#94A3B8]">
-                <Mail className="w-4 h-4 text-[#D92626] shrink-0" />
+              <li className="flex items-center gap-2">
+                <Mail className="w-3.5 h-3.5 text-[#298DCB] shrink-0" />
+                <a href="mailto:info@bhtcollections.com" className="hover:text-white transition-colors break-all">
+                  info@bhtcollections.com
+                </a>
+              </li>
+              <li className="flex items-start gap-2">
+                <MapPin className="w-3.5 h-3.5 text-[#149344] shrink-0 mt-0.5" />
+                <span>Dubai, United Arab Emirates</span>
+              </li>
+              <li className="pt-1">
                 <a
-                  href="mailto:info@blankethouse.ae"
-                  className="hover:text-white transition-colors"
+                  href="https://wa.me/971500000000"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 bg-[#149344] hover:bg-[#117C39] text-white text-[10.5px] font-bold uppercase tracking-wider px-4 py-2.5 rounded-full transition-colors shadow-[0_2px_8px_rgba(20,147,68,0.3)]"
                 >
-                  info@blankethouse.ae
+                  <MessageSquare className="w-3.5 h-3.5" />
+                  <span>WhatsApp Chat</span>
                 </a>
               </li>
             </ul>
-            <div className="mt-6 p-4 border border-[#1A2433] bg-[#111C2E]/40 rounded">
-              <p className="text-xs text-[#94A3B8] mb-1">Business Hours</p>
-              <p className="text-sm font-medium text-white">Mon – Sat: 9:00am – 6:00pm</p>
-              <p className="text-xs text-[#94A3B8] mt-1">Sunday: Closed</p>
-            </div>
+          </div>
+
+        </div>
+
+        {/* Legal Sub-Footer Bar */}
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] text-[#64748B]">
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1 font-semibold text-white">
+              <UAEPin className="w-3.5 h-3.5 text-[#DE2628]" />
+              UAE
+            </span>
+            <span>•</span>
+            <p>© 2026 B.H.T. Collections. All rights reserved.</p>
+          </div>
+
+          <div className="flex items-center gap-5">
+            <Link href="/privacy" className="hover:text-white transition-colors">
+              Privacy Policy
+            </Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-white transition-colors">
+              Terms &amp; Conditions
+            </Link>
+            <span>•</span>
+            <button
+              onClick={scrollToTop}
+              className="inline-flex items-center gap-1 hover:text-white transition-colors"
+            >
+              <span>Back to top</span>
+              <ArrowUp className="w-3.5 h-3.5" />
+            </button>
           </div>
         </div>
-      </div>
 
-      {/* Bottom bar */}
-      <div className="relative z-10 border-t border-[#1A2433] bg-black">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <p className="text-xs text-[#94A3B8]">
-            © {new Date().getFullYear()} BLANKET HOUSE TRADING L.L.C. (B.H.T. COLLECTIONS). All rights reserved.
-          </p>
-          <p className="text-xs text-[#94A3B8]">
-            Established 2009 in Dubai, UAE · www.blankethouse.ae
-          </p>
-        </div>
       </div>
     </footer>
   );

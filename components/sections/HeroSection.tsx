@@ -1,179 +1,155 @@
 "use client";
-// components/sections/HeroSection.tsx
+
 import Link from "next/link";
 import Image from "next/image";
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Award, ShieldCheck, Truck, Heart } from "lucide-react";
 
-/* ─── Framer helpers ──────────────────────────────────────────── */
-const fadeUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0 },
-};
+const heroFeatures = [
+  {
+    icon: Award,
+    title: "Premium Quality",
+    subtitle: "Long-lasting comfort",
+    color: "#298DCB",
+  },
+  {
+    icon: ShieldCheck,
+    title: "Trusted Brand",
+    subtitle: "Your Comfort, Our Priority",
+    color: "#149344",
+  },
+  {
+    icon: Truck,
+    title: "Fast & Reliable Delivery",
+    subtitle: "Across UAE & GCC",
+    color: "#DE2628",
+  },
+  {
+    icon: Heart,
+    title: "Customer Satisfaction",
+    subtitle: "Thousands of Happy Homes",
+    color: "#DE2628",
+  },
+];
 
-const imageVariant = {
-  hidden: { opacity: 0, scale: 1.02 as number },
-  visible: { opacity: 1, scale: 1 as number },
-};
-
-/* ─── Tri-colour brand stripe ─────────────────────────────────── */
-function BrandStripe({ vertical = false }: { vertical?: boolean }) {
-  if (vertical) {
-    return (
-      <div className="absolute inset-y-0 right-0 z-20 flex flex-col w-[3px]">
-        <div className="flex-1 bg-[#D02E30]" />
-        <div className="flex-1 bg-[#238D7D]" />
-        <div className="flex-1 bg-[#3C97C5]" />
-      </div>
-    );
-  }
-  return (
-    <div className="w-full h-[3px] flex">
-      <div className="flex-1 bg-[#D02E30]" />
-      <div className="flex-1 bg-[#238D7D]" />
-      <div className="flex-1 bg-[#3C97C5]" />
-    </div>
-  );
-}
-
-/* ═══════════════════════════════════════════════════════════════ */
 export default function HeroSection() {
   return (
-    <section
-      className="relative bg-transparent overflow-hidden min-h-[88vh] flex flex-col"
-      aria-label="B.H.T. Collections Hero"
-    >
-      {/* ── Mobile: stacked (image on top, copy below) ── */}
-      {/* ── Desktop: 7/5 asymmetric split ─────────────── */}
-      <div className="flex flex-col md:grid md:grid-cols-12 flex-1 min-h-[88vh]">
+    <section className="relative overflow-hidden pt-4 pb-12 sm:pb-16" aria-label="B.H.T. Collections Hero">
+      
+      {/* SVG Clip Path for Organic Arch Hero Image */}
+      <svg width="0" height="0" className="absolute pointer-events-none">
+        <defs>
+          <clipPath id="heroArchClip" clipPathUnits="objectBoundingBox">
+            <path d="M 0.22 0 C 0.12 0.15, 0.08 0.35, 0.11 0.55 C 0.14 0.75, 0.18 0.88, 0.28 1 L 1 1 L 1 0 Z" />
+          </clipPath>
+        </defs>
+      </svg>
 
-        {/* ══ LEFT PANEL — 7 cols — editorial copy ══════════════ */}
-        <motion.div
-          className="
-            order-2 md:order-1
-            md:col-span-7
-            relative flex flex-col justify-center
-            bg-[#F8F7F4]/97
-            px-6 sm:px-10
-            py-12 md:py-0
-            md:px-0
-          "
-        >
-          {/* Vertical brand stripe on right edge of left panel (desktop only) */}
-          <div className="hidden md:block">
-            <BrandStripe vertical />
-          </div>
-
-          {/* Inner content — constrained width for readability */}
-          <div className="md:pl-[8vw] md:pr-14 xl:pl-24 xl:pr-16 max-w-[680px]">
-
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
+        
+        {/* Main Two-Column Hero Row */}
+        <div className="flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-12 min-h-[460px] py-6 sm:py-8">
+          
+          {/* LEFT: Text Content */}
+          <div className="w-full lg:w-[48%] flex flex-col justify-center text-left z-10">
+            
             {/* Eyebrow */}
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: 0 }}
-              className="
-                inline-flex items-center gap-2
-                text-[10.5px] font-bold tracking-[0.22em] uppercase
-                text-[#D02E30] mb-5
-              "
-              style={{ fontFamily: "var(--font-montserrat-var, Montserrat, sans-serif)" }}
-            >
-              {/* Red pip */}
-              <span className="inline-block w-4 h-[2px] bg-[#D02E30] rounded-full" />
-              Premium Home Textiles · Dubai
-            </motion.p>
+            <span className="text-[10px] sm:text-[11px] font-bold tracking-[0.22em] text-[#64748B] uppercase font-sans mb-3 block">
+              PREMIUM BEDDING &amp; HOME TEXTILES
+            </span>
 
-            {/* H1 */}
-            <motion.h1
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-bold leading-[1.08] text-[#13233A] mb-5"
-              style={{
-                fontFamily: "var(--font-playfair-display, 'Playfair Display', Georgia, serif)",
-                fontSize: "clamp(32px, 4.2vw, 64px)",
-                letterSpacing: "-0.01em",
-              }}
-            >
-              Where Comfort
-              <br />
-              <em className="not-italic text-[#13233A]">Meets Luxury</em>
-            </motion.h1>
+            {/* English Main Title */}
+            <h1 className="text-[40px] sm:text-[50px] lg:text-[58px] font-black leading-[1.02] text-[#0C1220] tracking-tight uppercase font-sans mb-1">
+              B.H.T. COLLECTIONS
+            </h1>
 
-            {/* Support line */}
-            <motion.p
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-[15px] leading-relaxed text-[#25262C]/75 mb-10 font-medium"
-              style={{ fontFamily: "var(--font-montserrat-var, Montserrat, sans-serif)" }}
-            >
-              Trusted by <span className="text-[#13233A] font-semibold">500+ clients</span> across{" "}
-              <span className="text-[#13233A] font-semibold">6 GCC countries</span> since 2009.
-            </motion.p>
+            {/* Prominent Red Arabic Sub-Title */}
+            <div className="text-[34px] sm:text-[42px] lg:text-[48px] font-bold text-[#DE2628] leading-[1.1] mb-5 font-sans" dir="rtl">
+              بيت البطانيات مجموعات
+            </div>
 
-            {/* CTA buttons */}
-            <motion.div
-              variants={fadeUp}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.6, delay: 0.3 }}
-              className="flex flex-row flex-nowrap gap-3 items-center"
-            >
-              {/* btn-primary */}
+            {/* Tagline / Value Proposition */}
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-[13px] sm:text-[14px] font-medium text-[#475569] mb-7">
+              <span>Better Sleep</span>
+              <span className="text-[#CBD5E1]">|</span>
+              <span>More Comfort</span>
+              <span className="text-[#CBD5E1]">|</span>
+              <span>A Beautiful Home</span>
+            </div>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-wrap items-center gap-3.5 mb-8">
               <Link
                 href="/collections"
-                className="btn-primary !px-4 sm:!px-6 !py-2.5 !min-h-[42px] !text-[10px] sm:!text-xs whitespace-nowrap"
+                className="inline-flex items-center gap-2.5 bg-[#0C1220] hover:bg-[#1E293B] text-white text-[11px] font-bold tracking-[0.08em] uppercase px-7 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_6px_20px_rgba(12,18,32,0.2)] group"
               >
-                Explore Collections
-                <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 duration-200" />
+                <span>Shop Now</span>
+                <ArrowRight className="w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-1 text-white" />
               </Link>
 
-              {/* btn-secondary */}
               <Link
                 href="/contact"
-                className="btn-secondary !px-4 sm:!px-6 !py-2.5 !min-h-[42px] !text-[10px] sm:!text-xs whitespace-nowrap"
+                className="inline-flex items-center justify-center bg-white hover:bg-gray-50 text-[#0C1220] border border-gray-300 hover:border-[#0C1220] text-[11px] font-bold tracking-[0.08em] uppercase px-6 py-3.5 rounded-full transition-all duration-200 hover:-translate-y-0.5 shadow-sm"
               >
-                Wholesale Enquiries
+                Enquire Catalog
               </Link>
-            </motion.div>
+            </div>
+
           </div>
-        </motion.div>
 
-        {/* ══ RIGHT PANEL — 5 cols — full-bleed image ═══════════ */}
-        <div className="order-1 md:order-2 md:col-span-5 relative min-h-[52vw] md:min-h-0">
-          <motion.div
-            variants={imageVariant}
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
-            className="absolute inset-0 w-full h-full"
-          >
-            <Image
-              src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?q=80&w=1400&auto=format&fit=crop"
-              alt="Luxury hotel bed with premium white bedding — B.H.T. Collections"
-              fill
-              className="object-cover object-center"
-              priority
-              sizes="(max-width: 768px) 100vw, 42vw"
-            />
-            {/* Subtle dark gradient on left edge to blend with left panel */}
-            <div className="absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#F8F7F4]/60 to-transparent pointer-events-none" />
-          </motion.div>
+          {/* RIGHT: Visual Image with Curved Border & Decorative Leaf */}
+          <div className="w-full lg:w-[52%] relative flex items-center justify-center">
+            
+            {/* Decorative Green Petal Flourish on the Curve */}
+            <div className="absolute top-[8%] left-[10%] w-12 h-12 sm:w-16 sm:h-16 pointer-events-none z-20">
+              <svg viewBox="0 0 100 100" fill="none" className="w-full h-full drop-shadow-sm">
+                <path d="M10,90 C10,40 40,10 90,10 C90,60 60,90 10,90 Z" fill="#149344" />
+              </svg>
+            </div>
+
+            {/* Hero Bedroom Image with Curved Arch */}
+            <div
+              className="relative w-full h-[340px] sm:h-[420px] lg:h-[460px] overflow-hidden rounded-2xl sm:rounded-3xl shadow-[0_12px_36px_rgba(0,0,0,0.08)] bg-white border border-gray-100"
+              style={{ clipPath: "url(#heroArchClip)" }}
+            >
+              <Image
+                src="/hero-bedroom.jpg"
+                alt="BHT Collections Premium Bedding & Luxury Master Bedroom"
+                fill
+                className="object-cover object-center"
+                priority
+                sizes="(max-width: 1024px) 100vw, 52vw"
+              />
+            </div>
+
+          </div>
+
         </div>
-      </div>
 
-      {/* ── Horizontal brand stripe at section bottom (mobile) ── */}
-      <div className="md:hidden">
-        <BrandStripe />
+        {/* 4 Feature Trust Strip (Directly Below Hero As Shown in Pic) */}
+        <div className="mt-6 pt-6 border-t border-gray-200/80 grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 bg-white/70 backdrop-blur-sm rounded-xl p-5 sm:p-6 border border-gray-100 shadow-[0_2px_12px_rgba(0,0,0,0.02)]">
+          {heroFeatures.map((feat, idx) => {
+            const Icon = feat.icon;
+            return (
+              <div key={idx} className="flex items-center gap-3.5">
+                <div
+                  className="w-10 h-10 rounded-full flex items-center justify-center shrink-0 border"
+                  style={{ backgroundColor: `${feat.color}10`, borderColor: `${feat.color}30` }}
+                >
+                  <Icon className="w-4 h-4" style={{ color: feat.color }} strokeWidth={2} />
+                </div>
+                <div className="flex flex-col">
+                  <span className="text-[12.5px] font-bold text-[#0C1220] leading-tight">
+                    {feat.title}
+                  </span>
+                  <span className="text-[11px] text-[#64748B] mt-0.5">
+                    {feat.subtitle}
+                  </span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
       </div>
     </section>
   );
