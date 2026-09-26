@@ -16,14 +16,6 @@ interface BrandItem {
 
 const brands: BrandItem[] = [
   {
-    id: "bht",
-    name: "B.H.T. COLLECTIONS",
-    tagline: "BLANKET HOUSE TRADING",
-    category: "Master Brand",
-    type: "image",
-    imageSrc: "/bht-flower-icon.png",
-  },
-  {
     id: "magicwalk",
     name: "MAGICWALK",
     tagline: "COMFORT FOOTWEAR",
@@ -97,7 +89,7 @@ export default function BrandCarousel() {
   return (
     <section className="w-full py-6 sm:py-8 relative overflow-hidden" id="brands">
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8">
-        
+
         {/* Section Header */}
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
