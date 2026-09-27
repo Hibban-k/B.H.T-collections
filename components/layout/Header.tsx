@@ -33,11 +33,10 @@ export default function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 w-full transition-all duration-300 border-b border-[#EAEAEA] ${scrolled ? "bg-white/95 backdrop-blur-md shadow-[0_2px_14px_rgba(0,0,0,0.04)]" : "bg-white/90 backdrop-blur-sm"
+      className={`sticky top-0 z-50 w-full transition-all duration-300 border-b border-[#EAEAEA] h-[80px] lg:h-[100px] ${scrolled ? "bg-white/95 backdrop-blur-md shadow-[0_2px_14px_rgba(0,0,0,0.04)]" : "bg-white/90 backdrop-blur-sm"
         }`}
-      style={{ height: "125px" }}
     >
-      <div className="max-w-[1680px] mx-auto h-full px-10 sm:px-8 flex items-center justify-between">
+      <div className="max-w-[1680px] mx-auto h-full px-5 sm:px-8 flex items-center justify-between">
 
         {/* Left: Logo + Brand Name with Red Arabic Text */}
         <Link
@@ -45,7 +44,7 @@ export default function Header() {
           className="flex items-center gap-3.5 group shrink-0"
           aria-label="B.H.T. Collections Home"
         >
-          <div className="relative w-30 h-30  shrink-0 transition-transform duration-200 group-hover:scale-105">
+          <div className="relative w-[60px] h-[60px] lg:w-[80px] lg:h-[80px] shrink-0 transition-transform duration-200 group-hover:scale-105">
             <Image
               src="/bht-flower-icon.png"
               alt="B.H.T. Collections Logo"
@@ -55,7 +54,7 @@ export default function Header() {
             />
           </div>
 
-          <div className="flex flex-col leading-tight">
+          <div className="hidden md:flex flex-col leading-tight">
             <span className="text-[20px] sm:text-[25px] font-extrabold tracking-[0.01em] text-[#0C1220] uppercase font-sans">
               B.H.T. COLLECTIONS
             </span>
