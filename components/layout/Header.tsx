@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
+import Button from '@/components/ui/Button';
 
 export default function Header() {
   const pathname = usePathname();
@@ -29,64 +30,60 @@ export default function Header() {
 
   return (
     <>
-      <header className="site-header">
-        <div className="wrap header-inner">
-          <Link href="/" className="brand" aria-label="B.H.T. Collections home">
-            <span className="logo-crop">
-              <Image src="/reference-logo-lockup.png" alt="" width={68} height={68} />
+      <header className="site-header sticky top-0 z-50 h-[var(--header)] bg-ivory border-b border-border">
+        <div className="max-w-[1280px] w-[calc(100%-40px)] md:w-[calc(100%-64px)] lg:w-[calc(100%-96px)] mx-auto h-full flex justify-between items-center gap-[15px] md:gap-[25px]">
+          <Link href="/" className="inline-flex items-center gap-2.5 md:gap-3 text-ink shrink-0" aria-label="B.H.T. Collections home">
+            <span className="relative overflow-hidden shrink-0 bg-white rounded-sm w-[32px] h-[39px] lg:w-[38px] lg:h-[43px]">
+              <Image src="/reference-logo-lockup.png" alt="" width={68} height={68} className="absolute max-w-none left-[-14px] top-[-10px] lg:top-[-11px] object-contain w-[62px] h-[62px] lg:w-[68px] lg:h-[68px]" />
             </span>
-            <span className="brand-name">
-              B.H.T. COLLECTIONS<small>Blanket House Trading</small>
+            <span className="text-[13px] md:text-[14px] lg:text-[15px] font-semibold tracking-[0.06em] leading-snug">
+              B.H.T. COLLECTIONS<small className="block text-[7px] md:text-[8px] font-medium tracking-[0.2em] uppercase mt-1">Blanket House Trading</small>
             </span>
           </Link>
           
-          <nav className="desktop-nav" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-[27px] xl:gap-[27px]" aria-label="Main navigation">
             <Link 
               href="/collections" 
-              data-nav="collections"
-              aria-current={pathname.startsWith('/collections') ? 'page' : undefined}
+              className={`flex items-center min-h-[48px] text-[11px] font-medium relative after:absolute after:left-0 after:right-0 after:bottom-2 after:h-px after:bg-red after:origin-left after:transition-transform duration-200 ${pathname.startsWith('/collections') ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'}`}
             >
               Collections
             </Link>
             <Link 
               href="/about" 
-              data-nav="about"
-              aria-current={pathname.startsWith('/about') ? 'page' : undefined}
+              className={`flex items-center min-h-[48px] text-[11px] font-medium relative after:absolute after:left-0 after:right-0 after:bottom-2 after:h-px after:bg-red after:origin-left after:transition-transform duration-200 ${pathname.startsWith('/about') ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'}`}
             >
               About
             </Link>
             <Link 
               href="/brands-partners" 
-              data-nav="brands-partners"
-              aria-current={pathname.startsWith('/brands-partners') ? 'page' : undefined}
+              className={`flex items-center min-h-[48px] text-[11px] font-medium relative after:absolute after:left-0 after:right-0 after:bottom-2 after:h-px after:bg-red after:origin-left after:transition-transform duration-200 ${pathname.startsWith('/brands-partners') ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'}`}
             >
               Brand &amp; Partners
             </Link>
             <Link 
               href="/region" 
-              data-nav="region"
-              aria-current={pathname.startsWith('/region') ? 'page' : undefined}
+              className={`flex items-center min-h-[48px] text-[11px] font-medium relative after:absolute after:left-0 after:right-0 after:bottom-2 after:h-px after:bg-red after:origin-left after:transition-transform duration-200 ${pathname.startsWith('/region') ? 'after:scale-x-100' : 'after:scale-x-0 hover:after:scale-x-100'}`}
             >
               Region
             </Link>
           </nav>
           
-          <div className="header-actions">
-            <Link className="btn" href="/contact">
-              Enquire{' '}
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M4 12h15m-6-6 6 6-6 6" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <div className="flex gap-2.5">
+            <Button href="/contact" className="hidden lg:inline-flex px-5 py-[11px] min-h-[44px]">
+              Enquire
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="w-[15px] h-[15px] fill-none stroke-current stroke-[2] ml-2">
+                <path d="M4 12h15m-6-6 6 6-6 6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-            </Link>
+            </Button>
             <button 
-              className="icon-btn menu-trigger" 
+              className="lg:hidden inline-flex items-center justify-center w-[46px] h-[46px] border border-border bg-transparent rounded-full hover:bg-ink hover:text-ivory hover:border-ink transition-colors" 
               id="menu-open" 
               aria-label="Open navigation" 
               aria-haspopup="dialog"
               onClick={openMenu}
             >
-              <svg viewBox="0 0 24 24" aria-hidden="true">
-                <path d="M3 7h18M3 12h18M3 17h18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <svg viewBox="0 0 24 24" aria-hidden="true" className="w-5 h-5 fill-none stroke-current stroke-[2]">
+                <path d="M3 7h18M3 12h18M3 17h18" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
             </button>
           </div>
@@ -94,15 +91,15 @@ export default function Header() {
       </header>
 
       <dialog 
-        className="menu-dialog" 
+        className="fixed inset-[var(--header)_0_0] m-0 max-w-none w-full max-h-none h-[calc(100dvh-var(--header))] border-0 p-7 px-6 bg-ivory backdrop:bg-[#172c2666]" 
         id="menu-dialog" 
         aria-labelledby="menu-title"
         ref={dialogRef}
       >
-        <div className="dialog-top">
-          <span className="eyebrow" id="menu-title">Explore B.H.T.</span>
+        <div className="flex justify-between items-center mb-7">
+          <span className="block text-[10px] md:text-[11px] font-semibold leading-relaxed tracking-[0.15em] uppercase text-red" id="menu-title">Explore B.H.T.</span>
           <button 
-            className="icon-btn" 
+            className="inline-flex items-center justify-center w-[46px] h-[46px] border border-border bg-transparent rounded-full hover:bg-ink hover:text-ivory hover:border-ink transition-colors" 
             data-close="menu-dialog" 
             aria-label="Close navigation"
             onClick={closeMenu}
@@ -110,14 +107,14 @@ export default function Header() {
             ✕
           </button>
         </div>
-        <nav aria-label="Mobile navigation">
-          <Link href="/">Home</Link>
-          <Link href="/collections">Collections</Link>
-          <Link href="/about">About</Link>
-          <Link href="/brands-partners">Brand &amp; Partners</Link>
-          <Link href="/region">Region</Link>
+        <nav aria-label="Mobile navigation" className="grid gap-0">
+          <Link href="/" className="font-serif font-medium text-[30px] leading-[1.3] py-5 border-b border-border text-ink">Home</Link>
+          <Link href="/collections" className="font-serif font-medium text-[30px] leading-[1.3] py-5 border-b border-border text-ink">Collections</Link>
+          <Link href="/about" className="font-serif font-medium text-[30px] leading-[1.3] py-5 border-b border-border text-ink">About</Link>
+          <Link href="/brands-partners" className="font-serif font-medium text-[30px] leading-[1.3] py-5 border-b border-border text-ink">Brand &amp; Partners</Link>
+          <Link href="/region" className="font-serif font-medium text-[30px] leading-[1.3] py-5 border-b border-border text-ink">Region</Link>
         </nav>
-        <Link href="/contact" className="btn">Enquire →</Link>
+        <Button href="/contact" className="mt-8 w-full">Enquire →</Button>
       </dialog>
     </>
   );
