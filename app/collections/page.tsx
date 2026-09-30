@@ -2,8 +2,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, Star } from "lucide-react";
-import { formatAED, calculateDiscount } from "@/lib/utils";
 import { ProductService } from "@/lib/services/product.service";
 import { CategoryService } from "@/lib/services/category.service";
 
@@ -25,15 +23,7 @@ export default async function CollectionsPage() {
     CategoryService.getCategories(),
   ]);
 
-  // Filter out placeholder products (discounts > 70% or short names)
-  const products = (initialProducts || []).filter((p) => {
-    if (!p.name || p.name.length < 4) return false;
-    if (p.originalPrice && p.price) {
-      const disc = ((p.originalPrice - p.price) / p.originalPrice) * 100;
-      if (disc > 70) return false; // hide implausible discounts
-    }
-    return true;
-  });
+  const products = (initialProducts || []).filter((p) => p.name && p.name.length >= 4);
 
   const breadcrumbItems = [
     { name: "Home", path: "/" },
@@ -41,7 +31,7 @@ export default async function CollectionsPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent pb-24">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListSchema(products, getAbsoluteUrl("/collections"))) }}
@@ -51,147 +41,128 @@ export default async function CollectionsPage() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
       />
 
-      {/* Editorial Header with Background Image */}
-      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden">
-        <Image 
-          src="https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop" 
-          alt="Premium textiles" 
-          fill 
-          className="object-cover object-center z-0"
-          priority
-        />
-        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
-        
-        <div className="relative z-20 max-w-4xl mx-auto">
-          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
-            B.H.T. Collections
-          </p>
-          <h1 
-            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
-            style={{ fontFamily: "var(--font-playfair-display)" }}
-          >
-            Our Collections
-          </h1>
-          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto">
-            Premium home textiles designed for exceptional comfort, warmth, and everyday elegance.
-          </p>
+      <header className="page-intro">
+        <div className="wrap">
+          <nav className="breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <span aria-current="page">Our collections</span>
+          </nav>
+          <div className="intro-line">
+            <div>
+              <span className="eyebrow">Our collections</span>
+              <h1>Everyday essentials.<br/>Extraordinary possibilities.</h1>
+              <p>Explore home textiles, travel companions, and footwear. Find a collection that feels right for you.</p>
+            </div>
+            <span className="intro-number" aria-hidden="true">03</span>
+          </div>
         </div>
       </header>
 
-      {/* Category Filter Bar */}
-      <div className="sticky top-[72px] z-30 bg-white/97 backdrop-blur-md border-y border-[#D8DCE2] shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex overflow-x-auto hide-scrollbar py-3.5 gap-2 snap-x">
-            <Link
-              href="/collections"
-              className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#13233A] text-white text-[13px] font-bold tracking-wide transition-colors"
-            >
-              All Collections
-            </Link>
-            {categories.filter((c) => c.status === "active").map((cat) => (
-              <Link
-                key={cat._id}
-                href={`/collections/${cat.slug}`}
-                className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#F8F7F4] text-[#13233A] text-[13px] font-bold tracking-wide border border-[#D8DCE2] hover:border-[#13233A] transition-colors"
-              >
+      <div className="category-nav">
+        <nav className="wrap category-nav-inner" aria-label="Collection groups">
+          <Link className="category-tab active" href="/collections" aria-current="page">All collections</Link>
+          <Link className="category-tab" href="/collections?group=home"><small>01</small>Home Textiles</Link>
+          <Link className="category-tab" href="/collections?group=travel"><small>02</small>Travel & Luggage</Link>
+          <Link className="category-tab" href="/collections?group=footwear"><small>03</small>Footwear</Link>
+        </nav>
+      </div>
+
+      <section className="catalogue">
+        <div className="wrap">
+          <nav className="subcategories" aria-label="Home textile collections">
+            {categories.map(cat => (
+              <Link key={cat._id} href={`/collections/${cat.slug}`}>
                 {cat.name}
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12h15m-6-6 6 6-6 6"/>
+                </svg>
               </Link>
             ))}
+          </nav>
+          <div style={{ height: '25px' }}></div>
+          
+          <div className="catalogue-toolbar">
+            <p className="result-count" aria-live="polite">{products.length} selections</p>
+            <div className="desktop-filters">
+              {/* Note: Filters in demo are just UI placeholders. */}
+              <label className="field-inline" htmlFor="sort-filter">
+                Sort by
+                <select id="sort-filter" data-filter="sort" defaultValue="featured">
+                  <option value="featured">Featured</option>
+                  <option value="az">Name: A–Z</option>
+                </select>
+              </label>
+            </div>
+            <button className="btn outline mobile-filter-btn" id="filters-open">
+              Filters &amp; sort
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12h15m-6-6 6 6-6 6"/>
+              </svg>
+            </button>
           </div>
-        </div>
-      </div>
-
-      {/* Product Grid */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10">
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-[#25262C]/60 text-sm font-semibold uppercase tracking-wider">
-            {products.length} Products
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product) => {
-            const discount = product.originalPrice ? calculateDiscount(product.price, product.originalPrice) : null;
-            return (
-                <article key={product._id}>
-                  <Link
-                    href={`/collections/${product.categorySlug}/${product.slug}`}
-                    className="group flex flex-col h-full bg-white border border-[#D8DCE2] rounded-2xl overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-200"
-                  >
-                    {/* Image */}
-                    <div className="relative aspect-[4/5] bg-[#F8F7F4] overflow-hidden">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                      {/* Badge priority: Discount first, then product.badge */}
-                      {discount && discount <= 70 ? (
-                        <div className="absolute top-3 right-3 tag-badge !bg-[#D02E30] !border-[#D02E30] text-[9px]">
-                          -{discount}%
-                        </div>
-                      ) : product.badge ? (
-                        <div className="absolute top-3 left-3 tag-badge !bg-[#13233A] !border-[#13233A] text-[9px]">
-                          {product.badge}
-                        </div>
-                      ) : null}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex flex-col flex-1 p-4">
-                      <p className="text-[10px] text-[#D02E30] font-bold tracking-widest uppercase mb-1.5">
-                        {product.category}
-                      </p>
-                      <h3
-                        className="text-sm font-semibold text-[#13233A] group-hover:text-[#D02E30] transition-colors leading-snug mb-3 flex-1 line-clamp-2"
-                        style={{ fontFamily: "var(--font-playfair-display)" }}
-                      >
-                        {product.name}
-                      </h3>
-
-                      {/* Rating */}
-                      <div className="flex items-center gap-1.5 mb-3">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${
-                                i < Math.floor(product.rating || 5)
-                                  ? "fill-[#F59E0B] text-[#F59E0B]"
-                                  : "text-[#D8DCE2] fill-[#D8DCE2]"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[11px] text-[#6B7280]">({product.reviewCount || 1})</span>
-                      </div>
-
-                      {/* Price */}
-                      <div className="flex items-baseline gap-2 pt-3 border-t border-[#D8DCE2]">
-                        <span className="text-base font-bold text-[#13233A]">
-                          {formatAED(product.price)}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-xs text-[#9CA3AF] line-through">
-                            {formatAED(product.originalPrice)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
+          
+          <div className="product-grid">
+            {products.map((product) => (
+              <article className="product-card" key={product._id}>
+                <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="product-image-link" aria-label={`Explore ${product.name} collection`}>
+                  <div className="media">
+                    <Image 
+                      src={product.image || '/reference-home-textiles.jpg'} 
+                      alt={`${product.name} — illustrative collection image`} 
+                      width={800} 
+                      height={1000} 
+                      className="object-cover"
+                    />
+                  </div>
+                </Link>
+                <div className="product-meta">
+                  <span className="eyebrow">{product.category}</span>
+                  <h3>{product.name}</h3>
+                  <p className="price">Enquire for details</p>
+                  <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
+                    View selection 
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12h15m-6-6 6 6-6 6"/>
+                    </svg>
                   </Link>
-                </article>
-            );
-          })}
-        </div>
-
-        {products.length === 0 && (
-          <div className="text-center py-20 bg-white rounded-2xl border border-[#D8DCE2] mt-8">
-            <p className="text-[#25262C]/60 text-[15px]">No products found in this collection.</p>
+                </div>
+              </article>
+            ))}
           </div>
-        )}
-      </div>
-    </div>
+          
+          {products.length === 0 && (
+            <div className="empty-state" style={{ marginTop: '3rem' }}>
+              <h2>No selections found.</h2>
+              <p>Try exploring another collection.</p>
+              <Link href="/collections" className="btn">
+                Reset filters
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12h15m-6-6 6 6-6 6"/>
+                </svg>
+              </Link>
+            </div>
+          )}
+          
+          <p className="section-footnote">Sample catalogue · Images and product-to-brand associations are illustrative. Prices and availability are confirmed by enquiry.</p>
+        </div>
+      </section>
+
+      <section className="cta dark">
+        <div className="wrap cta-inner">
+          <div>
+            <span className="eyebrow">Let’s work together</span>
+            <h2>A collection for<br/>your business.</h2>
+            <p>From individual selections to larger requirements, let’s start with what you need.</p>
+          </div>
+          <Link className="btn light" href="/contact?context=Collection%20enquiry">
+            Discuss your requirements
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 12h15m-6-6 6 6-6 6"/>
+            </svg>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }

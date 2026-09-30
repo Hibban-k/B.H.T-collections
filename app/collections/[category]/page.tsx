@@ -3,19 +3,17 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, ArrowRight } from "lucide-react";
-import { formatAED, calculateDiscount } from "@/lib/utils";
-import LogoWatermark from "@/components/ui/LogoWatermark";
 import { ProductService } from "@/lib/services/product.service";
 import { CategoryService } from "@/lib/services/category.service";
+import { constructMetadata } from "@/lib/seo/metadata";
+import { generateBreadcrumbSchema, generateItemListSchema, generateFaqSchema } from "@/lib/seo/schema";
+import { getAbsoluteUrl } from "@/lib/seo/urls";
 
 export const revalidate = 3600;
 
 interface Props {
   params: Promise<{ category: string }>;
 }
-
-import { constructMetadata } from "@/lib/seo/metadata";
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { category } = await params;
@@ -31,20 +29,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   });
 }
 
-import { generateBreadcrumbSchema, generateItemListSchema, generateFaqSchema } from "@/lib/seo/schema";
-import { getAbsoluteUrl } from "@/lib/seo/urls";
-
 export default async function CategoryPage({ params }: Props) {
   const { category } = await params;
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat || cat.status !== "active") notFound();
 
-  const products = await ProductService.getProducts({
+  const initialProducts = await ProductService.getProducts({
     status: "published",
     categorySlug: category,
     showOnCollection: true,
   });
+
+  const products = (initialProducts || []).filter((p) => p.name && p.name.length >= 4);
 
   const breadcrumbItems = [
     { name: "Home", path: "/" },
@@ -53,7 +50,7 @@ export default async function CategoryPage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen bg-transparent">
+    <>
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListSchema(products, getAbsoluteUrl(`/collections/${cat.slug}`))) }}
@@ -68,200 +65,161 @@ export default async function CategoryPage({ params }: Props) {
           dangerouslySetInnerHTML={{ __html: JSON.stringify(generateFaqSchema(cat.faq)) }}
         />
       )}
-      {/* Editorial Header with Background Image */}
-      <header className="relative w-full pt-28 pb-20 md:pt-32 md:pb-24 text-center px-4 sm:px-6 min-h-[30vh] flex flex-col items-center justify-center overflow-hidden">
-        <Image
-          src={cat.image || "https://images.unsplash.com/photo-1579656592043-a20e25a4aa4b?q=80&w=2000&auto=format&fit=crop"}
-          alt={cat.name}
-          fill
-          className="object-cover object-center z-0"
-          priority
-        />
-        <div className="absolute inset-0 bg-[#13233A]/75 z-10" />
 
-        <div className="relative z-20 max-w-4xl mx-auto">
-          <p className="text-[#3C97C5] text-[10.5px] font-bold uppercase tracking-[0.22em] mb-4">
-            B.H.T. Collections
-          </p>
-          <h1
-            className="text-4xl md:text-5xl font-bold text-white mb-5 drop-shadow-md"
-            style={{ fontFamily: "var(--font-playfair-display)" }}
-          >
-            {cat.name}
-          </h1>
-          <p className="text-white/80 text-[15px] leading-relaxed max-w-xl mx-auto">
-            {cat.description}
-          </p>
+      <header className="collection-intro">
+        <div className="wrap">
+          <nav className="breadcrumb" aria-label="Breadcrumb">
+            <Link href="/">Home</Link>
+            <span>/</span>
+            <Link href="/collections">Collections</Link>
+            <span>/</span>
+            <span aria-current="page">{cat.name}</span>
+          </nav>
+          <div className="split reverse">
+            <div>
+              <span className="eyebrow">{cat.name}</span>
+              <h1>{cat.name}</h1>
+              <p>{cat.description}</p>
+              <Link className="text-link" href="/collections">
+                Explore all collections
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12h15m-6-6 6 6-6 6"/>
+                </svg>
+              </Link>
+            </div>
+            <div className="media">
+              <Image 
+                src={cat.image || "/reference-home-textiles.jpg"} 
+                alt={`${cat.name} collection preview`} 
+                width={800} 
+                height={1000} 
+                className="object-cover"
+                priority
+              />
+            </div>
+          </div>
         </div>
       </header>
 
-      {/* Category Filter Bar */}
-      <div className="sticky top-[72px] z-30 bg-white/97 backdrop-blur-md border-y border-[#D8DCE2] shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="flex overflow-x-auto hide-scrollbar py-3.5 gap-2 snap-x">
-            <Link
-              href="/collections"
-              className="snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full bg-[#F8F7F4] text-[#13233A] text-[13px] font-bold tracking-wide border border-[#D8DCE2] hover:border-[#13233A] transition-colors"
-            >
-              All Collections
-            </Link>
-            {allCategories.filter((c) => c.status === "active").map((c) => (
-              <Link
-                key={c._id}
-                href={`/collections/${c.slug}`}
-                className={`snap-start shrink-0 inline-flex items-center justify-center px-5 py-2.5 rounded-full text-[13px] font-bold tracking-wide border transition-colors ${
-                  c.slug === category
-                    ? "bg-[#13233A] text-white border-[#13233A]"
-                    : "bg-[#F8F7F4] text-[#13233A] border-[#D8DCE2] hover:border-[#13233A]"
-                }`}
-              >
-                {c.name}
-              </Link>
+      {/* Embedded Catalogue */}
+      <section className="catalogue">
+        <div className="wrap">
+          <div className="catalogue-toolbar">
+            <p className="result-count" aria-live="polite">{products.length} selections in {cat.name}</p>
+            <div className="desktop-filters">
+              <label className="field-inline" htmlFor="sort-filter">
+                Sort by
+                <select id="sort-filter" data-filter="sort" defaultValue="featured">
+                  <option value="featured">Featured</option>
+                  <option value="az">Name: A–Z</option>
+                </select>
+              </label>
+            </div>
+            <button className="btn outline mobile-filter-btn" id="filters-open">
+              Filters &amp; sort
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M4 12h15m-6-6 6 6-6 6"/>
+              </svg>
+            </button>
+          </div>
+
+          <div className="product-grid">
+            {products.map((product) => (
+              <article className="product-card" key={product._id}>
+                <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="product-image-link" aria-label={`Explore ${product.name} collection`}>
+                  <div className="media">
+                    <Image 
+                      src={product.image || '/reference-home-textiles.jpg'} 
+                      alt={`${product.name} — illustrative collection image`} 
+                      width={800} 
+                      height={1000} 
+                      className="object-cover"
+                    />
+                  </div>
+                </Link>
+                <div className="product-meta">
+                  <span className="eyebrow">{product.category || cat.name}</span>
+                  <h3>{product.name}</h3>
+                  <p className="price">Enquire for details</p>
+                  <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
+                    View selection 
+                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M4 12h15m-6-6 6 6-6 6"/>
+                    </svg>
+                  </Link>
+                </div>
+              </article>
             ))}
           </div>
-        </div>
-      </div>
 
-      {/* Products */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 pt-10 pb-20">
-        <div className="flex items-center justify-between mb-8">
-          <p className="text-[#25262C]/60 text-sm font-semibold uppercase tracking-wider">
-            {products.length} Products in {cat.name}
-          </p>
-        </div>
-
-        {products.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-[#D8DCE2]">
-              <p className="text-[#64748B] mb-4">No products found in this collection yet.</p>
-              <Link href="/collections" className="btn-primary">
+          {products.length === 0 && (
+            <div className="empty-state" style={{ marginTop: '3rem' }}>
+              <h2>No selections found.</h2>
+              <p>Try exploring another collection.</p>
+              <Link href="/collections" className="btn">
                 View all collections
+                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M4 12h15m-6-6 6 6-6 6"/>
+                </svg>
               </Link>
-            </div>
-          ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
-              {products.map((product) => (
-                <article key={product._id}>
-                  <Link
-                    href={`/collections/${product.categorySlug}/${product.slug}`}
-                    className="group flex flex-col h-full bg-white border border-[#D8DCE2] rounded-2xl overflow-hidden hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-200"
-                  >
-                    {/* Image */}
-                    <div className="relative aspect-[4/5] bg-[#F8F7F4] overflow-hidden">
-                      <Image
-                        src={product.image}
-                        alt={product.name}
-                        fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-[1.025]"
-                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-                      />
-                      {/* Badge priority: Discount first, then product.badge */}
-                      {product.originalPrice && calculateDiscount(product.price, product.originalPrice) <= 70 ? (
-                        <div className="absolute top-3 right-3 tag-badge !bg-[#D02E30] !border-[#D02E30] text-[9px]">
-                          -{calculateDiscount(product.price, product.originalPrice)}%
-                        </div>
-                      ) : product.badge ? (
-                        <div className="absolute top-3 left-3 tag-badge !bg-[#13233A] !border-[#13233A] text-[9px]">
-                          {product.badge}
-                        </div>
-                      ) : null}
-                    </div>
-
-                    {/* Info */}
-                    <div className="flex flex-col flex-1 p-4">
-                      <p className="text-[10px] text-[#D02E30] font-bold tracking-widest uppercase mb-1.5">
-                        {product.category || cat.name}
-                      </p>
-                      <h3
-                        className="text-sm font-semibold text-[#13233A] group-hover:text-[#D02E30] transition-colors leading-snug mb-3 flex-1 line-clamp-2"
-                        style={{ fontFamily: "var(--font-playfair-display)" }}
-                      >
-                        {product.name}
-                      </h3>
-
-                      {/* Rating */}
-                      <div className="flex items-center gap-1.5 mb-3">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`w-3 h-3 ${
-                                i < Math.floor(product.rating || 5)
-                                  ? "fill-[#F59E0B] text-[#F59E0B]"
-                                  : "text-[#D8DCE2] fill-[#D8DCE2]"
-                              }`}
-                            />
-                          ))}
-                        </div>
-                        <span className="text-[11px] text-[#6B7280]">({product.reviewCount || 1})</span>
-                      </div>
-
-                      {/* Price */}
-                      <div className="flex items-baseline gap-2 pt-3 border-t border-[#D8DCE2]">
-                        <span className="text-base font-bold text-[#13233A]">
-                          {formatAED(product.price)}
-                        </span>
-                        {product.originalPrice && (
-                          <span className="text-xs text-[#9CA3AF] line-through">
-                            {formatAED(product.originalPrice)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                </article>
-              ))}
-
-              {/* View All Collections Card */}
-              <article>
-                <Link
-                  href="/collections"
-                  className="group flex flex-col h-full bg-white/40 border border-[#D8DCE2] border-dashed rounded-2xl overflow-hidden hover:bg-white hover:border-[#13233A] hover:shadow-[0_4px_20px_rgba(0,0,0,0.08)] hover:-translate-y-[2px] transition-all duration-300 items-center justify-center p-8 min-h-[350px]"
-                >
-                  <div className="w-14 h-14 rounded-full bg-[#13233A]/5 text-[#13233A] group-hover:bg-[#13233A] group-hover:text-white flex items-center justify-center mb-5 transition-all duration-300 group-hover:scale-110">
-                    <ArrowRight className="w-6 h-6" />
-                  </div>
-                  <h3 className="text-xl font-bold text-[#13233A] mb-2" style={{ fontFamily: "var(--font-playfair-display)" }}>
-                    View All
-                  </h3>
-                  <p className="text-[13px] text-[#25262C]/60 text-center font-medium">
-                    Explore all our premium collections
-                  </p>
-                </Link>
-              </article>
-
             </div>
           )}
 
-        {/* Collection SEO Details */}
-        {(cat.longDescription || (cat.faq && cat.faq.length > 0)) && (
-          <div className="mt-20 pt-16 border-t border-[#D8DCE2] max-w-4xl mx-auto">
-            {cat.longDescription && (
-              <div className="mb-16">
-                <div 
-                  dangerouslySetInnerHTML={{ __html: cat.longDescription }} 
-                  className="prose prose-sm sm:prose-base max-w-none text-[#25262C]/80 prose-headings:font-playfair prose-headings:text-[#13233A] prose-headings:font-bold prose-headings:mb-4 prose-a:text-[#D02E30] prose-a:no-underline hover:prose-a:underline" 
-                />
-              </div>
-            )}
+          <p className="section-footnote">Sample catalogue · Images and product-to-brand associations are illustrative. Prices and availability are confirmed by enquiry.</p>
+        </div>
+      </section>
 
-            {cat.faq && cat.faq.length > 0 && (
-              <div>
-                <h2 className="text-2xl font-bold text-[#13233A] mb-6" style={{ fontFamily: "var(--font-playfair-display)" }}>
-                  Frequently Asked Questions
-                </h2>
-                <div className="space-y-4">
-                  {cat.faq.map((item, i) => (
-                    <div key={i} className="bg-[#F8F7F4] p-5 sm:p-6 rounded-2xl border border-[#D8DCE2]">
-                      <h3 className="font-bold text-[#13233A] text-[15px] mb-2">{item.question}</h3>
-                      <p className="text-[#25262C]/70 text-[14px] leading-relaxed">{item.answer}</p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
+      <section className="section collection-details">
+        <div className="wrap reading">
+          <span className="eyebrow">A closer look</span>
+          <h2>Find your right fit.</h2>
+          <p>
+            This demo shows how collection information and common questions can sit alongside the range. For a live enquiry, the team can confirm available specifications and options.
+          </p>
+
+          {cat.longDescription && (
+            <div 
+              dangerouslySetInnerHTML={{ __html: cat.longDescription }} 
+              style={{ marginBottom: '3rem' }}
+            />
+          )}
+
+          {cat.faq && cat.faq.length > 0 && cat.faq.map((item, i) => (
+            <details className="faq" key={i}>
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+          {!cat.faq || cat.faq.length === 0 && (
+            <>
+              <details className="faq">
+                <summary>How can I enquire about this collection?</summary>
+                <p>Use the enquiry link below to contact the team with this collection already selected.</p>
+              </details>
+              <details className="faq">
+                <summary>Can I discuss a bulk requirement?</summary>
+                <p>Share your preferred products, quantities, and destination so the team can discuss the appropriate options.</p>
+              </details>
+            </>
+          )}
+        </div>
+      </section>
+
+      <section className="cta dark">
+        <div className="wrap cta-inner">
+          <div>
+            <span className="eyebrow">Let’s work together</span>
+            <h2>Let’s find the right<br/>collection for you.</h2>
+            <p>Tell us about your requirements and preferred selection.</p>
           </div>
-        )}
-      </div>
-    </div>
+          <Link className="btn light" href={`/contact?context=${encodeURIComponent(cat.name)}`}>
+            Discuss your requirements 
+            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M4 12h15m-6-6 6 6-6 6"/>
+            </svg>
+          </Link>
+        </div>
+      </section>
+    </>
   );
 }
