@@ -28,8 +28,9 @@ const points = [
 export default function WhyUs() {
   return (
     <section className="py-14 md:py-20 lg:py-26 bg-surface" aria-labelledby="home-why-title">
-      <div className="max-w-[1280px] w-[calc(100%-40px)] md:w-[calc(100%-64px)] lg:w-[calc(100%-96px)] mx-auto">
+      <div className="wrap">
         <SectionTitle
+          id="home-why-title"
           eyebrow="Why us"
           title="Our care. Your confidence."
           linkText="Talk to our team"
@@ -38,18 +39,15 @@ export default function WhyUs() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-[30px] lg:gap-8">
           {points.map((p, i) => (
             <article className="border-t border-border pt-6" key={i}>
-              <div className="flex items-center justify-between mb-[17px] md:mb-[25px]">
-                <span className="relative block w-[44px] h-[49px] overflow-hidden bg-white rounded-[3px]">
+                <span className="relative block mb-[10px]">
                   <Image
-                    src="/reference-logo-lockup.png"
+                    src="/bht-flower-icon.svg"
                     alt="B.H.T. Collections"
-                    width={160}
-                    height={160}
-                    className="absolute w-[76px] h-[76px] max-w-none -left-[16px] -top-[12px] object-contain"
+                    width={56}
+                    height={56}
+                    className="object-contain"
                   />
                 </span>
-                <span className="text-[10px] tracking-[0.1em] text-body">0{i + 1}</span>
-              </div>
               <h3 className="text-[19px] md:text-[17px] font-medium leading-[1.5] text-ink lg:min-h-[51px]">
                 {p.title}
               </h3>

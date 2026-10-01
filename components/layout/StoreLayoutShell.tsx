@@ -17,12 +17,13 @@ export default function StoreLayoutShell({
   }
 
   return (
-    <>
+    <div className="storefront">
+      <a className="skip" href="#main">Skip to content</a>
       <Header />
       <main id="main" tabIndex={-1}>
         {children}
       </main>
       <Footer />
-    </>
+    </div>
   );
 }

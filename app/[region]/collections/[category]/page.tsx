@@ -18,14 +18,14 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { region, category } = await params;
-  
+
   const regionData = await RegionService.getRegionByCode(region);
   if (!regionData) return {};
 
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat || cat.status !== "active") return {};
-  
+
   return constructMetadata({
     title: `${cat.name} Collection in ${regionData.name} | B.H.T. Collections`,
     description: `Shop premium ${cat.name.toLowerCase()} online in ${regionData.name}. Discover elegant designs and unparalleled comfort delivered across ${regionData.name}.`,
@@ -49,7 +49,7 @@ export default async function CategoryPage({ params }: Props) {
     categorySlug: category,
     showOnCollection: true,
   });
-  
+
   const products = (initialProducts || []).filter((p) => p.name && p.name.length >= 4);
 
   const breadcrumbItems = [
@@ -97,11 +97,11 @@ export default async function CategoryPage({ params }: Props) {
               </Link>
             </div>
             <div className="media">
-              <Image 
-                src={cat.image || "/reference-home-textiles.jpg"} 
-                alt={`${cat.name} collection preview`} 
-                width={800} 
-                height={1000} 
+              <Image
+                src={cat.image || "/editorial/home-textiles.png"}
+                alt={`${cat.name} collection preview`}
+                width={800}
+                height={1000}
                 className="object-cover"
                 priority
               />
@@ -137,11 +137,11 @@ export default async function CategoryPage({ params }: Props) {
               <article className="product-card" key={product._id}>
                 <Link href={`/${region}/collections/${product.categorySlug}/${product.slug}`} className="product-image-link" aria-label={`Explore ${product.name} collection`}>
                   <div className="media">
-                    <Image 
-                      src={product.image || '/reference-home-textiles.jpg'} 
-                      alt={`${product.name} — illustrative collection image`} 
-                      width={800} 
-                      height={1000} 
+                    <Image
+                      src={product.image || '/editorial/home-textiles.png'}
+                      alt={`${product.name} — illustrative collection image`}
+                      width={800}
+                      height={1000}
                       className="object-cover"
                     />
                   </div>
@@ -151,7 +151,7 @@ export default async function CategoryPage({ params }: Props) {
                   <h3>{product.name}</h3>
                   <p className="price">Enquire for details</p>
                   <Link href={`/${region}/collections/${product.categorySlug}/${product.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
-                    View selection 
+                    View selection
                     <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M4 12h15m-6-6 6 6-6 6"/>
                     </svg>
@@ -184,7 +184,7 @@ export default async function CategoryPage({ params }: Props) {
             <p>Tell us about your requirements and preferred selection.</p>
           </div>
           <Link className="btn light" href={`/contact?context=${encodeURIComponent(cat.name)}`}>
-            Discuss your requirements 
+            Discuss your requirements
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 12h15m-6-6 6 6-6 6"/>
             </svg>

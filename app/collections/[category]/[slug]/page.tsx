@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const product = await ProductService.getProductBySlug(slug);
   if (!product || product.status !== "published") return {};
-  
+
   return constructMetadata({
     title: `${product.name} | B.H.T. Collections`,
     description: (product.shortDescription || product.description) + " · Premium UAE bedding from B.H.T. Collections.",
@@ -62,8 +62,8 @@ export default async function ProductPage({ params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateBreadcrumbSchema(breadcrumbItems)) }}
       />
-      
-      <section className="section" style={{ paddingTop: 'calc(var(--header) + 2rem)' }}>
+
+      <section className="section" style={{ paddingTop: '48px' }}>
         <div className="wrap">
           <nav className="breadcrumb" aria-label="Breadcrumb" style={{ marginBottom: '3rem' }}>
             <Link href="/">Home</Link>
@@ -74,30 +74,31 @@ export default async function ProductPage({ params }: Props) {
             <span>/</span>
             <span aria-current="page">{product.name}</span>
           </nav>
-          
+
           <div className="preview-grid">
             <div className="media">
-              <Image 
-                src={product.image || "/reference-home-textiles.jpg"} 
-                alt={product.name} 
-                width={800} 
-                height={1000} 
+              <Image
+                src={product.image || "/editorial/home-textiles.png"}
+                alt={product.name}
+                width={800}
+                height={1000}
                 className="object-cover"
                 priority
+                sizes="(max-width: 767px) calc(100vw - 40px), 45vw"
               />
             </div>
-            
+
             <div>
               <span className="eyebrow">{product.category}</span>
-              <h2 id="product-title">{product.name}</h2>
+              <h1 id="product-title">{product.name}</h1>
               <p style={{ marginTop: '0.5rem', marginBottom: '1.5rem', fontSize: '1.25rem', color: 'var(--color-ink)', fontWeight: 600 }}>
                 {formatAED(product.price)}
               </p>
-              
+
               <p>Explore this selection with our team. Ask about the available sizes, materials, and options for your requirements.</p>
-              
+
               <p className="demo-note">{product.description || 'Premium selection designed for everyday comfort.'}</p>
-              
+
               {product.materials && product.materials.length > 0 && (
                 <div style={{ marginTop: '2rem', marginBottom: '2rem' }}>
                   <span className="eyebrow">Materials & Care</span>
@@ -108,13 +109,13 @@ export default async function ProductPage({ params }: Props) {
                   </ul>
                 </div>
               )}
-              
-              <Link 
-                className="btn" 
+
+              <Link
+                className="btn"
                 href={`/contact?context=${encodeURIComponent(`${product.name} — ${product.category}`)}`}
                 style={{ marginTop: '2rem' }}
               >
-                Enquire about this selection 
+                Enquire about this selection
                 <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M4 12h15m-6-6 6 6-6 6"/>
                 </svg>
@@ -134,11 +135,11 @@ export default async function ProductPage({ params }: Props) {
                 <article className="product-card" key={rel._id}>
                   <Link href={`/collections/${rel.categorySlug}/${rel.slug}`} className="product-image-link" aria-label={`Explore ${rel.name}`}>
                     <div className="media">
-                      <Image 
-                        src={rel.image || '/reference-home-textiles.jpg'} 
-                        alt={rel.name} 
-                        width={800} 
-                        height={1000} 
+                      <Image
+                        src={rel.image || '/editorial/home-textiles.png'}
+                        alt={rel.name}
+                        width={800}
+                        height={1000}
                         className="object-cover"
                       />
                     </div>
@@ -148,7 +149,7 @@ export default async function ProductPage({ params }: Props) {
                     <h3>{rel.name}</h3>
                     <p className="price">Enquire for details</p>
                     <Link href={`/collections/${rel.categorySlug}/${rel.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
-                      View selection 
+                      View selection
                       <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         <path d="M4 12h15m-6-6 6 6-6 6"/>
                       </svg>

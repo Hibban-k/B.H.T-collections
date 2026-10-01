@@ -4,7 +4,7 @@ import Link from 'next/link';
 export default function FeaturedRegion() {
   return (
     <section className="py-14 md:py-20 lg:py-26 bg-ivory" aria-labelledby="featured-region-title">
-      <div className="max-w-[1280px] w-[calc(100%-40px)] md:w-[calc(100%-64px)] lg:w-[calc(100%-96px)] mx-auto grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 md:gap-12 lg:gap-[72px] items-center">
+      <div className="wrap grid grid-cols-1 lg:grid-cols-[7fr_5fr] gap-8 md:gap-12 lg:gap-[72px] items-center">
         <div className="bg-linen text-forest aspect-[4/3] md:aspect-[6/5] rounded-[4px] p-7 md:p-11 flex flex-col justify-between relative overflow-hidden">
           <span className="text-[10px] tracking-[0.15em] uppercase font-semibold text-body">
             Our starting point
@@ -29,7 +29,7 @@ export default function FeaturedRegion() {
           </p>
           <Link
             className="inline-flex items-center gap-2 md:gap-3 text-[13px] font-semibold tracking-[0.04em] uppercase text-ink hover:text-red transition-colors group mb-6"
-            href="/region?office=uae"
+            href="/region#uae"
           >
             Explore our regions
             <svg

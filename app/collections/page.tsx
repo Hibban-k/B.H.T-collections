@@ -1,7 +1,9 @@
 // app/collections/page.tsx
 import type { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
+import { Suspense } from "react";
+import Catalogue from "@/components/collections/Catalogue";
+import Button from "@/components/ui/Button";
 import { ProductService } from "@/lib/services/product.service";
 import { CategoryService } from "@/lib/services/category.service";
 
@@ -59,108 +61,25 @@ export default async function CollectionsPage() {
         </div>
       </header>
 
-      <div className="category-nav">
-        <nav className="wrap category-nav-inner" aria-label="Collection groups">
-          <Link className="category-tab active" href="/collections" aria-current="page">All collections</Link>
-          <Link className="category-tab" href="/collections?group=home"><small>01</small>Home Textiles</Link>
-          <Link className="category-tab" href="/collections?group=travel"><small>02</small>Travel & Luggage</Link>
-          <Link className="category-tab" href="/collections?group=footwear"><small>03</small>Footwear</Link>
-        </nav>
-      </div>
+      <Suspense fallback={<div className="wrap section">Loading collections…</div>}>
+        <Catalogue products={products} categories={categories} />
+      </Suspense>
 
-      <section className="catalogue">
-        <div className="wrap">
-          <nav className="subcategories" aria-label="Home textile collections">
-            {categories.map(cat => (
-              <Link key={cat._id} href={`/collections/${cat.slug}`}>
-                {cat.name}
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12h15m-6-6 6 6-6 6"/>
-                </svg>
-              </Link>
-            ))}
-          </nav>
-          <div style={{ height: '25px' }}></div>
-          
-          <div className="catalogue-toolbar">
-            <p className="result-count" aria-live="polite">{products.length} selections</p>
-            <div className="desktop-filters">
-              {/* Note: Filters in demo are just UI placeholders. */}
-              <label className="field-inline" htmlFor="sort-filter">
-                Sort by
-                <select id="sort-filter" data-filter="sort" defaultValue="featured">
-                  <option value="featured">Featured</option>
-                  <option value="az">Name: A–Z</option>
-                </select>
-              </label>
-            </div>
-            <button className="btn outline mobile-filter-btn" id="filters-open">
-              Filters &amp; sort
-              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <section className="py-[56px] md:py-[80px] lg:py-[104px] bg-forest text-ivory">
+        <div className="wrap cta-inner flex flex-col md:flex-row md:items-center justify-between gap-7 md:gap-8 lg:gap-16">
+          <div>
+            <span className="block text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-light mb-3">Let’s work together</span>
+            <h2 className="font-serif font-medium text-[clamp(28px,3.5vw,44px)] leading-[1.18] tracking-[-0.035em] text-ivory max-w-[650px]">A collection for<br/>your business.</h2>
+            <p className="text-[14px] md:text-[15px] leading-[1.7] text-muted-light mt-3 md:mt-4 max-w-[48ch]">From individual selections to larger requirements, let’s start with what you need.</p>
+          </div>
+          <div className="shrink-0 self-start md:self-auto">
+            <Button variant="light" href="/contact?context=Collection%20enquiry">
+              Discuss your requirements
+              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-[19px] h-[19px] shrink-0 ml-2">
                 <path d="M4 12h15m-6-6 6 6-6 6"/>
               </svg>
-            </button>
+            </Button>
           </div>
-          
-          <div className="product-grid">
-            {products.map((product) => (
-              <article className="product-card" key={product._id}>
-                <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="product-image-link" aria-label={`Explore ${product.name} collection`}>
-                  <div className="media">
-                    <Image 
-                      src={product.image || '/reference-home-textiles.jpg'} 
-                      alt={`${product.name} — illustrative collection image`} 
-                      width={800} 
-                      height={1000} 
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-                <div className="product-meta">
-                  <span className="eyebrow">{product.category}</span>
-                  <h3>{product.name}</h3>
-                  <p className="price">Enquire for details</p>
-                  <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
-                    View selection 
-                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 12h15m-6-6 6 6-6 6"/>
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-          
-          {products.length === 0 && (
-            <div className="empty-state" style={{ marginTop: '3rem' }}>
-              <h2>No selections found.</h2>
-              <p>Try exploring another collection.</p>
-              <Link href="/collections" className="btn">
-                Reset filters
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12h15m-6-6 6 6-6 6"/>
-                </svg>
-              </Link>
-            </div>
-          )}
-          
-          <p className="section-footnote">Sample catalogue · Images and product-to-brand associations are illustrative. Prices and availability are confirmed by enquiry.</p>
-        </div>
-      </section>
-
-      <section className="cta dark">
-        <div className="wrap cta-inner">
-          <div>
-            <span className="eyebrow">Let’s work together</span>
-            <h2>A collection for<br/>your business.</h2>
-            <p>From individual selections to larger requirements, let’s start with what you need.</p>
-          </div>
-          <Link className="btn light" href="/contact?context=Collection%20enquiry">
-            Discuss your requirements
-            <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M4 12h15m-6-6 6 6-6 6"/>
-            </svg>
-          </Link>
         </div>
       </section>
     </>

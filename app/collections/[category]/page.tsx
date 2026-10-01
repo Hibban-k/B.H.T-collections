@@ -1,4 +1,6 @@
 // app/collections/[category]/page.tsx
+import { Suspense } from "react";
+import Catalogue from "@/components/collections/Catalogue";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
@@ -20,7 +22,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const allCategories = await CategoryService.getCategories();
   const cat = allCategories.find((c) => c.slug === category);
   if (!cat || cat.status !== "active") return {};
-  
+
   return constructMetadata({
     title: `${cat.name} Collection | B.H.T. Collections`,
     description: `${cat.description}. Premium quality home textiles, delivered across UAE.`,
@@ -88,11 +90,11 @@ export default async function CategoryPage({ params }: Props) {
               </Link>
             </div>
             <div className="media">
-              <Image 
-                src={cat.image || "/reference-home-textiles.jpg"} 
-                alt={`${cat.name} collection preview`} 
-                width={800} 
-                height={1000} 
+              <Image
+                src={cat.image || "/editorial/home-textiles.png"}
+                alt={`${cat.name} collection preview`}
+                width={800}
+                height={1000}
                 className="object-cover"
                 priority
               />
@@ -101,85 +103,21 @@ export default async function CategoryPage({ params }: Props) {
         </div>
       </header>
 
-      {/* Embedded Catalogue */}
-      <section className="catalogue">
-        <div className="wrap">
-          <div className="catalogue-toolbar">
-            <p className="result-count" aria-live="polite">{products.length} selections in {cat.name}</p>
-            <div className="desktop-filters">
-              <label className="field-inline" htmlFor="sort-filter">
-                Sort by
-                <select id="sort-filter" data-filter="sort" defaultValue="featured">
-                  <option value="featured">Featured</option>
-                  <option value="az">Name: A–Z</option>
-                </select>
-              </label>
-            </div>
-            <button className="btn outline mobile-filter-btn" id="filters-open">
-              Filters &amp; sort
-              <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M4 12h15m-6-6 6 6-6 6"/>
-              </svg>
-            </button>
-          </div>
-
-          <div className="product-grid">
-            {products.map((product) => (
-              <article className="product-card" key={product._id}>
-                <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="product-image-link" aria-label={`Explore ${product.name} collection`}>
-                  <div className="media">
-                    <Image 
-                      src={product.image || '/reference-home-textiles.jpg'} 
-                      alt={`${product.name} — illustrative collection image`} 
-                      width={800} 
-                      height={1000} 
-                      className="object-cover"
-                    />
-                  </div>
-                </Link>
-                <div className="product-meta">
-                  <span className="eyebrow">{product.category || cat.name}</span>
-                  <h3>{product.name}</h3>
-                  <p className="price">Enquire for details</p>
-                  <Link href={`/collections/${product.categorySlug}/${product.slug}`} className="text-link" style={{ border: 0, background: 'none', padding: 0 }}>
-                    View selection 
-                    <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M4 12h15m-6-6 6 6-6 6"/>
-                    </svg>
-                  </Link>
-                </div>
-              </article>
-            ))}
-          </div>
-
-          {products.length === 0 && (
-            <div className="empty-state" style={{ marginTop: '3rem' }}>
-              <h2>No selections found.</h2>
-              <p>Try exploring another collection.</p>
-              <Link href="/collections" className="btn">
-                View all collections
-                <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M4 12h15m-6-6 6 6-6 6"/>
-                </svg>
-              </Link>
-            </div>
-          )}
-
-          <p className="section-footnote">Sample catalogue · Images and product-to-brand associations are illustrative. Prices and availability are confirmed by enquiry.</p>
-        </div>
-      </section>
+      <Suspense fallback={<div className="wrap section">Loading selections…</div>}>
+        <Catalogue products={products} collectionName={cat.name} />
+      </Suspense>
 
       <section className="section collection-details">
         <div className="wrap reading">
           <span className="eyebrow">A closer look</span>
           <h2>Find your right fit.</h2>
           <p>
-            This demo shows how collection information and common questions can sit alongside the range. For a live enquiry, the team can confirm available specifications and options.
+            Our team can help you compare the available specifications and options for your requirements.
           </p>
 
           {cat.longDescription && (
-            <div 
-              dangerouslySetInnerHTML={{ __html: cat.longDescription }} 
+            <div
+              dangerouslySetInnerHTML={{ __html: cat.longDescription }}
               style={{ marginBottom: '3rem' }}
             />
           )}
@@ -190,7 +128,7 @@ export default async function CategoryPage({ params }: Props) {
               <p>{item.answer}</p>
             </details>
           ))}
-          {!cat.faq || cat.faq.length === 0 && (
+          {(!cat.faq || cat.faq.length === 0) && (
             <>
               <details className="faq">
                 <summary>How can I enquire about this collection?</summary>
@@ -213,7 +151,7 @@ export default async function CategoryPage({ params }: Props) {
             <p>Tell us about your requirements and preferred selection.</p>
           </div>
           <Link className="btn light" href={`/contact?context=${encodeURIComponent(cat.name)}`}>
-            Discuss your requirements 
+            Discuss your requirements
             <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M4 12h15m-6-6 6 6-6 6"/>
             </svg>

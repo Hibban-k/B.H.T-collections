@@ -13,79 +13,78 @@ const contactSchema = z.object({
 
 type ContactFormData = z.infer<typeof contactSchema>;
 
-export default function ContactForm() {
+export default function ContactForm({ initialSubject = "" }: { initialSubject?: string }) {
   const [submitted, setSubmitted] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
-  } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema) });
+  } = useForm<ContactFormData>({ resolver: zodResolver(contactSchema), defaultValues: { subject: initialSubject } });
 
-  const onSubmit = async (data: ContactFormData) => {
-    await new Promise((r) => setTimeout(r, 900));
-    console.log("Contact form:", data);
+  const onSubmit = (data: ContactFormData) => {
+    const subject = encodeURIComponent(data.subject);
+    const body = encodeURIComponent(data.message + '\n\nName: ' + data.name + '\nEmail: ' + data.email);
+    window.location.assign('mailto:info@blankethouse.ae?subject=' + subject + '&body=' + body);
     setSubmitted(true);
-    reset();
   };
 
   return (
     <form id="contact-form" className="contact-form" onSubmit={handleSubmit(onSubmit)} noValidate>
-      <p className="demo-note">This is an interactive design demo. Your information is not sent or stored.</p>
-      
+      <p className="demo-note">This form prepares an email in your email app. Review it there before sending.</p>
+
       <div className="form-row">
         <div className="form-field">
           <label htmlFor="name">Your name</label>
-          <input 
-            id="name" 
-            autoComplete="name" 
-            placeholder="Full name" 
-            {...register("name")} 
+          <input
+            id="name"
+            autoComplete="name"
+            placeholder="Full name"
+            {...register("name")}
           />
           {errors.name && <p style={{color: "var(--red)", fontSize: "12px", marginTop: "4px"}}>{errors.name.message}</p>}
         </div>
         <div className="form-field">
           <label htmlFor="email">Email address</label>
-          <input 
-            id="email" 
-            type="email" 
-            autoComplete="email" 
-            placeholder="you@company.com" 
-            {...register("email")} 
+          <input
+            id="email"
+            type="email"
+            autoComplete="email"
+            placeholder="you@company.com"
+            {...register("email")}
           />
           {errors.email && <p style={{color: "var(--red)", fontSize: "12px", marginTop: "4px"}}>{errors.email.message}</p>}
         </div>
       </div>
-      
+
       <div className="form-field">
         <label htmlFor="subject">What would you like to discuss?</label>
-        <input 
-          id="subject" 
+        <input
+          id="subject"
           placeholder="General enquiry"
-          {...register("subject")} 
+          {...register("subject")}
         />
         {errors.subject && <p style={{color: "var(--red)", fontSize: "12px", marginTop: "4px"}}>{errors.subject.message}</p>}
       </div>
-      
+
       <div className="form-field">
         <label htmlFor="message">Your requirements</label>
-        <textarea 
-          id="message" 
+        <textarea
+          id="message"
           placeholder="Tell us about your collection, quantities, or destination."
           {...register("message")}
         />
         {errors.message && <p style={{color: "var(--red)", fontSize: "12px", marginTop: "4px"}}>{errors.message.message}</p>}
       </div>
-      
+
       <button className="btn" type="submit" disabled={isSubmitting}>
-        {isSubmitting ? "Sending..." : "Preview enquiry"}
+        {isSubmitting ? "Preparing..." : "Prepare email enquiry"}
         {!isSubmitting && <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h15m-6-6 6 6-6 6"/></svg>}
       </button>
-      
+
       {submitted && (
         <p id="form-feedback" className="form-feedback" role="status" style={{ display: "block" }}>
-          Your demo enquiry is ready. Nothing has been sent or saved. For a real enquiry, use the phone or email contact on this page.
+          Your email draft has been requested. Complete sending in your email app, or contact info@blankethouse.ae directly.
         </p>
       )}
     </form>

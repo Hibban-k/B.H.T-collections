@@ -1,26 +1,26 @@
 // app/not-found.tsx
-import Link from "next/link";
+import Button from "@/components/ui/Button";
 
 export default function NotFound() {
   return (
-    <section className="section" style={{ minHeight: '60vh', display: 'flex', alignItems: 'center' }}>
-      <div className="wrap" style={{ textAlign: 'center' }}>
-        <p className="eyebrow" style={{ color: 'var(--color-red)' }}>
+    <section className="py-[56px] md:py-[80px] lg:py-[104px] min-h-[60vh] flex items-center justify-center text-center">
+      <div className="wrap flex flex-col items-center">
+        <p className="block text-[11px] font-semibold leading-[1.5] tracking-[0.15em] uppercase text-red mb-[18px]">
           404
         </p>
-        <h1 style={{ marginBottom: '1rem' }}>
+        <h1 className="font-serif font-medium tracking-[-0.035em] text-[clamp(40px,5.3vw,72px)] leading-[1.08] text-ink mb-4">
           Page Not Found
         </h1>
-        <p style={{ marginBottom: '2rem' }}>
+        <p className="text-[14px] md:text-[15px] leading-[1.75] text-body mb-8 max-w-[48ch]">
           The page you&apos;re looking for doesn&apos;t exist or has been moved.
         </p>
-        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
-          <Link href="/" className="btn">
+        <div className="flex gap-4 justify-center">
+          <Button href="/">
             Back to home
-          </Link>
-          <Link href="/collections" className="btn outline">
+          </Button>
+          <Button href="/collections" variant="outline">
             View collections
-          </Link>
+          </Button>
         </div>
       </div>
     </section>

@@ -4,7 +4,7 @@ import Button from '@/components/ui/Button';
 export default function FinalCTA() {
   return (
     <section className="py-14 md:py-20 lg:py-26 bg-forest text-ivory" aria-labelledby="cta-title">
-      <div className="max-w-[1280px] w-[calc(100%-40px)] md:w-[calc(100%-64px)] lg:w-[calc(100%-96px)] mx-auto flex flex-col md:flex-row md:items-center justify-between gap-7 md:gap-8 lg:gap-16">
+      <div className="wrap flex flex-col md:flex-row md:items-center justify-between gap-7 md:gap-8 lg:gap-16">
         <div>
           <span className="block text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-light mb-3">
             Let’s work together
