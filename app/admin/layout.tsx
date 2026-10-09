@@ -65,7 +65,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       >
         <AuthProvider>
       {/* ── Sidebar Desktop ─────────────────────────────────── */}
-      <aside className="hidden md:flex w-64 bg-black text-white flex-col justify-between border-r border-[#1E2B3E] shrink-0 sticky top-0 h-screen z-30">
+      <aside className="hidden md:flex w-64 bg-black text-white flex-col justify-between border-r border-[#1E2B3E] shrink-0 fixed top-0 left-0 h-screen z-30">
         <div>
           {/* Brand Header */}
           <div className="p-6 border-b border-[#1E2B3E]">
@@ -216,7 +216,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* ── Main Content Area ──────────────────────────────── */}
-      <div className="flex-1 flex flex-col min-w-0">
+      <div className="flex-1 flex flex-col min-w-0 md:ml-64">
         {/* Top bar on desktop */}
         <header className="hidden md:flex bg-white border-b border-[#EAE3D2] px-8 py-4 items-center justify-between sticky top-0 z-20 shadow-xs">
           <div className="flex items-center gap-2 text-xs font-medium text-[#64748B]">
