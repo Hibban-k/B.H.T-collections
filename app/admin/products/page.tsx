@@ -65,7 +65,7 @@ const defaultFormData = {
   brand: "",
   metaTitle: "",
   metaDescription: "",
-  keywords: [],
+  keywords: "",
   status: "published",
 };
 
@@ -167,7 +167,7 @@ export default function AdminProductsPage() {
       brand: (product as any).brand || "",
       metaTitle: (product as any).metaTitle || "",
       metaDescription: (product as any).metaDescription || "",
-      keywords: (product as any).keywords || [],
+      keywords: (product as any).keywords ? (product as any).keywords.join(", ") : "",
       status: product.status,
     });
     setErrorMsg("");
@@ -250,6 +250,9 @@ export default function AdminProductsPage() {
       salePrice: formData.salePrice ? Number(formData.salePrice) : null,
       originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
       stock: Number(formData.stock),
+      keywords: typeof formData.keywords === 'string'
+        ? formData.keywords.split(',').map((s: string) => s.trim()).filter((s: string) => s)
+        : formData.keywords
     };
 
     try {
@@ -860,8 +863,8 @@ export default function AdminProductsPage() {
                   </label>
                   <input
                     type="text"
-                    value={formData.keywords?.join(", ") || ""}
-                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value.split(",").map((s: string) => s.trim()).filter((s: string) => s) })}
+                    value={formData.keywords || ""}
+                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
                     placeholder="e.g. premium blanket, korean blanket, soft bedding"
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />

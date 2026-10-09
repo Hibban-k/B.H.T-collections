@@ -38,7 +38,7 @@ const defaultFormData = {
   status: "active",
   metaTitle: "",
   metaDescription: "",
-  keywords: [],
+  keywords: "",
 };
 
 export default function AdminCategoriesPage() {
@@ -94,7 +94,7 @@ export default function AdminCategoriesPage() {
       status: category.status,
       metaTitle: category.metaTitle || "",
       metaDescription: category.metaDescription || "",
-      keywords: category.keywords || [],
+      keywords: category.keywords ? category.keywords.join(", ") : "",
     });
     setErrorMsg("");
     setImageInputMode("upload");
@@ -149,6 +149,9 @@ export default function AdminCategoriesPage() {
         body: JSON.stringify({
           ...formData,
           image: cleanImageUrl(formData.image),
+          keywords: typeof formData.keywords === 'string'
+            ? formData.keywords.split(',').map((s: string) => s.trim()).filter((s: string) => s)
+            : formData.keywords
         }),
       });
 
@@ -534,8 +537,8 @@ export default function AdminCategoriesPage() {
                   </label>
                   <input
                     type="text"
-                    value={formData.keywords?.join(", ") || ""}
-                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value.split(",").map((s: string) => s.trim()).filter((s: string) => s) })}
+                    value={formData.keywords || ""}
+                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
                     placeholder="e.g. blankets, premium bedding, UAE"
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />

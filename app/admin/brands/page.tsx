@@ -34,7 +34,7 @@ const defaultFormData = {
   description: "",
   metaTitle: "",
   metaDescription: "",
-  keywords: [],
+  keywords: "",
   isActive: true,
 };
 
@@ -85,7 +85,7 @@ export default function BrandsPage() {
       description: brand.description,
       metaTitle: brand.metaTitle || "",
       metaDescription: brand.metaDescription || "",
-      keywords: brand.keywords || [],
+      keywords: brand.keywords ? brand.keywords.join(", ") : "",
       isActive: brand.isActive,
     });
     setErrorMsg("");
@@ -100,6 +100,9 @@ export default function BrandsPage() {
     const payload = {
       ...formData,
       logo: cleanImageUrl(formData.logo),
+      keywords: typeof formData.keywords === 'string'
+        ? formData.keywords.split(',').map((s: string) => s.trim()).filter((s: string) => s)
+        : formData.keywords
     };
 
     try {
@@ -365,8 +368,8 @@ export default function BrandsPage() {
                   <label className="block font-bold mb-1 uppercase tracking-wider text-[11px]">Keywords (comma separated)</label>
                   <input
                     type="text"
-                    value={formData.keywords?.join(", ") || ""}
-                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value.split(",").map(s => s.trim()).filter(s => s) })}
+                    value={formData.keywords || ""}
+                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value })}
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />
                 </div>
