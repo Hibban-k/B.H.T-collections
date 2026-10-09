@@ -72,6 +72,7 @@ const defaultFormData = {
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [brands, setBrands] = useState<any[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -120,9 +121,22 @@ export default function AdminProductsPage() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/admin/categories");
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data.categories || []);
+      }
+    } catch (e) {
+      console.error("Failed to load categories", e);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
     fetchBrands();
+    fetchCategories();
   }, [categoryFilter]);
 
   const handleOpenAdd = () => {
@@ -292,16 +306,11 @@ export default function AdminProductsPage() {
 
   const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
-    const slugMap: Record<string, string> = {
-      Blankets: "blankets",
-      "Bed Linen": "bed-linen",
-      Comforters: "comforters",
-      Bedspreads: "bedspreads",
-    };
+    const selectedCat = categories.find(c => c.name === val);
     setFormData({
       ...formData,
       category: val,
-      categorySlug: slugMap[val] || "blankets",
+      categorySlug: selectedCat ? selectedCat.slug : "uncategorized",
     });
   };
 
@@ -355,23 +364,27 @@ export default function AdminProductsPage() {
 
         {/* Category Filters */}
         <div className="flex items-center gap-2 w-full md:w-auto overflow-x-auto pb-1 md:pb-0">
-          {[
-            { label: "All Items", value: "all" },
-            { label: "Blankets", value: "blankets" },
-            { label: "Bed Linen", value: "bed-linen" },
-            { label: "Comforters", value: "comforters" },
-            { label: "Bedspreads", value: "bedspreads" },
-          ].map((tab) => (
+          <button
+            onClick={() => setCategoryFilter("all")}
+            className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
+              categoryFilter === "all"
+                ? "bg-[#0B131F] text-white shadow-xs"
+                : "bg-[#FAF8F5] text-[#64748B] hover:text-[#0B131F] hover:bg-[#F2EBDC]"
+            }`}
+          >
+            All Items
+          </button>
+          {categories.map((cat) => (
             <button
-              key={tab.value}
-              onClick={() => setCategoryFilter(tab.value)}
+              key={cat._id}
+              onClick={() => setCategoryFilter(cat.slug)}
               className={`px-3 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all ${
-                categoryFilter === tab.value
+                categoryFilter === cat.slug
                   ? "bg-[#0B131F] text-white shadow-xs"
                   : "bg-[#FAF8F5] text-[#64748B] hover:text-[#0B131F] hover:bg-[#F2EBDC]"
               }`}
             >
-              {tab.label}
+              {cat.name}
             </button>
           ))}
         </div>
@@ -576,10 +589,12 @@ export default function AdminProductsPage() {
                     onChange={handleCategoryChange}
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   >
-                    <option value="Blankets">Blankets</option>
-                    <option value="Bed Linen">Bed Linen</option>
-                    <option value="Comforters">Comforters</option>
-                    <option value="Bedspreads">Bedspreads</option>
+                    <option value="" disabled>Select a category</option>
+                    {categories.map((cat) => (
+                      <option key={cat._id} value={cat.name}>
+                        {cat.name}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
