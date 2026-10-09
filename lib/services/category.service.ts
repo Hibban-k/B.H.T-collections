@@ -9,6 +9,9 @@ export interface CreateCategoryInput {
   image?: string;
   type?: "primary" | "secondary";
   status?: "active" | "disabled";
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
 }
 
 export class CategoryService {
@@ -41,6 +44,9 @@ export class CategoryService {
       image: input.image || "/collections/korean-super-soft-blanket.png",
       type: input.type || "primary",
       status: input.status || "active",
+      metaTitle: input.metaTitle || "",
+      metaDescription: input.metaDescription || "",
+      keywords: input.keywords || [],
       productCount: 0,
     };
 

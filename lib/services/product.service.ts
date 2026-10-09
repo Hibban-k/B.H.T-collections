@@ -12,6 +12,7 @@ export interface CreateProductInput {
   originalPrice?: number;
   rating?: number;
   reviewCount?: number;
+  brand?: string;
   image?: string;
   images?: string[];
   description?: string;
@@ -26,6 +27,9 @@ export interface CreateProductInput {
   showOnHomepage?: boolean;
   showOnCollection?: boolean;
   additionalCategories?: string[];
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   status?: "published" | "draft" | "disabled";
 }
 
@@ -75,6 +79,7 @@ export class ProductService {
       originalPrice: input.originalPrice ? Number(input.originalPrice) : undefined,
       rating: input.rating || 5.0,
       reviewCount: input.reviewCount || 1,
+      brand: input.brand ? (input.brand as any) : undefined,
       image: cleanImg,
       images: cleanImgs,
       description: input.description || "",
@@ -94,6 +99,9 @@ export class ProductService {
           ? Boolean(input.showOnCollection)
           : true,
       additionalCategories: input.additionalCategories || [],
+      metaTitle: input.metaTitle || "",
+      metaDescription: input.metaDescription || "",
+      keywords: input.keywords || [],
       status: input.status || "published",
     };
 

@@ -37,6 +37,10 @@ export interface SerializedProduct {
   showOnCollection: boolean;
   crossSellSlugs?: string[];
   additionalCategories?: string[];
+  brand?: any;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   status: "published" | "draft" | "disabled";
   createdAt: Date;
   updatedAt: Date;
@@ -80,92 +84,24 @@ function serialize<T extends HasId>(doc: T): SerializedProduct {
   return { ...doc, _id: doc._id.toString() } as unknown as SerializedProduct;
 }
 
-import { products as mockProducts } from "@/lib/data";
-
 export class ProductRepository {
   static async findAll(options?: ProductFilter): Promise<SerializedProduct[]> {
-    try {
-      await connectToDatabase();
-      const filter = buildMongoFilter(options);
-      const docs = await ProductModel.find(filter).sort({ createdAt: -1 }).lean();
-      if (docs && docs.length > 0) {
-        return docs.map(serialize);
-      }
-    } catch (error) {
-      console.warn("ProductRepository.findAll falling back to mock data:", error);
-    }
-
-    // Fallback to static mock products
-    let result = mockProducts.map((p) => ({
-      ...p,
-      _id: p.id,
-      status: "published" as const,
-      showOnHomepage: p.featured,
-      showOnCollection: true,
-      bestseller: false,
-      stock: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }));
-
-    if (options?.categorySlug) {
-      result = result.filter((p) => p.categorySlug === options.categorySlug);
-    }
-    if (options?.showOnHomepage !== undefined) {
-      result = result.filter((p) => p.showOnHomepage === options.showOnHomepage);
-    }
-    if (options?.showOnCollection !== undefined) {
-      result = result.filter((p) => p.showOnCollection === options.showOnCollection);
-    }
-    return result as unknown as SerializedProduct[];
+    await connectToDatabase();
+    const filter = buildMongoFilter(options);
+    const docs = await ProductModel.find(filter).sort({ createdAt: -1 }).lean();
+    return (docs || []).map(serialize);
   }
 
   static async findById(id: string): Promise<SerializedProduct | null> {
-    try {
-      await connectToDatabase();
-      const doc = await ProductModel.findById(id).lean();
-      if (doc) return serialize(doc);
-    } catch (error) {
-      console.warn("ProductRepository.findById falling back to mock data:", error);
-    }
-
-    const p = mockProducts.find((item) => item.id === id);
-    if (!p) return null;
-    return {
-      ...p,
-      _id: p.id,
-      status: "published" as const,
-      showOnHomepage: p.featured,
-      showOnCollection: true,
-      bestseller: false,
-      stock: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as unknown as SerializedProduct;
+    await connectToDatabase();
+    const doc = await ProductModel.findById(id).lean();
+    return doc ? serialize(doc) : null;
   }
 
   static async findBySlug(slug: string): Promise<SerializedProduct | null> {
-    try {
-      await connectToDatabase();
-      const doc = await ProductModel.findOne({ slug }).lean();
-      if (doc) return serialize(doc);
-    } catch (error) {
-      console.warn("ProductRepository.findBySlug falling back to mock data:", error);
-    }
-
-    const p = mockProducts.find((item) => item.slug === slug);
-    if (!p) return null;
-    return {
-      ...p,
-      _id: p.id,
-      status: "published" as const,
-      showOnHomepage: p.featured,
-      showOnCollection: true,
-      bestseller: false,
-      stock: 50,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as unknown as SerializedProduct;
+    await connectToDatabase();
+    const doc = await ProductModel.findOne({ slug }).lean();
+    return doc ? serialize(doc) : null;
   }
 
   static async findBySlugs(slugs: string[]): Promise<SerializedProduct[]> {
@@ -176,34 +112,13 @@ export class ProductRepository {
   }
 
   static async findRelated(categorySlug: string, excludeSlug: string, limit = 4): Promise<SerializedProduct[]> {
-    try {
-      await connectToDatabase();
-      const docs = await ProductModel.find({
-        categorySlug,
-        slug: { $ne: excludeSlug },
-        status: "published"
-      }).limit(limit).lean();
-      if (docs && docs.length > 0) {
-        return docs.map(serialize);
-      }
-    } catch (error) {
-      console.warn("ProductRepository.findRelated falling back to mock data:", error);
-    }
-
-    return mockProducts
-      .filter((p) => p.categorySlug === categorySlug && p.slug !== excludeSlug)
-      .slice(0, limit)
-      .map((p) => ({
-        ...p,
-        _id: p.id,
-        status: "published" as const,
-        showOnHomepage: p.featured,
-        showOnCollection: true,
-        bestseller: false,
-        stock: 50,
-        createdAt: new Date(),
-        updatedAt: new Date(),
-      })) as unknown as SerializedProduct[];
+    await connectToDatabase();
+    const docs = await ProductModel.find({
+      categorySlug,
+      slug: { $ne: excludeSlug },
+      status: "published"
+    }).limit(limit).lean();
+    return (docs || []).map(serialize);
   }
 
   static async create(data: Partial<IProduct>): Promise<SerializedProduct> {

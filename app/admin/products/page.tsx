@@ -40,6 +40,10 @@ interface ProductItem {
   showOnHomepage: boolean;
   showOnCollection: boolean;
   additionalCategories?: string[];
+  brand?: string;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   status: "published" | "draft" | "disabled";
 }
 
@@ -58,11 +62,16 @@ const defaultFormData = {
   showOnHomepage: true,
   showOnCollection: true,
   additionalCategories: [],
+  brand: "",
+  metaTitle: "",
+  metaDescription: "",
+  keywords: [],
   status: "published",
 };
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
+  const [brands, setBrands] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -99,8 +108,21 @@ export default function AdminProductsPage() {
     }
   };
 
+  const fetchBrands = async () => {
+    try {
+      const res = await fetch("/api/admin/brands");
+      if (res.ok) {
+        const data = await res.json();
+        setBrands(data.brands || []);
+      }
+    } catch (e) {
+      console.error("Failed to load brands", e);
+    }
+  };
+
   useEffect(() => {
     fetchProducts();
+    fetchBrands();
   }, [categoryFilter]);
 
   const handleOpenAdd = () => {
@@ -128,6 +150,10 @@ export default function AdminProductsPage() {
       showOnHomepage: product.showOnHomepage,
       showOnCollection: product.showOnCollection,
       additionalCategories: product.additionalCategories || [],
+      brand: (product as any).brand || "",
+      metaTitle: (product as any).metaTitle || "",
+      metaDescription: (product as any).metaDescription || "",
+      keywords: (product as any).keywords || [],
       status: product.status,
     });
     setErrorMsg("");
@@ -586,6 +612,23 @@ export default function AdminProductsPage() {
                 />
               </div>
 
+              {/* Brand Selection */}
+              <div>
+                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                  Brand
+                </label>
+                <select
+                  value={formData.brand}
+                  onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                >
+                  <option value="">No Brand (Optional)</option>
+                  {brands.map(b => (
+                    <option key={b._id} value={b._id}>{b.name}</option>
+                  ))}
+                </select>
+              </div>
+
               {/* Price & Original/Sale Price */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
@@ -762,6 +805,52 @@ export default function AdminProductsPage() {
                   placeholder="Crafted with ultra-fine microfiber for maximum warmth..."
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                 />
+              </div>
+
+              {/* SEO Metadata */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-4">
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
+                  SEO Metadata (Optional)
+                </h4>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Meta Title
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.metaTitle || ""}
+                    onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+                    placeholder="Custom page title for search engines (leave blank to auto-generate)"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Meta Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.metaDescription || ""}
+                    onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+                    placeholder="Short description for search engine results (150-160 chars recommended)"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Keywords (comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.keywords?.join(", ") || ""}
+                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value.split(",").map((s: string) => s.trim()).filter((s: string) => s) })}
+                    placeholder="e.g. premium blanket, korean blanket, soft bedding"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
               </div>
 
               {/* Display & Status Switches */}

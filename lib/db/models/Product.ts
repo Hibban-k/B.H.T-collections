@@ -1,5 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
-
+import { IBrand } from "./Brand";
 export interface IProduct extends Document {
   name: string;
   slug: string;
@@ -17,6 +17,10 @@ export interface IProduct extends Document {
   sizes: string[];
   colors: string[];
   materials: string[];
+  brand?: mongoose.Types.ObjectId | IBrand; // Or string, but usually ObjectId
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   stock: number;
   badge?: string;
   featured: boolean;
@@ -49,6 +53,10 @@ const ProductSchema = new Schema<IProduct>(
     colors: { type: [String], default: ["Classic"] },
     materials: { type: [String], default: ["100% Premium Material"] },
     stock: { type: Number, default: 50 },
+    brand: { type: Schema.Types.ObjectId, ref: "Brand" },
+    metaTitle: { type: String, default: "" },
+    metaDescription: { type: String, default: "" },
+    keywords: { type: [String], default: [] },
     badge: { type: String, default: "" },
     featured: { type: Boolean, default: false },
     bestseller: { type: Boolean, default: false },

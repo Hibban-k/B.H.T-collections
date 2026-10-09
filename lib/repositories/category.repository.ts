@@ -13,6 +13,9 @@ export interface SerializedCategory {
   type: "primary" | "secondary";
   status: "active" | "disabled";
   productCount: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,67 +28,23 @@ function serialize<T extends HasId>(doc: T): SerializedCategory {
   return { ...doc, _id: doc._id.toString() } as unknown as SerializedCategory;
 }
 
-import { categories as mockCategories } from "@/lib/data";
-
 export class CategoryRepository {
   static async findAll(): Promise<SerializedCategory[]> {
-    try {
-      await connectToDatabase();
-      const docs = await CategoryModel.find().sort({ createdAt: 1 }).lean();
-      if (docs && docs.length > 0) {
-        return docs.map(serialize);
-      }
-    } catch (error) {
-      console.warn("CategoryRepository.findAll falling back to mock data:", error);
-    }
-
-    return mockCategories.map((c) => ({
-      ...c,
-      _id: c.id,
-      status: "active" as const,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    })) as unknown as SerializedCategory[];
+    await connectToDatabase();
+    const docs = await CategoryModel.find().sort({ createdAt: 1 }).lean();
+    return (docs || []).map(serialize);
   }
 
   static async findById(id: string): Promise<SerializedCategory | null> {
-    try {
-      await connectToDatabase();
-      const doc = await CategoryModel.findById(id).lean();
-      if (doc) return serialize(doc);
-    } catch (error) {
-      console.warn("CategoryRepository.findById falling back to mock data:", error);
-    }
-
-    const c = mockCategories.find((item) => item.id === id);
-    if (!c) return null;
-    return {
-      ...c,
-      _id: c.id,
-      status: "active" as const,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as unknown as SerializedCategory;
+    await connectToDatabase();
+    const doc = await CategoryModel.findById(id).lean();
+    return doc ? serialize(doc) : null;
   }
 
   static async findBySlug(slug: string): Promise<SerializedCategory | null> {
-    try {
-      await connectToDatabase();
-      const doc = await CategoryModel.findOne({ slug }).lean();
-      if (doc) return serialize(doc);
-    } catch (error) {
-      console.warn("CategoryRepository.findBySlug falling back to mock data:", error);
-    }
-
-    const c = mockCategories.find((item) => item.slug === slug);
-    if (!c) return null;
-    return {
-      ...c,
-      _id: c.id,
-      status: "active" as const,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    } as unknown as SerializedCategory;
+    await connectToDatabase();
+    const doc = await CategoryModel.findOne({ slug }).lean();
+    return doc ? serialize(doc) : null;
   }
 
   static async create(data: Partial<ICategory>): Promise<SerializedCategory> {

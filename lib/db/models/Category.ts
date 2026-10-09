@@ -10,6 +10,9 @@ export interface ICategory extends Document {
   type: "primary" | "secondary";
   status: "active" | "disabled";
   productCount: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
   createdAt: Date;
   updatedAt: Date;
 }
@@ -25,6 +28,9 @@ const CategorySchema = new Schema<ICategory>(
     type: { type: String, enum: ["primary", "secondary"], default: "primary" },
     status: { type: String, enum: ["active", "disabled"], default: "active" },
     productCount: { type: Number, default: 0 },
+    metaTitle: { type: String, default: "" },
+    metaDescription: { type: String, default: "" },
+    keywords: { type: [String], default: [] },
   },
   { timestamps: true }
 );

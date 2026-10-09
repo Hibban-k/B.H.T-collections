@@ -9,6 +9,8 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        "bht-red": "#D92626",
+        "bht-charcoal": "#171717",
         navy: {
           DEFAULT: "#0B131F",
           50: "#EAEFF5",

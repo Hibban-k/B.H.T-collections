@@ -4,6 +4,8 @@ export type Role = (typeof ROLES)[number];
 export type Permission =
   | "products:read"
   | "products:write"
+  | "brands:read"
+  | "brands:write"
   | "categories:read"
   | "categories:write"
   | "orders:read"
@@ -15,6 +17,8 @@ export type Permission =
 const PERMISSION_MAP: Record<Permission, readonly Role[]> = {
   "products:read": ["super_admin", "admin", "editor", "viewer"],
   "products:write": ["super_admin", "admin", "editor"],
+  "brands:read": ["super_admin", "admin", "editor", "viewer"],
+  "brands:write": ["super_admin", "admin", "editor"],
   "categories:read": ["super_admin", "admin", "editor", "viewer"],
   "categories:write": ["super_admin", "admin", "editor"],
   "orders:read": ["super_admin", "admin"],

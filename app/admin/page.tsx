@@ -93,7 +93,7 @@ export default function AdminDashboardPage() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1
-            className="text-2xl sm:text-3xl font-bold text-[#0B131F]"
+            className="text-2xl sm:text-3xl font-bold text-bht-charcoal"
             style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)" }}
           >
             Dashboard Overview
@@ -106,16 +106,22 @@ export default function AdminDashboardPage() {
           <button
             onClick={fetchStats}
             disabled={loading}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E8DFC8] hover:border-[#D4AF37] text-xs font-semibold text-[#0B131F] rounded-xl shadow-xs transition-colors"
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-[#E8DFC8] hover:border-[#D4AF37] text-xs font-semibold text-bht-charcoal rounded-xl shadow-xs transition-colors"
           >
             <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh Data</span>
           </button>
           <Link
             href="/admin/products"
-            className="px-4 py-2 bg-[#0B131F] text-[#E6C687] hover:bg-[#1A2433] text-xs font-bold uppercase tracking-wider rounded-xl shadow-xs transition-colors"
+            className="px-4 py-2 bg-bht-charcoal text-[#E6C687] hover:bg-[#1A2433] text-xs font-bold uppercase tracking-wider rounded-xl shadow-xs transition-colors"
           >
             + Add Product
+          </Link>
+          <Link
+            href="/admin/brands"
+            className="px-4 py-2 bg-white text-bht-charcoal border border-[#E8DFC8] hover:border-[#D4AF37] text-xs font-bold uppercase tracking-wider rounded-xl shadow-xs transition-colors"
+          >
+            Manage Brands
           </Link>
         </div>
       </div>
@@ -126,10 +132,10 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8DFC8] shadow-xs flex items-center justify-between">
           <div>
             <p className="text-[11px] font-bold text-[#8A95A5] uppercase tracking-wider">Total Orders</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#0B131F] mt-1 font-serif">
+            <h3 className="text-2xl sm:text-3xl font-bold text-bht-charcoal mt-1 font-serif">
               {stats?.totalOrders ?? "—"}
             </h3>
-            <Link href="/admin/orders" className="text-[11px] font-semibold text-[#D92626] hover:underline flex items-center gap-1 mt-2">
+            <Link href="/admin/orders" className="text-[11px] font-semibold text-bht-red hover:underline flex items-center gap-1 mt-2">
               View All <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -156,10 +162,10 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8DFC8] shadow-xs flex items-center justify-between">
           <div>
             <p className="text-[11px] font-bold text-[#8A95A5] uppercase tracking-wider">Total Products</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#0B131F] mt-1 font-serif">
+            <h3 className="text-2xl sm:text-3xl font-bold text-bht-charcoal mt-1 font-serif">
               {stats?.totalProducts ?? "—"}
             </h3>
-            <Link href="/admin/products" className="text-[11px] font-semibold text-[#D92626] hover:underline flex items-center gap-1 mt-2">
+            <Link href="/admin/products" className="text-[11px] font-semibold text-bht-red hover:underline flex items-center gap-1 mt-2">
               Manage Catalog <ArrowUpRight className="w-3 h-3" />
             </Link>
           </div>
@@ -200,14 +206,14 @@ export default function AdminDashboardPage() {
         <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8DFC8] shadow-xs flex items-center justify-between">
           <div>
             <p className="text-[11px] font-bold text-[#8A95A5] uppercase tracking-wider">Total Revenue</p>
-            <h3 className="text-2xl sm:text-3xl font-bold text-[#0B131F] mt-1 font-serif">
+            <h3 className="text-2xl sm:text-3xl font-bold text-bht-charcoal mt-1 font-serif">
               AED {stats?.totalRevenue ? stats.totalRevenue.toLocaleString() : "0"}
             </h3>
             <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1 mt-2">
               <CheckCircle2 className="w-3.5 h-3.5" /> Direct Sales
             </span>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-[#0B131F] border border-[#1E2B3E] flex items-center justify-center text-[#E6C687] shrink-0">
+          <div className="w-12 h-12 rounded-xl bg-bht-charcoal border border-[#1E2B3E] flex items-center justify-center text-[#E6C687] shrink-0">
             <DollarSign className="w-6 h-6" strokeWidth={2} />
           </div>
         </div>

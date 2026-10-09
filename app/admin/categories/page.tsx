@@ -24,6 +24,9 @@ interface CategoryItem {
   type: "primary" | "secondary";
   status: "active" | "disabled";
   productCount: number;
+  metaTitle?: string;
+  metaDescription?: string;
+  keywords?: string[];
 }
 
 const defaultFormData = {
@@ -33,6 +36,9 @@ const defaultFormData = {
   image: "",
   type: "primary",
   status: "active",
+  metaTitle: "",
+  metaDescription: "",
+  keywords: [],
 };
 
 export default function AdminCategoriesPage() {
@@ -86,6 +92,9 @@ export default function AdminCategoriesPage() {
       image: category.image,
       type: category.type || "primary",
       status: category.status,
+      metaTitle: category.metaTitle || "",
+      metaDescription: category.metaDescription || "",
+      keywords: category.keywords || [],
     });
     setErrorMsg("");
     setImageInputMode("upload");
@@ -327,7 +336,7 @@ export default function AdminCategoriesPage() {
               </button>
             </div>
 
-            <form onSubmit={handleSave} className="p-6 space-y-4 text-xs text-[#0B131F]">
+            <form onSubmit={handleSave} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs text-[#0B131F]">
               {errorMsg && (
                 <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-xl flex items-center gap-2">
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -485,6 +494,52 @@ export default function AdminCategoriesPage() {
                   placeholder="Short description for collection banners..."
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                 />
+              </div>
+
+              {/* SEO Metadata */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-4">
+                <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
+                  SEO Metadata (Optional)
+                </h4>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Meta Title
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.metaTitle || ""}
+                    onChange={(e) => setFormData({ ...formData, metaTitle: e.target.value })}
+                    placeholder="Custom page title for search engines"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Meta Description
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={formData.metaDescription || ""}
+                    onChange={(e) => setFormData({ ...formData, metaDescription: e.target.value })}
+                    placeholder="Short description for search engine results (150-160 chars)"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Keywords (comma separated)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.keywords?.join(", ") || ""}
+                    onChange={(e) => setFormData({ ...formData, keywords: e.target.value.split(",").map((s: string) => s.trim()).filter((s: string) => s) })}
+                    placeholder="e.g. blankets, premium bedding, UAE"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
               </div>
 
               <div className="pt-3 flex items-center justify-end gap-3 border-t border-[#E8DFC8]">

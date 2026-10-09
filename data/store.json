@@ -1,74 +1,6 @@
 {
   "products": [
     {
-      "name": "dsjkfjkds",
-      "slug": "dsjkfjkds",
-      "category": "Blankets",
-      "categorySlug": "blankets",
-      "price": 333,
-      "originalPrice": 3333,
-      "rating": 5,
-      "reviewCount": 1,
-      "image": "/uploads/sandalwood_1788300721039.png",
-      "images": [
-        "/uploads/sandalwood_1788300721039.png"
-      ],
-      "description": "",
-      "shortDescription": "",
-      "sizes": [
-        "Standard"
-      ],
-      "colors": [
-        "Classic"
-      ],
-      "materials": [
-        "100% Premium Material"
-      ],
-      "stock": 3,
-      "featured": false,
-      "bestseller": false,
-      "showOnHomepage": true,
-      "showOnCollection": true,
-      "status": "published",
-      "createdAt": "2026-09-01T22:12:05.746Z",
-      "updatedAt": "2026-09-01T22:12:05.746Z",
-      "_id": "prod_1788300725748"
-    },
-    {
-      "name": "bank",
-      "slug": "bank",
-      "category": "Blankets",
-      "categorySlug": "blankets",
-      "price": 300,
-      "originalPrice": 33333,
-      "rating": 5,
-      "reviewCount": 1,
-      "image": "https://m.media-amazon.com/images/I/81+KAQGG9TL.jpg",
-      "images": [
-        "https://m.media-amazon.com/images/I/81+KAQGG9TL.jpg"
-      ],
-      "description": "",
-      "shortDescription": "",
-      "sizes": [
-        "Standard"
-      ],
-      "colors": [
-        "Classic"
-      ],
-      "materials": [
-        "100% Premium Material"
-      ],
-      "stock": 50,
-      "featured": false,
-      "bestseller": false,
-      "showOnHomepage": true,
-      "showOnCollection": true,
-      "status": "published",
-      "createdAt": "2026-09-01T22:01:41.039Z",
-      "updatedAt": "2026-09-01T22:01:41.039Z",
-      "_id": "prod_1788300101054"
-    },
-    {
       "_id": "prod_1",
       "name": "SMARTEX Two-Ply Premium Blanket",
       "slug": "smartex-two-ply-premium-blanket",
@@ -111,7 +43,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "SMARTEX Two-Ply Premium Blanket",
+      "metaDescription": "Ultra-soft dual-layer blanket with superior warmth retention",
+      "keywords": [
+        "Blankets",
+        "SMARTEX Two-Ply Premium Blanket",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_2",
@@ -156,7 +96,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Luxury Fitted Bed Sheet Set",
+      "metaDescription": "400-thread-count luxury bedding set with pillowcases",
+      "keywords": [
+        "Bed Linen",
+        "Luxury Fitted Bed Sheet Set",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_3",
@@ -199,7 +147,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Quilt & Duvet Comforter Set",
+      "metaDescription": "All-season hypoallergenic comforter with duvet cover",
+      "keywords": [
+        "Comforters",
+        "Quilt & Duvet Comforter Set",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_4",
@@ -241,7 +197,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Premium Pillow Case Set (4-Pack)",
+      "metaDescription": "Soft microfibre pillow cases with envelope closure, 4-pack",
+      "keywords": [
+        "Bed Linen",
+        "Premium Pillow Case Set (4-Pack)",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_5",
@@ -285,7 +249,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Luxury Bedspread Collection",
+      "metaDescription": "Jacquard-woven luxury bedspread with elegant pattern",
+      "keywords": [
+        "Bedspreads",
+        "Luxury Bedspread Collection",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_6",
@@ -329,7 +301,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "SMARTEX Ultra-Soft Fleece Blanket",
+      "metaDescription": "Coral fleece blanket — lightweight, ultra-soft, everyday comfort",
+      "keywords": [
+        "Blankets",
+        "SMARTEX Ultra-Soft Fleece Blanket",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_7",
@@ -371,7 +351,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Hotel Collection Duvet Set",
+      "metaDescription": "Five-star hotel quality duvet with shams — 300TC",
+      "keywords": [
+        "Comforters",
+        "Hotel Collection Duvet Set",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_8",
@@ -413,7 +401,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Classic Woven Bedspread",
+      "metaDescription": "Herringbone woven bedspread — timeless and versatile",
+      "keywords": [
+        "Bedspreads",
+        "Classic Woven Bedspread",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_9",
@@ -457,7 +453,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "SMARTEX Heavy Weight Blanket",
+      "metaDescription": "Three-ply thermal blanket for maximum warmth",
+      "keywords": [
+        "Blankets",
+        "SMARTEX Heavy Weight Blanket",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_10",
@@ -499,7 +503,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Embroidered Luxury Bedspread",
+      "metaDescription": "Floral embroidered bedspread with satin-finish base",
+      "keywords": [
+        "Bedspreads",
+        "Embroidered Luxury Bedspread",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_11",
@@ -543,7 +555,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Cotton Rich Flat Sheet Set",
+      "metaDescription": "Breathable cotton-rich flat sheet with pillowcases",
+      "keywords": [
+        "Bed Linen",
+        "Cotton Rich Flat Sheet Set",
+        "blanket",
+        "premium bedding"
+      ]
     },
     {
       "_id": "prod_12",
@@ -584,7 +604,15 @@
       "showOnCollection": true,
       "status": "published",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Microfibre Comforter — All Seasons",
+      "metaDescription": "Lightweight year-round comforter ideal for UAE climate",
+      "keywords": [
+        "Comforters",
+        "Microfibre Comforter — All Seasons",
+        "blanket",
+        "premium bedding"
+      ]
     }
   ],
   "categories": [
@@ -596,7 +624,15 @@
       "image": "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600&q=80",
       "status": "active",
       "createdAt": "2026-09-01T21:43:58.059Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Blankets | Premium Collection",
+      "metaDescription": "Premium multi-ply blankets for ultimate warmth and comfort",
+      "keywords": [
+        "blankets",
+        "premium bedding",
+        "uae",
+        "dubai"
+      ]
     },
     {
       "_id": "cat_2",
@@ -606,7 +642,15 @@
       "image": "https://images.unsplash.com/photo-1522771739844-6a9f6d5f14af?w=600&q=80",
       "status": "active",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Bed Linen | Premium Collection",
+      "metaDescription": "Luxurious fitted and flat sheets for a perfect night's sleep",
+      "keywords": [
+        "bed linen",
+        "premium bedding",
+        "uae",
+        "dubai"
+      ]
     },
     {
       "_id": "cat_3",
@@ -616,7 +660,15 @@
       "image": "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600&q=80",
       "status": "active",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Comforters | Premium Collection",
+      "metaDescription": "Plush quilt and duvet sets for all-season comfort",
+      "keywords": [
+        "comforters",
+        "premium bedding",
+        "uae",
+        "dubai"
+      ]
     },
     {
       "_id": "cat_4",
@@ -626,7 +678,15 @@
       "image": "https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600&q=80",
       "status": "active",
       "createdAt": "2026-09-01T21:43:58.061Z",
-      "updatedAt": "2026-09-01T21:43:58.061Z"
+      "updatedAt": "2026-09-01T21:43:58.061Z",
+      "metaTitle": "Bedspreads | Premium Collection",
+      "metaDescription": "Elegant bedspreads to transform your bedroom aesthetic",
+      "keywords": [
+        "bedspreads",
+        "premium bedding",
+        "uae",
+        "dubai"
+      ]
     }
   ],
   "orders": [

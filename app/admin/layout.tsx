@@ -1,5 +1,6 @@
 "use client";
 // app/admin/layout.tsx
+import "../globals.css";
 import AuthProvider from "@/components/providers/AuthProvider";
 import { useState } from "react";
 import Link from "next/link";
@@ -17,6 +18,7 @@ import {
   X,
   ShieldCheck,
   CheckCircle2,
+  Tag,
 } from "lucide-react";
 
 const sidebarLinks = [
@@ -24,6 +26,8 @@ const sidebarLinks = [
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Layers },
+  { label: "Brands", href: "/admin/brands", icon: Tag },
+  { label: "Regions", href: "/admin/regions", icon: ExternalLink },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -54,13 +58,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <AuthProvider>
-      <div
-      className="min-h-screen bg-[#F8F9FA] text-[#0B131F] flex flex-col md:flex-row"
-      style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
-    >
+    <html lang="en">
+      <body
+        className="min-h-screen bg-[#F8F9FA] text-[#0B131F] flex flex-col md:flex-row"
+        style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
+      >
+        <AuthProvider>
       {/* ── Sidebar Desktop ─────────────────────────────────── */}
-      <aside className="hidden md:flex w-64 bg-[#0B131F] text-white flex-col justify-between border-r border-[#1E2B3E] shrink-0 sticky top-0 h-screen z-30">
+      <aside className="hidden md:flex w-64 bg-black text-white flex-col justify-between border-r border-[#1E2B3E] shrink-0 sticky top-0 h-screen z-30">
         <div>
           {/* Brand Header */}
           <div className="p-6 border-b border-[#1E2B3E]">
@@ -98,7 +103,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                   href={item.href}
                   className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold tracking-wide transition-all ${
                     active
-                      ? "bg-[#D92626] text-white shadow-md shadow-red-950/40"
+                      ? "bg-bht-red text-white shadow-md shadow-red-950/40"
                       : "text-[#A0AEC0] hover:bg-white/5 hover:text-white"
                   }`}
                 >
@@ -140,7 +145,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       </aside>
 
       {/* ── Mobile Header & Drawer ─────────────────────────── */}
-      <div className="md:hidden bg-[#0B131F] text-white p-4 flex items-center justify-between border-b border-[#1E2B3E] sticky top-0 z-40">
+      <div className="md:hidden bg-black text-white p-4 flex items-center justify-between border-b border-[#1E2B3E] sticky top-0 z-40">
         <Link href="/admin" className="flex items-center gap-2.5">
           <div className="relative w-8 h-8 rounded overflow-hidden bg-white/5 border border-white/10 shrink-0">
             <Image src="/bht-logo.jpg" alt="BHT Admin" fill className="object-contain p-0.5" />
@@ -159,7 +164,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Mobile Drawer */}
       {mobileSidebarOpen && (
         <div className="md:hidden fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex">
-          <div className="w-64 bg-[#0B131F] text-white p-5 flex flex-col justify-between h-full">
+          <div className="w-64 bg-black text-white p-5 flex flex-col justify-between h-full">
             <div>
               <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#1E2B3E]">
                 <span className="font-bold text-sm">Navigation</span>
@@ -177,7 +182,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                       href={item.href}
                       onClick={() => setMobileSidebarOpen(false)}
                       className={`flex items-center gap-3 px-4 py-3 rounded-xl text-xs font-semibold ${
-                        active ? "bg-[#D92626] text-white" : "text-[#A0AEC0] hover:bg-white/5"
+                        active ? "bg-bht-red text-white" : "text-[#A0AEC0] hover:bg-white/5"
                       }`}
                     >
                       <Icon className="w-4 h-4" />
@@ -224,7 +229,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>Database Active</span>
             </div>
-            <div className="text-xs font-bold text-[#0B131F] bg-[#FAF8F5] border border-[#E8DFC8] px-3.5 py-1.5 rounded-lg">
+            <div className="text-xs font-bold text-bht-charcoal bg-[#FAF8F5] border border-[#E8DFC8] px-3.5 py-1.5 rounded-lg">
               admin@blankethouse.ae
             </div>
           </div>
@@ -233,7 +238,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         {/* Dynamic Page Content */}
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">{children}</main>
       </div>
-      </div>
-    </AuthProvider>
+        </AuthProvider>
+      </body>
+    </html>
   );
 }
