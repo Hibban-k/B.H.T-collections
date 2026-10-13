@@ -1,10 +1,23 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IBrand } from "./Brand";
+export interface IProductVariant {
+  name: string;
+  sku?: string;
+  size?: string;
+  color?: string;
+  price?: number;
+  salePrice?: number;
+  stock?: number;
+  image?: string;
+}
+
 export interface IProduct extends Document {
   name: string;
   slug: string;
   category: string;
   categorySlug: string;
+  subcategoryId?: mongoose.Types.ObjectId;
+  subcategorySlug?: string;
   price: number;
   salePrice?: number;
   originalPrice?: number;
@@ -12,11 +25,13 @@ export interface IProduct extends Document {
   reviewCount: number;
   image: string;
   images: string[];
+  pdfUrl?: string;
   description: string;
   shortDescription: string;
   sizes: string[];
   colors: string[];
   materials: string[];
+  variants?: IProductVariant[];
   brand?: mongoose.Types.ObjectId | IBrand; // Or string, but usually ObjectId
   metaTitle?: string;
   metaDescription?: string;
@@ -34,12 +49,28 @@ export interface IProduct extends Document {
   updatedAt: Date;
 }
 
+const ProductVariantSchema = new Schema<IProductVariant>(
+  {
+    name: { type: String, required: true },
+    sku: { type: String, default: "" },
+    size: { type: String, default: "" },
+    color: { type: String, default: "" },
+    price: { type: Number },
+    salePrice: { type: Number, default: null },
+    stock: { type: Number, default: 0 },
+    image: { type: String, default: "" },
+  },
+  { _id: false }
+);
+
 const ProductSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, index: true },
     category: { type: String, required: true },
     categorySlug: { type: String, required: true, index: true },
+    subcategoryId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
+    subcategorySlug: { type: String, default: "" },
     price: { type: Number, required: true, min: 0 },
     salePrice: { type: Number, default: null },
     originalPrice: { type: Number, default: null },
@@ -47,11 +78,13 @@ const ProductSchema = new Schema<IProduct>(
     reviewCount: { type: Number, default: 12 },
     image: { type: String, required: true },
     images: { type: [String], default: [] },
+    pdfUrl: { type: String, default: "" },
     description: { type: String, required: true },
     shortDescription: { type: String, default: "" },
     sizes: { type: [String], default: ["Single", "Double", "King"] },
     colors: { type: [String], default: ["Classic"] },
     materials: { type: [String], default: ["100% Premium Material"] },
+    variants: { type: [ProductVariantSchema], default: [] },
     stock: { type: Number, default: 50 },
     brand: { type: Schema.Types.ObjectId, ref: "Brand" },
     metaTitle: { type: String, default: "" },

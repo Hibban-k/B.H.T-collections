@@ -8,6 +8,8 @@ export interface ICategory extends Document {
   faq?: { question: string; answer: string }[];
   image: string;
   type: "primary" | "secondary";
+  parentId?: mongoose.Types.ObjectId | ICategory | null;
+  parentSlug?: string;
   status: "active" | "disabled";
   productCount: number;
   metaTitle?: string;
@@ -26,6 +28,8 @@ const CategorySchema = new Schema<ICategory>(
     faq: [{ question: String, answer: String }],
     image: { type: String, default: "" },
     type: { type: String, enum: ["primary", "secondary"], default: "primary" },
+    parentId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
+    parentSlug: { type: String, default: "" },
     status: { type: String, enum: ["active", "disabled"], default: "active" },
     productCount: { type: Number, default: 0 },
     metaTitle: { type: String, default: "" },

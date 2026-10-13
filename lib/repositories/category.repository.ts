@@ -11,6 +11,8 @@ export interface SerializedCategory {
   faq?: { question: string; answer: string }[];
   image: string;
   type: "primary" | "secondary";
+  parentId?: string | null;
+  parentSlug?: string;
   status: "active" | "disabled";
   productCount: number;
   metaTitle?: string;
@@ -22,10 +24,15 @@ export interface SerializedCategory {
 
 interface HasId {
   _id: { toString(): string };
+  parentId?: { toString(): string } | null;
 }
 
 function serialize<T extends HasId>(doc: T): SerializedCategory {
-  return { ...doc, _id: doc._id.toString() } as unknown as SerializedCategory;
+  return {
+    ...doc,
+    _id: doc._id.toString(),
+    parentId: doc.parentId ? doc.parentId.toString() : null,
+  } as unknown as SerializedCategory;
 }
 
 export class CategoryRepository {

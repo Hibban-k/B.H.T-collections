@@ -9,6 +9,10 @@ cloudinary.config({
 
 export class UploadService {
   static async uploadImage(file: File): Promise<{ url: string; fileName: string }> {
+    return this.uploadFile(file);
+  }
+
+  static async uploadFile(file: File): Promise<{ url: string; fileName: string }> {
     // 1. Check if keys are set
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
       console.warn("Cloudinary not configured! Ensure CLOUDINARY_CLOUD_NAME, API_KEY, and API_SECRET are in .env");
@@ -26,16 +30,17 @@ export class UploadService {
     
     // 4. Wrap the upload_stream in a Promise so we can await it
     return new Promise((resolve, reject) => {
+      const isPdf = file.type === "application/pdf" || originalName.endsWith(".pdf");
       const uploadStream = cloudinary.uploader.upload_stream(
         {
-          folder: "bht-collections", // Optional: organize images in a folder
-          public_id: `${originalName.split('.')[0]}_${Date.now()}`, 
-          resource_type: "auto", // Auto-detect image/video
+          folder: "bht-collections",
+          public_id: `${originalName.split('.')[0]}_${Date.now()}`,
+          resource_type: isPdf ? "raw" : "auto",
         },
         (error: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {
           if (error) {
             console.error("Cloudinary upload failed:", error);
-            return reject(new Error("Failed to upload image to cloud storage."));
+            return reject(new Error("Failed to upload file to cloud storage."));
           }
           if (!result) {
             return reject(new Error("Upload succeeded but returned no result."));

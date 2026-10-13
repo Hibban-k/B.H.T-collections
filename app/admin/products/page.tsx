@@ -19,8 +19,21 @@ import {
   UploadCloud,
   ImageIcon,
   Loader2,
+  FileText,
+  ExternalLink,
 } from "lucide-react";
 import { cleanImageUrl } from "@/lib/utils/image";
+
+export interface ProductVariantItem {
+  name: string;
+  sku?: string;
+  size?: string;
+  color?: string;
+  price?: number;
+  salePrice?: number;
+  stock?: number;
+  image?: string;
+}
 
 interface ProductItem {
   _id: string;
@@ -28,12 +41,16 @@ interface ProductItem {
   slug: string;
   category: string;
   categorySlug: string;
+  subcategoryId?: string | null;
+  subcategorySlug?: string;
   price: number;
   salePrice?: number;
   originalPrice?: number;
   stock: number;
   image: string;
   images: string[];
+  pdfUrl?: string;
+  variants?: ProductVariantItem[];
   description: string;
   shortDescription: string;
   featured: boolean;
@@ -49,13 +66,17 @@ interface ProductItem {
 
 const defaultFormData = {
   name: "",
-  category: "Blankets",
-  categorySlug: "blankets",
+  category: "",
+  categorySlug: "",
+  subcategoryId: "",
+  subcategorySlug: "",
   price: "",
   salePrice: "",
   originalPrice: "",
   stock: "50",
   image: "",
+  pdfUrl: "",
+  variants: [] as ProductVariantItem[],
   description: "",
   shortDescription: "",
   featured: false,
@@ -87,8 +108,10 @@ export default function AdminProductsPage() {
 
   // Upload states
   const [uploading, setUploading] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -153,11 +176,15 @@ export default function AdminProductsPage() {
       name: product.name,
       category: product.category,
       categorySlug: product.categorySlug,
+      subcategoryId: product.subcategoryId || "",
+      subcategorySlug: product.subcategorySlug || "",
       price: product.price.toString(),
       salePrice: product.salePrice ? product.salePrice.toString() : "",
       originalPrice: product.originalPrice ? product.originalPrice.toString() : "",
       stock: product.stock.toString(),
       image: product.image,
+      pdfUrl: product.pdfUrl || "",
+      variants: product.variants || [],
       description: product.description,
       shortDescription: product.shortDescription,
       featured: product.featured,
@@ -206,6 +233,36 @@ export default function AdminProductsPage() {
     }
   };
 
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setUploadingPdf(true);
+    setErrorMsg("");
+
+    try {
+      const uploadData = new FormData();
+      uploadData.append("file", file);
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.url) {
+        setFormData((prev: any) => ({ ...prev, pdfUrl: data.url }));
+      } else {
+        setErrorMsg(data.error || "Failed to upload PDF brochure.");
+      }
+    } catch (err: any) {
+      setErrorMsg("Network error while uploading PDF brochure.");
+    } finally {
+      setUploadingPdf(false);
+    }
+  };
+
   const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -246,6 +303,10 @@ export default function AdminProductsPage() {
     const payload = {
       ...formData,
       image: cleanImageUrl(formData.image),
+      pdfUrl: formData.pdfUrl || "",
+      subcategoryId: formData.subcategoryId || null,
+      subcategorySlug: formData.subcategorySlug || "",
+      variants: Array.isArray(formData.variants) ? formData.variants : [],
       price: Number(formData.price),
       salePrice: formData.salePrice ? Number(formData.salePrice) : null,
       originalPrice: formData.originalPrice ? Number(formData.originalPrice) : null,
@@ -314,6 +375,18 @@ export default function AdminProductsPage() {
       ...formData,
       category: val,
       categorySlug: selectedCat ? selectedCat.slug : "uncategorized",
+      subcategoryId: "",
+      subcategorySlug: "",
+    });
+  };
+
+  const handleSubcategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const subId = e.target.value;
+    const selectedSub = categories.find(c => c._id === subId);
+    setFormData({
+      ...formData,
+      subcategoryId: subId,
+      subcategorySlug: selectedSub ? selectedSub.slug : "",
     });
   };
 
@@ -581,7 +654,7 @@ export default function AdminProductsPage() {
                 />
               </div>
 
-              {/* Category & Stock */}
+              {/* Category & Subcategory */}
               <div className="grid sm:grid-cols-2 gap-4">
                 <div>
                   <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
@@ -593,28 +666,72 @@ export default function AdminProductsPage() {
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   >
                     <option value="" disabled>Select a category</option>
-                    {categories.map((cat) => (
-                      <option key={cat._id} value={cat.name}>
-                        {cat.name}
-                      </option>
-                    ))}
+                    {categories
+                      .filter((cat) => !cat.parentId) // Only top-level categories
+                      .map((cat) => (
+                        <option key={cat._id} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    {/* Fallback for legacy categories that might have parentId set */}
+                    {categories.filter((cat) => !cat.parentId).length === 0 &&
+                      categories.map((cat) => (
+                        <option key={cat._id} value={cat.name}>
+                          {cat.name}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
                 <div>
                   <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
-                    Stock Quantity *
+                    Subcategory (Optional)
                   </label>
-                  <input
-                    type="number"
-                    required
-                    min="0"
-                    value={formData.stock}
-                    onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
-                    placeholder="50"
-                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
-                  />
+                  {(() => {
+                    const currentParentCat = categories.find(
+                      (c) => c.name === formData.category
+                    );
+                    const availableSubs = categories.filter(
+                      (c) => currentParentCat && c.parentId === currentParentCat._id
+                    );
+
+                    return (
+                      <select
+                        value={formData.subcategoryId || ""}
+                        onChange={handleSubcategoryChange}
+                        disabled={!currentParentCat || availableSubs.length === 0}
+                        className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none disabled:opacity-50"
+                      >
+                        <option value="">
+                          {availableSubs.length === 0
+                            ? "No subcategories for this category"
+                            : "Select subcategory (optional)"}
+                        </option>
+                        {availableSubs.map((sub) => (
+                          <option key={sub._id} value={sub._id}>
+                            {sub.name}
+                          </option>
+                        ))}
+                      </select>
+                    );
+                  })()}
                 </div>
+              </div>
+
+              {/* Stock Quantity */}
+              <div>
+                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                  Default Stock Quantity *
+                </label>
+                <input
+                  type="number"
+                  required
+                  min="0"
+                  value={formData.stock}
+                  onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+                  placeholder="50"
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                />
               </div>
 
               <div>
@@ -920,6 +1037,253 @@ export default function AdminProductsPage() {
                     <option value="draft">Draft (Hidden)</option>
                     <option value="disabled">Disabled</option>
                   </select>
+                </div>
+              </div>
+
+              {/* =========================================================
+                  PRODUCT VARIANTS SECTION
+              ========================================================= */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#0B131F]">
+                      Product Variants
+                    </h4>
+                    <p className="text-[10px] text-[#64748B]">
+                      Add sizes, colors, custom pricing, and SKUs (e.g. King / Royal Blue).
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFormData({
+                        ...formData,
+                        variants: [
+                          ...(formData.variants || []),
+                          {
+                            name: "",
+                            size: "",
+                            color: "",
+                            price: formData.price ? Number(formData.price) : undefined,
+                            stock: 10,
+                            sku: "",
+                          },
+                        ],
+                      });
+                    }}
+                    className="px-3 py-1.5 bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#D4AF37] rounded-xl text-xs font-bold text-[#0B131F] flex items-center gap-1.5 transition-colors"
+                  >
+                    <Plus className="w-3.5 h-3.5 text-[#D4AF37]" />
+                    <span>Add Variant</span>
+                  </button>
+                </div>
+
+                {formData.variants && formData.variants.length > 0 ? (
+                  <div className="space-y-3">
+                    {formData.variants.map((v: any, index: number) => (
+                      <div
+                        key={index}
+                        className="p-3.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-2xl space-y-3 relative"
+                      >
+                        <div className="flex items-center justify-between">
+                          <span className="font-bold text-[11px] uppercase tracking-wider text-[#64748B]">
+                            Variant #{index + 1}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              const updated = [...formData.variants];
+                              updated.splice(index, 1);
+                              setFormData({ ...formData, variants: updated });
+                            }}
+                            className="p-1 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            title="Delete variant"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              Variant Name *
+                            </label>
+                            <input
+                              type="text"
+                              required
+                              placeholder="e.g. King Size - Blue"
+                              value={v.name}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].name = e.target.value;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              Size
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. King (220x240)"
+                              value={v.size || ""}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].size = e.target.value;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              Color
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. Royal Navy"
+                              value={v.color || ""}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].color = e.target.value;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                            />
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              Price (AED)
+                            </label>
+                            <input
+                              type="number"
+                              step="0.01"
+                              placeholder="AED Price"
+                              value={v.price !== undefined ? v.price : ""}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].price = e.target.value ? Number(e.target.value) : undefined;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              Stock Quantity
+                            </label>
+                            <input
+                              type="number"
+                              min="0"
+                              placeholder="10"
+                              value={v.stock !== undefined ? v.stock : ""}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].stock = Number(e.target.value) || 0;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                            />
+                          </div>
+
+                          <div>
+                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
+                              SKU (Optional)
+                            </label>
+                            <input
+                              type="text"
+                              placeholder="e.g. BHT-BL-K-01"
+                              value={v.sku || ""}
+                              onChange={(e) => {
+                                const updated = [...formData.variants];
+                                updated[index].sku = e.target.value;
+                                setFormData({ ...formData, variants: updated });
+                              }}
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs font-mono"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="p-4 bg-[#FAF8F5] border border-dashed border-[#E8DFC8] rounded-2xl text-center text-[#64748B]">
+                    <p className="text-xs">No variants added. This product will use the single default price & stock above.</p>
+                  </div>
+                )}
+              </div>
+
+              {/* =========================================================
+                  PDF SPEC SHEET / BROCHURE UPLOAD (AT END OF FORM)
+              ========================================================= */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-2">
+                <label className="block font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
+                  Product Brochure / Spec Sheet (PDF)
+                </label>
+                <input
+                  ref={pdfInputRef}
+                  type="file"
+                  accept="application/pdf"
+                  onChange={handlePdfUpload}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={() => pdfInputRef.current?.click()}
+                  className="border-2 border-dashed border-[#E8DFC8] rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37] transition-all"
+                >
+                  {uploadingPdf ? (
+                    <div className="py-2 flex items-center justify-center gap-2 text-red-600">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Uploading PDF Document...</span>
+                    </div>
+                  ) : formData.pdfUrl ? (
+                    <div className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-red-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold text-xs text-[#0B131F]">PDF Document Attached</p>
+                          <a
+                            href={formData.pdfUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[10px] text-red-600 hover:underline flex items-center gap-1 font-semibold"
+                          >
+                            <span>Preview uploaded PDF</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData({ ...formData, pdfUrl: "" });
+                        }}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        title="Remove PDF"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-3 flex flex-col items-center justify-center gap-1 text-[#64748B]">
+                      <FileText className="w-5 h-5 text-red-500" />
+                      <span className="font-semibold text-xs text-[#0B131F]">Click to upload Product Spec Sheet / Brochure (PDF)</span>
+                      <span className="text-[10px] text-[#94A3B8]">Supports PDF files up to 20MB</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

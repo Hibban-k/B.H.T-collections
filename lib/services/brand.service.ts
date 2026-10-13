@@ -5,6 +5,8 @@ export interface CreateBrandInput {
   name: string;
   slug?: string;
   logo?: string;
+  image?: string;
+  pdfUrl?: string;
   description?: string;
   metaTitle?: string;
   metaDescription?: string;
@@ -34,6 +36,8 @@ export class BrandService {
       name: input.name,
       slug,
       logo: input.logo || "",
+      image: input.image || "",
+      pdfUrl: input.pdfUrl || "",
       description: input.description || "",
       metaTitle: input.metaTitle || "",
       metaDescription: input.metaDescription || "",

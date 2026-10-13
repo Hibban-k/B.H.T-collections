@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
@@ -12,6 +12,10 @@ import {
   X,
   RefreshCw,
   AlertCircle,
+  UploadCloud,
+  FileText,
+  Loader2,
+  ExternalLink,
 } from "lucide-react";
 import { cleanImageUrl } from "@/lib/utils/image";
 
@@ -20,6 +24,8 @@ interface BrandItem {
   name: string;
   slug: string;
   logo: string;
+  image?: string;
+  pdfUrl?: string;
   description: string;
   metaTitle: string;
   metaDescription: string;
@@ -31,6 +37,8 @@ const defaultFormData = {
   name: "",
   slug: "",
   logo: "",
+  image: "",
+  pdfUrl: "",
   description: "",
   metaTitle: "",
   metaDescription: "",
@@ -49,6 +57,14 @@ export default function BrandsPage() {
   const [formData, setFormData] = useState<any>(defaultFormData);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  // Upload states
+  const [uploadingLogo, setUploadingLogo] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const logoInputRef = useRef<HTMLInputElement>(null);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const fetchBrands = async () => {
     setLoading(true);
@@ -81,8 +97,10 @@ export default function BrandsPage() {
     setFormData({
       name: brand.name,
       slug: brand.slug,
-      logo: brand.logo,
-      description: brand.description,
+      logo: brand.logo || "",
+      image: brand.image || "",
+      pdfUrl: brand.pdfUrl || "",
+      description: brand.description || "",
       metaTitle: brand.metaTitle || "",
       metaDescription: brand.metaDescription || "",
       keywords: brand.keywords ? brand.keywords.join(", ") : "",
@@ -90,6 +108,39 @@ export default function BrandsPage() {
     });
     setErrorMsg("");
     setModalOpen(true);
+  };
+
+  const handleFileUpload = async (
+    file: File,
+    target: "logo" | "image" | "pdfUrl"
+  ) => {
+    if (target === "logo") setUploadingLogo(true);
+    if (target === "image") setUploadingImage(true);
+    if (target === "pdfUrl") setUploadingPdf(true);
+    setErrorMsg("");
+
+    try {
+      const uploadData = new FormData();
+      uploadData.append("file", file);
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.url) {
+        setFormData((prev: any) => ({ ...prev, [target]: data.url }));
+      } else {
+        setErrorMsg(data.error || "Failed to upload file.");
+      }
+    } catch (err: any) {
+      setErrorMsg("Network error while uploading file.");
+    } finally {
+      if (target === "logo") setUploadingLogo(false);
+      if (target === "image") setUploadingImage(false);
+      if (target === "pdfUrl") setUploadingPdf(false);
+    }
   };
 
   const handleSave = async (e: React.FormEvent) => {
@@ -100,9 +151,15 @@ export default function BrandsPage() {
     const payload = {
       ...formData,
       logo: cleanImageUrl(formData.logo),
-      keywords: typeof formData.keywords === 'string'
-        ? formData.keywords.split(',').map((s: string) => s.trim()).filter((s: string) => s)
-        : formData.keywords
+      image: cleanImageUrl(formData.image),
+      pdfUrl: formData.pdfUrl || "",
+      keywords:
+        typeof formData.keywords === "string"
+          ? formData.keywords
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter((s: string) => s)
+          : formData.keywords,
     };
 
     try {
@@ -174,7 +231,7 @@ export default function BrandsPage() {
             Brands Management
           </h1>
           <p className="text-xs text-[#64748B] mt-1">
-            Manage product brands, logos, and SEO metadata.
+            Manage product brands, logos, banners, catalogs/brochures (PDF), and SEO metadata.
           </p>
         </div>
 
@@ -220,6 +277,7 @@ export default function BrandsPage() {
                 <tr>
                   <th className="px-5 py-3.5 font-bold">Brand</th>
                   <th className="px-4 py-3.5 font-bold">Slug</th>
+                  <th className="px-4 py-3.5 font-bold">PDF Brochure</th>
                   <th className="px-4 py-3.5 font-bold">Status</th>
                   <th className="px-5 py-3.5 font-bold text-right">Actions</th>
                 </tr>
@@ -236,13 +294,34 @@ export default function BrandsPage() {
                             brand.name.charAt(0)
                           )}
                         </div>
-                        <span className="font-bold text-[#0B131F] text-xs">{brand.name}</span>
+                        <div>
+                          <span className="font-bold text-[#0B131F] text-xs block">{brand.name}</span>
+                          {brand.image && (
+                            <span className="text-[10px] text-[#64748B]">Has banner image</span>
+                          )}
+                        </div>
                       </div>
                     </td>
                     <td className="px-4 py-3.5">
                       <span className="px-2.5 py-1 rounded-md bg-[#FAF8F5] border border-[#E8DFC8] font-medium text-[11px] text-[#0B131F]">
                         {brand.slug}
                       </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {brand.pdfUrl ? (
+                        <a
+                          href={brand.pdfUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 bg-red-50 border border-red-200 text-red-700 rounded-md font-semibold text-[11px] hover:bg-red-100 transition-colors"
+                        >
+                          <FileText className="w-3.5 h-3.5 text-red-600" />
+                          <span>View PDF</span>
+                          <ExternalLink className="w-3 h-3 text-red-400" />
+                        </a>
+                      ) : (
+                        <span className="text-[#94A3B8] text-[11px]">—</span>
+                      )}
                     </td>
                     <td className="px-4 py-3.5">
                       <button
@@ -320,15 +399,114 @@ export default function BrandsPage() {
                 />
               </div>
 
-              <div>
-                <label className="block font-bold mb-1 uppercase tracking-wider text-[11px]">Logo URL (Optional)</label>
+              {/* Brand Logo Upload Section */}
+              <div className="space-y-1.5">
+                <label className="block font-bold uppercase tracking-wider text-[11px]">Brand Logo</label>
                 <input
-                  type="text"
-                  value={formData.logo}
-                  onChange={(e) => setFormData({ ...formData, logo: e.target.value })}
-                  placeholder="https://example.com/logo.png"
-                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  ref={logoInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0], "logo");
+                    }
+                  }}
+                  className="hidden"
                 />
+
+                <div
+                  onClick={() => logoInputRef.current?.click()}
+                  className="border-2 border-dashed border-[#D4AF37]/50 rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 transition-all"
+                >
+                  {uploadingLogo ? (
+                    <div className="py-2 flex items-center justify-center gap-2 text-[#D4AF37]">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Uploading Logo...</span>
+                    </div>
+                  ) : formData.logo ? (
+                    <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#E8DFC8]">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12 rounded-lg bg-[#FAF8F5] border overflow-hidden shrink-0">
+                          <Image src={cleanImageUrl(formData.logo)} alt="Logo Preview" fill className="object-cover" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold text-xs">Logo Loaded</p>
+                          <span className="text-[10px] text-[#D4AF37]">Click to replace</span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData({ ...formData, logo: "" });
+                        }}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-2 flex items-center justify-center gap-2 text-[#64748B]">
+                      <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Click to upload Brand Logo (JPG, PNG, WebP)</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Brand Cover / Banner Image Upload */}
+              <div className="space-y-1.5">
+                <label className="block font-bold uppercase tracking-wider text-[11px]">Brand Banner / Image (Optional)</label>
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0], "image");
+                    }
+                  }}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={() => imageInputRef.current?.click()}
+                  className="border-2 border-dashed border-[#D4AF37]/50 rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 transition-all"
+                >
+                  {uploadingImage ? (
+                    <div className="py-2 flex items-center justify-center gap-2 text-[#D4AF37]">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Uploading Banner...</span>
+                    </div>
+                  ) : formData.image ? (
+                    <div className="flex items-center justify-between p-2 bg-white rounded-xl border border-[#E8DFC8]">
+                      <div className="flex items-center gap-3">
+                        <div className="relative w-12 h-12 rounded-lg bg-[#FAF8F5] border overflow-hidden shrink-0">
+                          <Image src={cleanImageUrl(formData.image)} alt="Banner Preview" fill className="object-cover" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold text-xs">Banner Image Loaded</p>
+                          <span className="text-[10px] text-[#D4AF37]">Click to replace</span>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData({ ...formData, image: "" });
+                        }}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-2 flex items-center justify-center gap-2 text-[#64748B]">
+                      <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+                      <span>Click to upload Brand Banner / Cover Image</span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div>
@@ -375,6 +553,74 @@ export default function BrandsPage() {
                 </div>
               </div>
 
+              {/* PDF Document Upload at the end of the form */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-2">
+                <label className="block font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
+                  Brand Catalog / Brochure (PDF)
+                </label>
+                <input
+                  ref={pdfInputRef}
+                  type="file"
+                  accept="application/pdf"
+                  onChange={(e) => {
+                    if (e.target.files && e.target.files[0]) {
+                      handleFileUpload(e.target.files[0], "pdfUrl");
+                    }
+                  }}
+                  className="hidden"
+                />
+
+                <div
+                  onClick={() => pdfInputRef.current?.click()}
+                  className="border-2 border-dashed border-[#E8DFC8] rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37] transition-all"
+                >
+                  {uploadingPdf ? (
+                    <div className="py-2 flex items-center justify-center gap-2 text-red-600">
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Uploading PDF Document...</span>
+                    </div>
+                  ) : formData.pdfUrl ? (
+                    <div className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-red-200">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600">
+                          <FileText className="w-5 h-5" />
+                        </div>
+                        <div className="text-left">
+                          <p className="font-bold text-xs text-[#0B131F]">PDF Document Attached</p>
+                          <a
+                            href={formData.pdfUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-[10px] text-red-600 hover:underline flex items-center gap-1 font-semibold"
+                          >
+                            <span>Preview uploaded PDF</span>
+                            <ExternalLink className="w-2.5 h-2.5" />
+                          </a>
+                        </div>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setFormData({ ...formData, pdfUrl: "" });
+                        }}
+                        className="p-1 text-red-500 hover:bg-red-50 rounded"
+                        title="Remove PDF"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="py-3 flex flex-col items-center justify-center gap-1 text-[#64748B]">
+                      <FileText className="w-5 h-5 text-red-500" />
+                      <span className="font-semibold text-xs text-[#0B131F]">Click to upload Brand PDF brochure / catalog</span>
+                      <span className="text-[10px] text-[#94A3B8]">Supports PDF files up to 20MB</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               <div className="pt-4 border-t border-[#F2EBDC] flex justify-end gap-3">
                 <button
                   type="button"
@@ -385,8 +631,8 @@ export default function BrandsPage() {
                 </button>
                 <button
                   type="submit"
-                  disabled={saving}
-                  className="px-6 py-2 bg-[#0B131F] text-[#E6C687] text-xs font-bold uppercase tracking-wider rounded-xl shadow-md hover:bg-[#1A2433] transition-colors flex items-center gap-2"
+                  disabled={saving || uploadingLogo || uploadingImage || uploadingPdf}
+                  className="px-6 py-2 bg-[#0B131F] text-[#E6C687] text-xs font-bold uppercase tracking-wider rounded-xl shadow-md hover:bg-[#1A2433] transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {saving ? <RefreshCw className="w-4 h-4 animate-spin" /> : <CheckCircle className="w-4 h-4" />}
                   <span>{saving ? "Saving..." : "Save Brand"}</span>

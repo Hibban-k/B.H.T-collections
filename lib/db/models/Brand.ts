@@ -4,6 +4,8 @@ export interface IBrand extends Document {
   name: string;
   slug: string;
   logo?: string;
+  image?: string;
+  pdfUrl?: string;
   description?: string;
   // SEO fields
   metaTitle?: string;
@@ -19,6 +21,8 @@ const BrandSchema = new Schema<IBrand>(
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, index: true },
     logo: { type: String, default: "" },
+    image: { type: String, default: "" },
+    pdfUrl: { type: String, default: "" },
     description: { type: String, default: "" },
     metaTitle: { type: String, default: "" },
     metaDescription: { type: String, default: "" },

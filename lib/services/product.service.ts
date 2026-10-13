@@ -2,11 +2,15 @@ import { ProductRepository, ProductFilter, SerializedProduct } from "@/lib/repos
 import { cleanImageUrl } from "@/lib/utils/image";
 import type { IProduct } from "@/lib/db/models/Product";
 
+import type { IProductVariant } from "@/lib/db/models/Product";
+
 export interface CreateProductInput {
   name: string;
   slug?: string;
   category?: string;
   categorySlug?: string;
+  subcategoryId?: string | null;
+  subcategorySlug?: string;
   price: number;
   salePrice?: number;
   originalPrice?: number;
@@ -15,11 +19,13 @@ export interface CreateProductInput {
   brand?: string;
   image?: string;
   images?: string[];
+  pdfUrl?: string;
   description?: string;
   shortDescription?: string;
   sizes?: string[];
   colors?: string[];
   materials?: string[];
+  variants?: IProductVariant[];
   stock?: number;
   badge?: string;
   featured?: boolean;
@@ -74,6 +80,8 @@ export class ProductService {
       slug,
       category: input.category || "Blankets",
       categorySlug: input.categorySlug || "blankets",
+      subcategoryId: (input.subcategoryId as any) || undefined,
+      subcategorySlug: input.subcategorySlug || "",
       price: Number(input.price) || 0,
       salePrice: input.salePrice ? Number(input.salePrice) : undefined,
       originalPrice: input.originalPrice ? Number(input.originalPrice) : undefined,
@@ -82,12 +90,14 @@ export class ProductService {
       brand: input.brand ? (input.brand as any) : undefined,
       image: cleanImg,
       images: cleanImgs,
+      pdfUrl: input.pdfUrl || "",
       description: input.description || "",
       shortDescription:
         input.shortDescription || input.description?.slice(0, 120) || "",
       sizes: input.sizes || ["Standard"],
       colors: input.colors || ["Classic"],
       materials: input.materials || ["100% Premium Material"],
+      variants: input.variants || [],
       stock: input.stock !== undefined ? Number(input.stock) : 50,
       badge: input.badge || undefined,
       featured: Boolean(input.featured),

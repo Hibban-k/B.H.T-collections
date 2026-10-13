@@ -11,12 +11,25 @@ export interface ProductFilter {
   search?: string;
 }
 
+export interface SerializedProductVariant {
+  name: string;
+  sku?: string;
+  size?: string;
+  color?: string;
+  price?: number;
+  salePrice?: number;
+  stock?: number;
+  image?: string;
+}
+
 export interface SerializedProduct {
   _id: string;
   name: string;
   slug: string;
   category: string;
   categorySlug: string;
+  subcategoryId?: string | null;
+  subcategorySlug?: string;
   price: number;
   salePrice?: number;
   originalPrice?: number;
@@ -24,11 +37,13 @@ export interface SerializedProduct {
   reviewCount: number;
   image: string;
   images: string[];
+  pdfUrl?: string;
   description: string;
   shortDescription: string;
   sizes: string[];
   colors: string[];
   materials: string[];
+  variants?: SerializedProductVariant[];
   stock: number;
   badge?: string;
   featured: boolean;

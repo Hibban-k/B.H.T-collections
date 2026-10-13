@@ -22,6 +22,8 @@ interface CategoryItem {
   description: string;
   image: string;
   type: "primary" | "secondary";
+  parentId?: string | null;
+  parentSlug?: string;
   status: "active" | "disabled";
   productCount: number;
   metaTitle?: string;
@@ -35,6 +37,7 @@ const defaultFormData = {
   description: "",
   image: "",
   type: "primary",
+  parentId: "",
   status: "active",
   metaTitle: "",
   metaDescription: "",
@@ -91,6 +94,7 @@ export default function AdminCategoriesPage() {
       description: category.description,
       image: category.image,
       type: category.type || "primary",
+      parentId: category.parentId || "",
       status: category.status,
       metaTitle: category.metaTitle || "",
       metaDescription: category.metaDescription || "",
@@ -137,6 +141,21 @@ export default function AdminCategoriesPage() {
     setSaving(true);
     setErrorMsg("");
 
+    const selectedParent = categories.find((c) => c._id === formData.parentId);
+    const payload = {
+      ...formData,
+      parentId: formData.parentId ? formData.parentId : null,
+      parentSlug: selectedParent ? selectedParent.slug : "",
+      image: cleanImageUrl(formData.image),
+      keywords:
+        typeof formData.keywords === "string"
+          ? formData.keywords
+              .split(",")
+              .map((s: string) => s.trim())
+              .filter((s: string) => s)
+          : formData.keywords,
+    };
+
     try {
       const url = editingCategory
         ? `/api/admin/categories/${editingCategory._id}`
@@ -146,13 +165,7 @@ export default function AdminCategoriesPage() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          image: cleanImageUrl(formData.image),
-          keywords: typeof formData.keywords === 'string'
-            ? formData.keywords.split(',').map((s: string) => s.trim()).filter((s: string) => s)
-            : formData.keywords
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -279,11 +292,18 @@ export default function AdminCategoriesPage() {
                     style={{ fontFamily: "var(--font-playfair-display, Georgia, serif)" }}
                   >
                     <span>{cat.name}</span>
-                    {cat.type === "secondary" && (
-                      <span className="text-[9px] font-sans font-bold bg-[#FAF8F5] text-[#D4AF37] border border-[#E8DFC8] px-2 py-0.5 rounded uppercase tracking-widest">
-                        Programmatic
-                      </span>
-                    )}
+                    <div className="flex items-center gap-1">
+                      {cat.parentId && (
+                        <span className="text-[9px] font-sans font-bold bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded uppercase tracking-wider">
+                          Subcategory
+                        </span>
+                      )}
+                      {cat.type === "secondary" && (
+                        <span className="text-[9px] font-sans font-bold bg-[#FAF8F5] text-[#D4AF37] border border-[#E8DFC8] px-2 py-0.5 rounded uppercase tracking-widest">
+                          Programmatic
+                        </span>
+                      )}
+                    </div>
                   </h3>
                   <p className="text-xs text-[#64748B] line-clamp-2 leading-relaxed">
                     {cat.description || "No description provided."}
@@ -387,6 +407,30 @@ export default function AdminCategoriesPage() {
                     <option value="secondary">Secondary / Programmatic Tag</option>
                   </select>
                 </div>
+              </div>
+
+              {/* Subcategory Parent Selector */}
+              <div>
+                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                  Parent Category (Leave empty if this is a top-level category)
+                </label>
+                <select
+                  value={formData.parentId || ""}
+                  onChange={(e) => setFormData({ ...formData, parentId: e.target.value })}
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                >
+                  <option value="">None (Top-Level Category)</option>
+                  {categories
+                    .filter((c) => !editingCategory || c._id !== editingCategory._id)
+                    .map((c) => (
+                      <option key={c._id} value={c._id}>
+                        {c.name} ({c.slug})
+                      </option>
+                    ))}
+                </select>
+                <p className="text-[10px] text-[#64748B] mt-1">
+                  If selected, this category becomes a subcategory under the chosen parent.
+                </p>
               </div>
 
               {/* IMAGE UPLOAD SECTION */}

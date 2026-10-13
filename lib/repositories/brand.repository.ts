@@ -6,6 +6,8 @@ export interface SerializedBrand {
   name: string;
   slug: string;
   logo?: string;
+  image?: string;
+  pdfUrl?: string;
   description?: string;
   metaTitle?: string;
   metaDescription?: string;
