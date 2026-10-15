@@ -106,6 +106,7 @@ export default function AdminProductsPage() {
 
   // Upload states
   const [uploading, setUploading] = useState(false);
+  const [uploadingVariantIndex, setUploadingVariantIndex] = useState<number | null>(null);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -227,6 +228,36 @@ export default function AdminProductsPage() {
       setErrorMsg("Network error while uploading image.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  // Variant Image Upload Handler
+  const handleVariantImageUpload = async (file: File, variantIndex: number) => {
+    setUploadingVariantIndex(variantIndex);
+    setErrorMsg("");
+
+    try {
+      const uploadData = new FormData();
+      uploadData.append("file", file);
+      uploadData.append("folder", "products/variants");
+
+      const res = await fetch("/api/admin/upload", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      const data = await res.json();
+      if (res.ok && data.success && data.url) {
+        const updated = [...formData.variants];
+        updated[variantIndex].image = data.url;
+        setFormData({ ...formData, variants: updated });
+      } else {
+        setErrorMsg(data.error || "Failed to upload variant image.");
+      }
+    } catch (err) {
+      setErrorMsg("Network error while uploading variant image.");
+    } finally {
+      setUploadingVariantIndex(null);
     }
   };
 
@@ -1229,6 +1260,77 @@ export default function AdminProductsPage() {
                               }}
                               className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs font-mono uppercase"
                             />
+                          </div>
+                        </div>
+
+                        {/* Variant Image Upload Button & Preview */}
+                        <div className="pt-2 border-t border-[#E8DFC8] flex items-center justify-between gap-3">
+                          <div className="flex items-center gap-2">
+                            {v.image ? (
+                              <div className="relative w-9 h-9 rounded-lg overflow-hidden border border-[#E8DFC8] shrink-0 bg-white">
+                                <Image
+                                  src={cleanImageUrl(v.image)}
+                                  alt={v.name || "Variant preview"}
+                                  fill
+                                  className="object-cover"
+                                />
+                              </div>
+                            ) : (
+                              <div className="w-9 h-9 rounded-lg border border-dashed border-[#E8DFC8] flex items-center justify-center text-[#94A3B8] shrink-0 bg-white">
+                                <ImageIcon className="w-4 h-4" />
+                              </div>
+                            )}
+
+                            <div>
+                              <p className="text-[10px] font-bold text-[#0B131F]">
+                                {v.image ? "Variant Image Attached" : "No Variant Image"}
+                              </p>
+                              <p className="text-[9px] text-[#64748B]">
+                                {v.image ? "Overrides main product image when selected" : "Will use main product image"}
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5">
+                            <label className="cursor-pointer px-2.5 py-1.5 bg-white hover:bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#D4AF37] text-[11px] font-bold rounded-xl text-[#0B131F] flex items-center gap-1.5 transition-colors">
+                              {uploadingVariantIndex === index ? (
+                                <>
+                                  <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />
+                                  <span>Uploading...</span>
+                                </>
+                              ) : (
+                                <>
+                                  <UploadCloud className="w-3.5 h-3.5 text-[#D4AF37]" />
+                                  <span>{v.image ? "Change Image" : "Upload Image"}</span>
+                                </>
+                              )}
+                              <input
+                                type="file"
+                                accept="image/*"
+                                disabled={uploadingVariantIndex !== null}
+                                onChange={(e) => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    handleVariantImageUpload(e.target.files[0], index);
+                                  }
+                                }}
+                                className="hidden"
+                              />
+                            </label>
+
+                            {v.image && (
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  const updated = [...formData.variants];
+                                  updated[index].image = "";
+                                  setFormData({ ...formData, variants: updated });
+                                }}
+                                className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                                title="Remove variant image"
+                              >
+                                <X className="w-3.5 h-3.5" />
+                              </button>
+                            )}
                           </div>
                         </div>
                       </div>
