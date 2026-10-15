@@ -7,7 +7,6 @@ export interface CreateCategoryInput {
   description?: string;
   longDescription?: string;
   image?: string;
-  type?: "primary" | "secondary";
   parentId?: string | null;
   parentSlug?: string;
   status?: "active" | "disabled";
@@ -44,7 +43,6 @@ export class CategoryService {
       description: input.description || "",
       longDescription: input.longDescription || "",
       image: input.image || "/collections/korean-super-soft-blanket.png",
-      type: input.type || "primary",
       parentId: (input.parentId as any) || null,
       parentSlug: input.parentSlug || "",
       status: input.status || "active",

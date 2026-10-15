@@ -10,7 +10,6 @@ export interface SerializedCategory {
   longDescription?: string;
   faq?: { question: string; answer: string }[];
   image: string;
-  type: "primary" | "secondary";
   parentId?: string | null;
   parentSlug?: string;
   status: "active" | "disabled";
