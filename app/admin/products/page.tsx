@@ -19,8 +19,6 @@ import {
   UploadCloud,
   ImageIcon,
   Loader2,
-  FileText,
-  ExternalLink,
 } from "lucide-react";
 import { cleanImageUrl } from "@/lib/utils/image";
 
@@ -49,7 +47,6 @@ interface ProductItem {
   stock: number;
   image: string;
   images: string[];
-  pdfUrl?: string;
   variants?: ProductVariantItem[];
   description: string;
   shortDescription: string;
@@ -75,7 +72,6 @@ const defaultFormData = {
   originalPrice: "",
   stock: "50",
   image: "",
-  pdfUrl: "",
   variants: [] as ProductVariantItem[],
   description: "",
   shortDescription: "",
@@ -108,10 +104,8 @@ export default function AdminProductsPage() {
 
   // Upload states
   const [uploading, setUploading] = useState(false);
-  const [uploadingPdf, setUploadingPdf] = useState(false);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const pdfInputRef = useRef<HTMLInputElement>(null);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -183,7 +177,6 @@ export default function AdminProductsPage() {
       originalPrice: product.originalPrice ? product.originalPrice.toString() : "",
       stock: product.stock.toString(),
       image: product.image,
-      pdfUrl: product.pdfUrl || "",
       variants: product.variants || [],
       description: product.description,
       shortDescription: product.shortDescription,
@@ -214,6 +207,7 @@ export default function AdminProductsPage() {
     try {
       const uploadData = new FormData();
       uploadData.append("file", file);
+      uploadData.append("folder", "products/images");
 
       const res = await fetch("/api/admin/upload", {
         method: "POST",
@@ -230,36 +224,6 @@ export default function AdminProductsPage() {
       setErrorMsg("Network error while uploading image.");
     } finally {
       setUploading(false);
-    }
-  };
-
-  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
-
-    const file = files[0];
-    setUploadingPdf(true);
-    setErrorMsg("");
-
-    try {
-      const uploadData = new FormData();
-      uploadData.append("file", file);
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: uploadData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success && data.url) {
-        setFormData((prev: any) => ({ ...prev, pdfUrl: data.url }));
-      } else {
-        setErrorMsg(data.error || "Failed to upload PDF brochure.");
-      }
-    } catch (err: any) {
-      setErrorMsg("Network error while uploading PDF brochure.");
-    } finally {
-      setUploadingPdf(false);
     }
   };
 
@@ -303,7 +267,6 @@ export default function AdminProductsPage() {
     const payload = {
       ...formData,
       image: cleanImageUrl(formData.image),
-      pdfUrl: formData.pdfUrl || "",
       subcategoryId: formData.subcategoryId || null,
       subcategorySlug: formData.subcategorySlug || "",
       variants: Array.isArray(formData.variants) ? formData.variants : [],
@@ -1219,72 +1182,6 @@ export default function AdminProductsPage() {
                     <p className="text-xs">No variants added. This product will use the single default price & stock above.</p>
                   </div>
                 )}
-              </div>
-
-              {/* =========================================================
-                  PDF SPEC SHEET / BROCHURE UPLOAD (AT END OF FORM)
-              ========================================================= */}
-              <div className="pt-4 border-t border-[#F2EBDC] space-y-2">
-                <label className="block font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
-                  Product Brochure / Spec Sheet (PDF)
-                </label>
-                <input
-                  ref={pdfInputRef}
-                  type="file"
-                  accept="application/pdf"
-                  onChange={handlePdfUpload}
-                  className="hidden"
-                />
-
-                <div
-                  onClick={() => pdfInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#E8DFC8] rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37] transition-all"
-                >
-                  {uploadingPdf ? (
-                    <div className="py-2 flex items-center justify-center gap-2 text-red-600">
-                      <Loader2 className="w-4 h-4 animate-spin" />
-                      <span>Uploading PDF Document...</span>
-                    </div>
-                  ) : formData.pdfUrl ? (
-                    <div className="flex items-center justify-between p-2.5 bg-white rounded-xl border border-red-200">
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center text-red-600">
-                          <FileText className="w-5 h-5" />
-                        </div>
-                        <div className="text-left">
-                          <p className="font-bold text-xs text-[#0B131F]">PDF Document Attached</p>
-                          <a
-                            href={formData.pdfUrl}
-                            target="_blank"
-                            rel="noreferrer"
-                            onClick={(e) => e.stopPropagation()}
-                            className="text-[10px] text-red-600 hover:underline flex items-center gap-1 font-semibold"
-                          >
-                            <span>Preview uploaded PDF</span>
-                            <ExternalLink className="w-2.5 h-2.5" />
-                          </a>
-                        </div>
-                      </div>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFormData({ ...formData, pdfUrl: "" });
-                        }}
-                        className="p-1 text-red-500 hover:bg-red-50 rounded"
-                        title="Remove PDF"
-                      >
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="py-3 flex flex-col items-center justify-center gap-1 text-[#64748B]">
-                      <FileText className="w-5 h-5 text-red-500" />
-                      <span className="font-semibold text-xs text-[#0B131F]">Click to upload Product Spec Sheet / Brochure (PDF)</span>
-                      <span className="text-[10px] text-[#94A3B8]">Supports PDF files up to 20MB</span>
-                    </div>
-                  )}
-                </div>
               </div>
 
               {/* Submit Buttons */}

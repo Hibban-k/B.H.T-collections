@@ -122,6 +122,13 @@ export default function BrandsPage() {
     try {
       const uploadData = new FormData();
       uploadData.append("file", file);
+      const folder =
+        target === "pdfUrl"
+          ? "brands/brochures"
+          : target === "logo"
+          ? "brands/logos"
+          : "brands/banners";
+      uploadData.append("folder", folder);
 
       const res = await fetch("/api/admin/upload", {
         method: "POST",

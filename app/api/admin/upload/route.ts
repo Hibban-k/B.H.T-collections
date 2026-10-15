@@ -7,11 +7,12 @@ export const POST = withAuth("upload:write", async (req: Request) => {
   const nextReq = req as NextRequest;
   const formData = await nextReq.formData();
   const file = formData.get("file") as File | null;
+  const folder = (formData.get("folder") as string) || "general";
 
   if (!file) {
     throw new Error("No file uploaded");
   }
 
-  const result = await UploadService.uploadImage(file);
+  const result = await UploadService.uploadFile(file, folder);
   return NextResponse.json({ success: true, ...result });
 });

@@ -8,11 +8,17 @@ cloudinary.config({
 });
 
 export class UploadService {
-  static async uploadImage(file: File): Promise<{ url: string; fileName: string }> {
-    return this.uploadFile(file);
+  static async uploadImage(
+    file: File,
+    folder: string = "general"
+  ): Promise<{ url: string; fileName: string }> {
+    return this.uploadFile(file, folder);
   }
 
-  static async uploadFile(file: File): Promise<{ url: string; fileName: string }> {
+  static async uploadFile(
+    file: File,
+    folder: string = "general"
+  ): Promise<{ url: string; fileName: string }> {
     // 1. Check if keys are set
     if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY) {
       console.warn("Cloudinary not configured! Ensure CLOUDINARY_CLOUD_NAME, API_KEY, and API_SECRET are in .env");
@@ -28,15 +34,29 @@ export class UploadService {
       .replace(/[^a-zA-Z0-9.-]/g, "_")
       .toLowerCase();
     
-    // 4. Wrap the upload_stream in a Promise so we can await it
+    const isPdf = file.type === "application/pdf" || originalName.endsWith(".pdf");
+
+    // 4. Clean folder hierarchy (e.g. bht-collections/products, bht-collections/brands, bht-collections/pdfs)
+    const sanitizedFolder = folder.replace(/^\/+|\/+$/g, "");
+    const targetFolder = `bht-collections/${sanitizedFolder}`;
+
+    // 5. Wrap the upload_stream in a Promise so we can await it
     return new Promise((resolve, reject) => {
-      const isPdf = file.type === "application/pdf" || originalName.endsWith(".pdf");
+      const uploadOptions: Record<string, any> = {
+        folder: targetFolder,
+        public_id: `${originalName.split('.')[0]}_${Date.now()}`,
+        resource_type: isPdf ? "raw" : "auto",
+      };
+
+      // Optimize images (auto format webp/avif, auto quality compression)
+      if (!isPdf) {
+        uploadOptions.transformation = [
+          { quality: "auto:good", fetch_format: "auto" }
+        ];
+      }
+
       const uploadStream = cloudinary.uploader.upload_stream(
-        {
-          folder: "bht-collections",
-          public_id: `${originalName.split('.')[0]}_${Date.now()}`,
-          resource_type: isPdf ? "raw" : "auto",
-        },
+        uploadOptions,
         (error: UploadApiErrorResponse | undefined, result: UploadApiResponse | undefined) => {
           if (error) {
             console.error("Cloudinary upload failed:", error);
