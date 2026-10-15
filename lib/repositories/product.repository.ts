@@ -26,6 +26,7 @@ export interface SerializedProduct {
   _id: string;
   name: string;
   slug: string;
+  sku?: string;
   category: string;
   categorySlug: string;
   subcategoryId?: string | null;
@@ -37,7 +38,6 @@ export interface SerializedProduct {
   reviewCount: number;
   image: string;
   images: string[];
-  pdfUrl?: string;
   description: string;
   shortDescription: string;
   sizes: string[];

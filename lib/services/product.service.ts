@@ -7,6 +7,7 @@ import type { IProductVariant } from "@/lib/db/models/Product";
 export interface CreateProductInput {
   name: string;
   slug?: string;
+  sku?: string;
   category?: string;
   categorySlug?: string;
   subcategoryId?: string | null;
@@ -19,7 +20,6 @@ export interface CreateProductInput {
   brand?: string;
   image?: string;
   images?: string[];
-  pdfUrl?: string;
   description?: string;
   shortDescription?: string;
   sizes?: string[];
@@ -78,6 +78,7 @@ export class ProductService {
     const productData: Partial<IProduct> = {
       name: input.name,
       slug,
+      sku: input.sku ? input.sku.trim().toUpperCase() : undefined,
       category: input.category || "Blankets",
       categorySlug: input.categorySlug || "blankets",
       subcategoryId: (input.subcategoryId as any) || undefined,
@@ -90,7 +91,6 @@ export class ProductService {
       brand: input.brand ? (input.brand as any) : undefined,
       image: cleanImg,
       images: cleanImgs,
-      pdfUrl: input.pdfUrl || "",
       description: input.description || "",
       shortDescription:
         input.shortDescription || input.description?.slice(0, 120) || "",

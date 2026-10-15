@@ -37,6 +37,7 @@ interface ProductItem {
   _id: string;
   name: string;
   slug: string;
+  sku?: string;
   category: string;
   categorySlug: string;
   subcategoryId?: string | null;
@@ -63,6 +64,7 @@ interface ProductItem {
 
 const defaultFormData = {
   name: "",
+  sku: "",
   category: "",
   categorySlug: "",
   subcategoryId: "",
@@ -168,6 +170,7 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
+      sku: product.sku || "",
       category: product.category,
       categorySlug: product.categorySlug,
       subcategoryId: product.subcategoryId || "",
@@ -266,6 +269,7 @@ export default function AdminProductsPage() {
 
     const payload = {
       ...formData,
+      sku: formData.sku ? formData.sku.trim().toUpperCase() : undefined,
       image: cleanImageUrl(formData.image),
       subcategoryId: formData.subcategoryId || null,
       subcategorySlug: formData.subcategorySlug || "",
@@ -471,7 +475,18 @@ export default function AdminProductsPage() {
                         </div>
                         <div>
                           <p className="font-bold text-[#0B131F] text-xs line-clamp-1">{product.name}</p>
-                          <p className="text-[10px] text-[#64748B] font-mono mt-0.5">slug: {product.slug}</p>
+                          <div className="flex items-center gap-2 mt-0.5">
+                            {product.sku && (
+                              <span className="text-[10px] bg-white border border-[#E8DFC8] px-1.5 py-0.5 rounded text-[#0B131F] font-mono font-bold">
+                                SKU: {product.sku}
+                              </span>
+                            )}
+                            {product.variants && product.variants.length > 0 && (
+                              <span className="text-[10px] text-[#D4AF37] font-semibold">
+                                {product.variants.length} variant{product.variants.length > 1 ? "s" : ""}
+                              </span>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </td>
@@ -602,19 +617,35 @@ export default function AdminProductsPage() {
                 </div>
               )}
 
-              {/* Product Name */}
-              <div>
-                <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
-                  Product Name *
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  placeholder="e.g. Smartex Two-Ply Premium Blanket"
-                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
-                />
+              {/* Product Name & Parent SKU */}
+              <div className="grid sm:grid-cols-3 gap-4">
+                <div className="sm:col-span-2">
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Product Name *
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="e.g. Smartex Two-Ply Premium Blanket"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Parent SKU (Unique)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.sku || ""}
+                    onChange={(e) => setFormData({ ...formData, sku: e.target.value.toUpperCase() })}
+                    placeholder="e.g. BHT-BL-01"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono uppercase"
+                  />
+                  <p className="text-[10px] text-[#64748B] mt-0.5">Base code for variants</p>
+                </div>
               </div>
 
               {/* Category & Subcategory */}
@@ -1019,6 +1050,10 @@ export default function AdminProductsPage() {
                   <button
                     type="button"
                     onClick={() => {
+                      const baseSku = formData.sku ? formData.sku.trim().toUpperCase() : "";
+                      const nextIndex = (formData.variants?.length || 0) + 1;
+                      const defaultVariantSku = baseSku ? `${baseSku}-VAR${nextIndex}` : "";
+
                       setFormData({
                         ...formData,
                         variants: [
@@ -1029,7 +1064,7 @@ export default function AdminProductsPage() {
                             color: "",
                             price: formData.price ? Number(formData.price) : undefined,
                             stock: 10,
-                            sku: "",
+                            sku: defaultVariantSku,
                           },
                         ],
                       });
@@ -1095,7 +1130,8 @@ export default function AdminProductsPage() {
                               value={v.size || ""}
                               onChange={(e) => {
                                 const updated = [...formData.variants];
-                                updated[index].size = e.target.value;
+                                const newSize = e.target.value;
+                                updated[index].size = newSize;
                                 setFormData({ ...formData, variants: updated });
                               }}
                               className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
@@ -1112,7 +1148,8 @@ export default function AdminProductsPage() {
                               value={v.color || ""}
                               onChange={(e) => {
                                 const updated = [...formData.variants];
-                                updated[index].color = e.target.value;
+                                const newColor = e.target.value;
+                                updated[index].color = newColor;
                                 setFormData({ ...formData, variants: updated });
                               }}
                               className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
@@ -1158,19 +1195,39 @@ export default function AdminProductsPage() {
                           </div>
 
                           <div>
-                            <label className="block text-[10px] font-bold uppercase text-[#64748B] mb-1">
-                              SKU (Optional)
-                            </label>
+                            <div className="flex items-center justify-between mb-1">
+                              <label className="block text-[10px] font-bold uppercase text-[#64748B]">
+                                Variant SKU
+                              </label>
+                              {formData.sku && (
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const base = formData.sku.trim().toUpperCase();
+                                    const s = v.size ? v.size.replace(/[^a-zA-Z0-9]/g, "").slice(0, 3).toUpperCase() : "";
+                                    const c = v.color ? v.color.replace(/[^a-zA-Z0-9]/g, "").slice(0, 3).toUpperCase() : "";
+                                    const suffix = [s, c].filter(Boolean).join("-") || `VAR${index + 1}`;
+                                    const updated = [...formData.variants];
+                                    updated[index].sku = `${base}-${suffix}`;
+                                    setFormData({ ...formData, variants: updated });
+                                  }}
+                                  className="text-[9px] text-[#D4AF37] font-bold hover:underline"
+                                  title="Auto-format using Parent SKU + Size/Color"
+                                >
+                                  Auto-generate
+                                </button>
+                              )}
+                            </div>
                             <input
                               type="text"
-                              placeholder="e.g. BHT-BL-K-01"
+                              placeholder={formData.sku ? `${formData.sku}-K-BLU` : "e.g. BHT-BL-K-01"}
                               value={v.sku || ""}
                               onChange={(e) => {
                                 const updated = [...formData.variants];
-                                updated[index].sku = e.target.value;
+                                updated[index].sku = e.target.value.toUpperCase();
                                 setFormData({ ...formData, variants: updated });
                               }}
-                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs font-mono"
+                              className="w-full p-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs font-mono uppercase"
                             />
                           </div>
                         </div>

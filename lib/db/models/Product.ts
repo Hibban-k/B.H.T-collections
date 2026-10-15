@@ -14,6 +14,7 @@ export interface IProductVariant {
 export interface IProduct extends Document {
   name: string;
   slug: string;
+  sku?: string;
   category: string;
   categorySlug: string;
   subcategoryId?: mongoose.Types.ObjectId;
@@ -25,7 +26,6 @@ export interface IProduct extends Document {
   reviewCount: number;
   image: string;
   images: string[];
-  pdfUrl?: string;
   description: string;
   shortDescription: string;
   sizes: string[];
@@ -67,6 +67,7 @@ const ProductSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true, trim: true },
     slug: { type: String, required: true, unique: true, index: true },
+    sku: { type: String, unique: true, sparse: true, trim: true, uppercase: true },
     category: { type: String, required: true },
     categorySlug: { type: String, required: true, index: true },
     subcategoryId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
@@ -78,7 +79,6 @@ const ProductSchema = new Schema<IProduct>(
     reviewCount: { type: Number, default: 12 },
     image: { type: String, required: true },
     images: { type: [String], default: [] },
-    pdfUrl: { type: String, default: "" },
     description: { type: String, required: true },
     shortDescription: { type: String, default: "" },
     sizes: { type: [String], default: ["Single", "Double", "King"] },
