@@ -36,10 +36,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
 
-  // If on login page, render without sidebar shell
+  // If on login page, render full html body without sidebar shell
   if (pathname === "/admin/login") {
-    return <>{children}</>;
+    return (
+      <html lang="en">
+        <body className="min-h-screen bg-[#F8F9FA]" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
+          <AuthProvider>{children}</AuthProvider>
+        </body>
+      </html>
+    );
   }
+
 
   const handleLogout = async () => {
     setLoggingOut(true);

@@ -1,6 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
 @import "tailwindcss";
 
 @theme {
+  --color-bht-white: #FFFFFF;
+  --color-bht-offwhite: #F5F6F7;
+  --color-bht-charcoal: #171717;
+  --color-bht-slate: #555555;
+  --color-bht-muted: #888888;
+  --color-bht-border: #E8E8E8;
+  --color-bht-red: #E52B25;
+  --color-bht-red-hover: #C9221C;
+  --color-bht-blue: #258CCB;
+  --color-bht-green: #26964B;
+  --color-bht-gold: #B89B72;
+
   --color-brand-red: #DE2628;
   --color-brand-red-dark: #B71C1E;
   --color-brand-blue: #298DCB;
@@ -22,22 +35,49 @@
   --color-charcoal: #1B2432;
   --color-slate: #556070;
   --color-slate-light: #8E9BAE;
-  
-  --font-serif: var(--font-playfair-display), Georgia, "Times New Roman", serif;
-  --font-sans: var(--font-montserrat-var), system-ui, -apple-system, sans-serif;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, Cambria, serif;
+
+  --animate-marquee: marquee 35s linear infinite;
+  --animate-marquee-rtl: marquee-rtl 35s linear infinite;
+  --animate-fade-in: fadeIn 0.25s ease-out forwards;
+  --animate-scale-up: scaleUp 0.25s ease-out forwards;
+  --animate-slide-in: slideIn 0.3s ease-out forwards;
+
+  @keyframes marquee {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(-50%); }
+  }
+  @keyframes marquee-rtl {
+    0% { transform: translateX(0%); }
+    100% { transform: translateX(50%); }
+  }
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(4px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scaleUp {
+    0% { opacity: 0; transform: scale(0.96); }
+    100% { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slideIn {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(0); }
+  }
 }
 
 :root {
-  --bht-red: #DE2628;
-  --bht-blue: #298DCB;
-  --bht-green: #149344;
-  --bht-navy: #04192E;
-  --bht-navy-muted: #1E3348;
-  --bht-cream: #F8F6F0;
-  --bht-cream-alt: #FBF9F4;
-  --bht-beige: #E8E1D7;
-  --bht-taupe: #C9B79F;
-  --bht-border: #DDD9D0;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-arabic: 'Cairo', 'Segoe UI', Tahoma, sans-serif;
+  --font-serif: 'Playfair Display', Georgia, Cambria, serif;
+
+  --bht-red: #E52B25;
+  --bht-blue: #258CCB;
+  --bht-green: #26964B;
+  --bht-charcoal: #171717;
+  --bht-border: #E8E8E8;
 }
 
 @layer base {
@@ -53,26 +93,34 @@
   }
 
   body {
-    background-color: #F8F6F0;
-    color: #04192E;
-    font-family: var(--font-montserrat-var, system-ui, sans-serif);
+    background-color: #FFFFFF;
+    color: #171717;
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    line-height: 1.65;
-    font-size: 14px;
-    overflow-x: clip;
-    max-width: 100vw;
+    overflow-x: hidden;
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    font-family: var(--font-playfair-display, Georgia, serif);
-    color: #04192E;
-    letter-spacing: -0.01em;
+  [dir="rtl"] body {
+    font-family: var(--font-arabic), var(--font-sans);
+  }
+}
+
+/* Hide scrollbar for gallery swipe while allowing scrolling */
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -80,9 +128,7 @@
 input:-webkit-autofill,
 input:-webkit-autofill:hover, 
 input:-webkit-autofill:focus, 
-input:-webkit-autofill:active{
-    -webkit-box-shadow: 0 0 0 30px #080E18 inset !important;
-    -webkit-text-fill-color: white !important;
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px #080E18 inset !important;
+  -webkit-text-fill-color: white !important;
 }
-
-
