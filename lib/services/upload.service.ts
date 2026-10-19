@@ -45,14 +45,12 @@ export class UploadService {
       const uploadOptions: Record<string, any> = {
         folder: targetFolder,
         public_id: `${originalName.split('.')[0]}_${Date.now()}`,
-        resource_type: isPdf ? "raw" : "auto",
+        resource_type: isPdf ? "raw" : "image",
       };
 
-      // Optimize images (auto format webp/avif, auto quality compression)
+      // Force image uploads to be converted and stored as PNG
       if (!isPdf) {
-        uploadOptions.transformation = [
-          { quality: "auto:good", fetch_format: "auto" }
-        ];
+        uploadOptions.format = "png";
       }
 
       const uploadStream = cloudinary.uploader.upload_stream(
