@@ -3,9 +3,8 @@ import { NextResponse } from "next/server";
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
-  const locales = ["en", "ae"];
 
-  // Admin Route Protection
+  // 1. Admin Route Protection ONLY
   if (pathname.startsWith("/admin")) {
     const isLoggedIn = !!req.auth;
     
@@ -18,7 +17,7 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  // Skip if it's an API route or static asset
+  // 2. Skip API routes, Next.js internals, and static assets
   if (
     pathname.startsWith("/api") ||
     pathname.startsWith("/_next") ||
@@ -27,20 +26,20 @@ export default auth((req) => {
     return NextResponse.next();
   }
 
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
+  // 3. Regional routing: redirect non-locale root or paths to default /en
+  // (e.g. '/' -> '/en', '/about' -> '/en/about', '/collections' -> '/en/collections')
+  // Public routes NEVER redirect to admin.
+  const hasLocale = /^\/[a-zA-Z]{2}(\/.*)?$/.test(pathname);
 
-  if (!pathnameHasLocale) {
-    // Default to en or detect from headers
-    const locale = "en";
-    req.nextUrl.pathname = `/${locale}${pathname}`;
-    return NextResponse.redirect(req.nextUrl);
+  if (!hasLocale) {
+    const redirectUrl = new URL(`/en${pathname === "/" ? "" : pathname}`, req.nextUrl);
+    redirectUrl.search = req.nextUrl.search;
+    return NextResponse.redirect(redirectUrl);
   }
 
   return NextResponse.next();
 });
 
 export const config = {
-  matcher: ["/((?!_next).*)"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
