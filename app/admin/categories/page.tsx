@@ -139,9 +139,41 @@ export default function AdminCategoriesPage() {
     setSaving(true);
     setErrorMsg("");
 
+    const trimmedName = formData.name?.trim();
+    if (!trimmedName) {
+      setErrorMsg("Category name is required.");
+      setSaving(false);
+      return;
+    }
+
+    const trimmedSlug = (formData.slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim().toLowerCase();
+
+    // Client-side uniqueness check
+    const duplicate = categories.find((c) => {
+      if (editingCategory && c._id === editingCategory._id) return false;
+      const sameName = c.name.trim().toLowerCase() === trimmedName.toLowerCase();
+      const sameSlug = c.slug?.trim().toLowerCase() === trimmedSlug;
+      return sameName || sameSlug;
+    });
+
+    if (duplicate) {
+      if (duplicate.name.trim().toLowerCase() === trimmedName.toLowerCase()) {
+        setErrorMsg(`A category with the name "${trimmedName}" already exists.`);
+        setSaving(false);
+        return;
+      }
+      if (duplicate.slug?.trim().toLowerCase() === trimmedSlug) {
+        setErrorMsg(`A category with the slug "${trimmedSlug}" already exists.`);
+        setSaving(false);
+        return;
+      }
+    }
+
     const selectedParent = categories.find((c) => c._id === formData.parentId);
     const payload = {
       ...formData,
+      name: trimmedName,
+      slug: trimmedSlug,
       parentId: formData.parentId ? formData.parentId : null,
       parentSlug: selectedParent ? selectedParent.slug : "",
       image: cleanImageUrl(formData.image),
@@ -366,7 +398,17 @@ export default function AdminCategoriesPage() {
                   type="text"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      name: newName,
+                      slug: (!editingCategory && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))
+                        ? autoSlug
+                        : prev.slug,
+                    }));
+                  }}
                   placeholder="e.g. Blankets"
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                 />
@@ -374,12 +416,12 @@ export default function AdminCategoriesPage() {
 
               <div>
                 <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
-                  Category Slug
+                  Category Slug *
                 </label>
                 <input
                   type="text"
                   value={formData.slug}
-                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase() })}
                   placeholder="e.g. blankets"
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
                 />

@@ -64,6 +64,7 @@ interface ProductItem {
 
 const defaultFormData = {
   name: "",
+  slug: "",
   sku: "",
   category: "",
   categorySlug: "",
@@ -171,6 +172,7 @@ export default function AdminProductsPage() {
     setEditingProduct(product);
     setFormData({
       name: product.name,
+      slug: product.slug || "",
       sku: product.sku || "",
       category: product.category,
       categorySlug: product.categorySlug,
@@ -298,8 +300,40 @@ export default function AdminProductsPage() {
     setSaving(true);
     setErrorMsg("");
 
+    const trimmedName = formData.name?.trim();
+    if (!trimmedName) {
+      setErrorMsg("Product name is required.");
+      setSaving(false);
+      return;
+    }
+
+    const trimmedSlug = (formData.slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim().toLowerCase();
+
+    // Client-side uniqueness check
+    const duplicate = products.find((p) => {
+      if (editingProduct && p._id === editingProduct._id) return false;
+      const sameName = p.name.trim().toLowerCase() === trimmedName.toLowerCase();
+      const sameSlug = p.slug?.trim().toLowerCase() === trimmedSlug;
+      return sameName || sameSlug;
+    });
+
+    if (duplicate) {
+      if (duplicate.name.trim().toLowerCase() === trimmedName.toLowerCase()) {
+        setErrorMsg(`A product with the name "${trimmedName}" already exists.`);
+        setSaving(false);
+        return;
+      }
+      if (duplicate.slug?.trim().toLowerCase() === trimmedSlug) {
+        setErrorMsg(`A product with the slug "${trimmedSlug}" already exists.`);
+        setSaving(false);
+        return;
+      }
+    }
+
     const payload = {
       ...formData,
+      name: trimmedName,
+      slug: trimmedSlug,
       sku: formData.sku ? formData.sku.trim().toUpperCase() : undefined,
       image: cleanImageUrl(formData.image),
       subcategoryId: formData.subcategoryId || null,
@@ -648,9 +682,9 @@ export default function AdminProductsPage() {
                 </div>
               )}
 
-              {/* Product Name & Parent SKU */}
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div className="sm:col-span-2">
+              {/* Product Name, Slug & Parent SKU */}
+              <div className="grid sm:grid-cols-12 gap-4">
+                <div className="sm:col-span-5">
                   <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
                     Product Name *
                   </label>
@@ -658,13 +692,37 @@ export default function AdminProductsPage() {
                     type="text"
                     required
                     value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    onChange={(e) => {
+                      const newName = e.target.value;
+                      const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                      setFormData((prev: any) => ({
+                        ...prev,
+                        name: newName,
+                        slug: (!editingProduct && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))
+                          ? autoSlug
+                          : prev.slug,
+                      }));
+                    }}
                     placeholder="e.g. Smartex Two-Ply Premium Blanket"
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />
                 </div>
 
-                <div>
+                <div className="sm:col-span-4">
+                  <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
+                    Product Slug *
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.slug || ""}
+                    onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase() })}
+                    placeholder="e.g. smartex-two-ply-premium-blanket"
+                    className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
+                  />
+                  <p className="text-[10px] text-[#64748B] mt-0.5">Unique URL identifier</p>
+                </div>
+
+                <div className="sm:col-span-3">
                   <label className="block font-bold text-[#0B131F] mb-1 uppercase tracking-wider text-[11px]">
                     Parent SKU (Unique)
                   </label>

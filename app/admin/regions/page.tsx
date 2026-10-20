@@ -89,6 +89,47 @@ export default function RegionsPage() {
     setSaving(true);
     setErrorMsg("");
 
+    const trimmedName = formData.name?.trim();
+    if (!trimmedName) {
+      setErrorMsg("Region name is required.");
+      setSaving(false);
+      return;
+    }
+
+    const trimmedCode = formData.code?.trim().toLowerCase();
+    if (!trimmedCode) {
+      setErrorMsg("Region code is required.");
+      setSaving(false);
+      return;
+    }
+
+    // Client-side uniqueness check
+    const duplicate = regions.find((r) => {
+      if (editingRegion && r._id === editingRegion._id) return false;
+      const sameName = r.name.trim().toLowerCase() === trimmedName.toLowerCase();
+      const sameCode = r.code.trim().toLowerCase() === trimmedCode;
+      return sameName || sameCode;
+    });
+
+    if (duplicate) {
+      if (duplicate.name.trim().toLowerCase() === trimmedName.toLowerCase()) {
+        setErrorMsg(`A region with the name "${trimmedName}" already exists.`);
+        setSaving(false);
+        return;
+      }
+      if (duplicate.code.trim().toLowerCase() === trimmedCode) {
+        setErrorMsg(`A region with the code "${trimmedCode}" already exists.`);
+        setSaving(false);
+        return;
+      }
+    }
+
+    const payload = {
+      ...formData,
+      name: trimmedName,
+      code: trimmedCode,
+    };
+
     try {
       const url = editingRegion
         ? `/api/admin/regions/${editingRegion._id}`
@@ -98,7 +139,7 @@ export default function RegionsPage() {
       const res = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -291,7 +332,7 @@ export default function RegionsPage() {
                     type="text"
                     required
                     value={formData.code}
-                    onChange={(e) => setFormData({ ...formData, code: e.target.value.toLowerCase() })}
+                    onChange={(e) => setFormData({ ...formData, code: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "") })}
                     placeholder="e.g. ae, sa, om"
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />

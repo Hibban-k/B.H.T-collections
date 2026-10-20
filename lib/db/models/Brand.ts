@@ -18,8 +18,8 @@ export interface IBrand extends Document {
 
 const BrandSchema = new Schema<IBrand>(
   {
-    name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true, trim: true, unique: true, index: true },
+    slug: { type: String, required: true, unique: true, index: true, trim: true, lowercase: true },
     logo: { type: String, default: "" },
     image: { type: String, default: "" },
     pdfUrl: { type: String, default: "" },

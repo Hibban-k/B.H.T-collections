@@ -155,8 +155,40 @@ export default function BrandsPage() {
     setSaving(true);
     setErrorMsg("");
 
+    const trimmedName = formData.name?.trim();
+    if (!trimmedName) {
+      setErrorMsg("Brand name is required.");
+      setSaving(false);
+      return;
+    }
+
+    const trimmedSlug = (formData.slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim().toLowerCase();
+
+    // Client-side uniqueness check
+    const duplicate = brands.find((b) => {
+      if (editingBrand && b._id === editingBrand._id) return false;
+      const sameName = b.name.trim().toLowerCase() === trimmedName.toLowerCase();
+      const sameSlug = b.slug?.trim().toLowerCase() === trimmedSlug;
+      return sameName || sameSlug;
+    });
+
+    if (duplicate) {
+      if (duplicate.name.trim().toLowerCase() === trimmedName.toLowerCase()) {
+        setErrorMsg(`A brand with the name "${trimmedName}" already exists.`);
+        setSaving(false);
+        return;
+      }
+      if (duplicate.slug?.trim().toLowerCase() === trimmedSlug) {
+        setErrorMsg(`A brand with the slug "${trimmedSlug}" already exists.`);
+        setSaving(false);
+        return;
+      }
+    }
+
     const payload = {
       ...formData,
+      name: trimmedName,
+      slug: trimmedSlug,
       logo: cleanImageUrl(formData.logo),
       image: cleanImageUrl(formData.image),
       pdfUrl: formData.pdfUrl || "",
@@ -400,9 +432,30 @@ export default function BrandsPage() {
                   type="text"
                   required
                   value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  onChange={(e) => {
+                    const newName = e.target.value;
+                    const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+                    setFormData((prev: any) => ({
+                      ...prev,
+                      name: newName,
+                      slug: (!editingBrand && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))
+                        ? autoSlug
+                        : prev.slug,
+                    }));
+                  }}
                   placeholder="e.g. Blankethouse"
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
+                />
+              </div>
+
+              <div>
+                <label className="block font-bold mb-1 uppercase tracking-wider text-[11px]">Brand Slug *</label>
+                <input
+                  type="text"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value.toLowerCase() })}
+                  placeholder="e.g. blankethouse"
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
                 />
               </div>
 

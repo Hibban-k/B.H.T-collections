@@ -24,16 +24,27 @@ export class BrandService {
   }
 
   static async createBrand(input: CreateBrandInput): Promise<SerializedBrand> {
+    const trimmedName = input.name.trim();
+    const existingName = await BrandRepository.findByName(trimmedName);
+    if (existingName) {
+      throw new Error(`Brand with name "${trimmedName}" already exists.`);
+    }
+
     const slug =
-      input.slug ||
-      input.name
+      (input.slug?.trim().toLowerCase() ||
+      trimmedName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") ||
+        .replace(/^-|-$/g, "")) ||
       `brand-${Date.now()}`;
 
+    const existingSlug = await BrandRepository.findBySlug(slug);
+    if (existingSlug) {
+      throw new Error(`Brand with slug "${slug}" already exists.`);
+    }
+
     const brandData: Partial<IBrand> = {
-      name: input.name,
+      name: trimmedName,
       slug,
       logo: input.logo || "",
       image: input.image || "",
@@ -49,7 +60,22 @@ export class BrandService {
   }
 
   static async updateBrand(id: string, updates: Partial<CreateBrandInput>): Promise<SerializedBrand | null> {
+    if (updates.name) {
+      const existingName = await BrandRepository.findByName(updates.name.trim(), id);
+      if (existingName) {
+        throw new Error(`Brand with name "${updates.name.trim()}" already exists.`);
+      }
+    }
+    if (updates.slug) {
+      const existingSlug = await BrandRepository.findBySlug(updates.slug.trim().toLowerCase(), id);
+      if (existingSlug) {
+        throw new Error(`Brand with slug "${updates.slug.trim().toLowerCase()}" already exists.`);
+      }
+    }
+
     const sanitized: Partial<IBrand> = { ...(updates as Partial<IBrand>) };
+    if (sanitized.name) sanitized.name = sanitized.name.trim();
+    if (sanitized.slug) sanitized.slug = sanitized.slug.trim().toLowerCase();
     return BrandRepository.update(id, sanitized);
   }
 

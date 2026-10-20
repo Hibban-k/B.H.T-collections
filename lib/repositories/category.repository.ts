@@ -47,9 +47,19 @@ export class CategoryRepository {
     return doc ? serialize(doc) : null;
   }
 
-  static async findBySlug(slug: string): Promise<SerializedCategory | null> {
+  static async findBySlug(slug: string, excludeId?: string): Promise<SerializedCategory | null> {
     await connectToDatabase();
-    const doc = await CategoryModel.findOne({ slug }).lean();
+    const query: any = { slug: slug.trim().toLowerCase() };
+    if (excludeId) query._id = { $ne: excludeId };
+    const doc = await CategoryModel.findOne(query).lean();
+    return doc ? serialize(doc) : null;
+  }
+
+  static async findByName(name: string, excludeId?: string): Promise<SerializedCategory | null> {
+    await connectToDatabase();
+    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    if (excludeId) query._id = { $ne: excludeId };
+    const doc = await CategoryModel.findOne(query).lean();
     return doc ? serialize(doc) : null;
   }
 

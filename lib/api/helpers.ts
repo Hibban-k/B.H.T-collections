@@ -24,6 +24,12 @@ export function withAuth(permission: Permission, handler: RouteHandler): RouteHa
       if (error instanceof ForbiddenError) {
         return NextResponse.json({ error: error.message }, { status: 403 });
       }
+      // Map duplicate key error from MongoDB
+      if ((error as any)?.code === 11000) {
+        const keyPattern = (error as any)?.keyPattern || {};
+        const field = Object.keys(keyPattern)[0] || "record";
+        return NextResponse.json({ error: `A record with this ${field} already exists.` }, { status: 409 });
+      }
       const msg = error instanceof Error ? error.message : "Internal Server Error";
       // Map validation errors to 400 Bad Request
       if (msg.toLowerCase().includes("invalid") || msg.toLowerCase().includes("required") || msg.toLowerCase().includes("cannot")) {
