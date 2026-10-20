@@ -10,8 +10,8 @@ export interface IRegion extends Document {
 }
 
 const RegionSchema = new Schema<IRegion>({
-  name: { type: String, required: true },
-  code: { type: String, required: true, unique: true, lowercase: true },
+  name: { type: String, required: true, trim: true, unique: true, index: true },
+  code: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
   currency: { type: String, default: "AED" },
   isActive: { type: Boolean, default: true },
   metaTitleSuffix: { type: String, default: "" },

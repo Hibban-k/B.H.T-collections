@@ -36,9 +36,19 @@ export class RegionRepository {
     return doc ? serialize(doc) : null;
   }
 
-  static async findByCode(code: string): Promise<SerializedRegion | null> {
+  static async findByCode(code: string, excludeId?: string): Promise<SerializedRegion | null> {
     await connectToDatabase();
-    const doc = await RegionModel.findOne({ code, isActive: true }).lean();
+    const query: any = { code: code.trim().toLowerCase() };
+    if (excludeId) query._id = { $ne: excludeId };
+    const doc = await RegionModel.findOne(query).lean();
+    return doc ? serialize(doc) : null;
+  }
+
+  static async findByName(name: string, excludeId?: string): Promise<SerializedRegion | null> {
+    await connectToDatabase();
+    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    if (excludeId) query._id = { $ne: excludeId };
+    const doc = await RegionModel.findOne(query).lean();
     return doc ? serialize(doc) : null;
   }
 

@@ -65,8 +65,8 @@ const ProductVariantSchema = new Schema<IProductVariant>(
 
 const ProductSchema = new Schema<IProduct>(
   {
-    name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true, trim: true, unique: true, index: true },
+    slug: { type: String, required: true, unique: true, index: true, trim: true, lowercase: true },
     sku: { type: String, unique: true, sparse: true, trim: true, uppercase: true },
     category: { type: String, required: true },
     categorySlug: { type: String, required: true, index: true },

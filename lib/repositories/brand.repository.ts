@@ -40,9 +40,19 @@ export class BrandRepository {
     return brand ? this.serialize(brand) : null;
   }
 
-  static async findBySlug(slug: string): Promise<SerializedBrand | null> {
+  static async findBySlug(slug: string, excludeId?: string): Promise<SerializedBrand | null> {
     await dbConnect();
-    const brand = await BrandModel.findOne({ slug });
+    const query: any = { slug: slug.trim().toLowerCase() };
+    if (excludeId) query._id = { $ne: excludeId };
+    const brand = await BrandModel.findOne(query);
+    return brand ? this.serialize(brand) : null;
+  }
+
+  static async findByName(name: string, excludeId?: string): Promise<SerializedBrand | null> {
+    await dbConnect();
+    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    if (excludeId) query._id = { $ne: excludeId };
+    const brand = await BrandModel.findOne(query);
     return brand ? this.serialize(brand) : null;
   }
 

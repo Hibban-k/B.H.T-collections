@@ -20,8 +20,8 @@ export interface ICategory extends Document {
 
 const CategorySchema = new Schema<ICategory>(
   {
-    name: { type: String, required: true, trim: true },
-    slug: { type: String, required: true, unique: true, index: true },
+    name: { type: String, required: true, trim: true, unique: true, index: true },
+    slug: { type: String, required: true, unique: true, index: true, trim: true, lowercase: true },
     description: { type: String, default: "" },
     longDescription: { type: String, default: "" },
     faq: [{ question: String, answer: String }],

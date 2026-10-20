@@ -29,16 +29,27 @@ export class CategoryService {
   }
 
   static async createCategory(input: CreateCategoryInput): Promise<SerializedCategory> {
+    const trimmedName = input.name?.trim() || "New Category";
+    const existingName = await CategoryRepository.findByName(trimmedName);
+    if (existingName) {
+      throw new Error(`Category with name "${trimmedName}" already exists.`);
+    }
+
     const slug =
-      input.slug ||
-      input.name
-        ?.toLowerCase()
+      (input.slug?.trim().toLowerCase() ||
+      trimmedName
+        .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") ||
+        .replace(/^-|-$/g, "")) ||
       `cat-${Date.now()}`;
 
+    const existingSlug = await CategoryRepository.findBySlug(slug);
+    if (existingSlug) {
+      throw new Error(`Category with slug "${slug}" already exists.`);
+    }
+
     const categoryData: Partial<ICategory> = {
-      name: input.name || "New Category",
+      name: trimmedName,
       slug,
       description: input.description || "",
       longDescription: input.longDescription || "",
@@ -56,7 +67,23 @@ export class CategoryService {
   }
 
   static async updateCategory(id: string, updates: Partial<CreateCategoryInput>): Promise<SerializedCategory | null> {
-    return CategoryRepository.update(id, updates as Partial<ICategory>);
+    if (updates.name) {
+      const existingName = await CategoryRepository.findByName(updates.name.trim(), id);
+      if (existingName) {
+        throw new Error(`Category with name "${updates.name.trim()}" already exists.`);
+      }
+    }
+    if (updates.slug) {
+      const existingSlug = await CategoryRepository.findBySlug(updates.slug.trim().toLowerCase(), id);
+      if (existingSlug) {
+        throw new Error(`Category with slug "${updates.slug.trim().toLowerCase()}" already exists.`);
+      }
+    }
+
+    const sanitized: Partial<ICategory> = { ...(updates as Partial<ICategory>) };
+    if (sanitized.name) sanitized.name = sanitized.name.trim();
+    if (sanitized.slug) sanitized.slug = sanitized.slug.trim().toLowerCase();
+    return CategoryRepository.update(id, sanitized);
   }
 
   static async deleteCategory(id: string): Promise<boolean> {

@@ -1,7 +1,6 @@
 import { ProductRepository, ProductFilter, SerializedProduct } from "@/lib/repositories/product.repository";
 import { cleanImageUrl } from "@/lib/utils/image";
 import type { IProduct } from "@/lib/db/models/Product";
-
 import type { IProductVariant } from "@/lib/db/models/Product";
 
 export interface CreateProductInput {
@@ -61,13 +60,24 @@ export class ProductService {
   }
 
   static async createProduct(input: CreateProductInput): Promise<SerializedProduct> {
+    const trimmedName = input.name.trim();
+    const existingName = await ProductRepository.findByName(trimmedName);
+    if (existingName) {
+      throw new Error(`Product with name "${trimmedName}" already exists.`);
+    }
+
     const slug =
-      input.slug ||
-      input.name
+      (input.slug?.trim().toLowerCase() ||
+      trimmedName
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "") ||
+        .replace(/^-|-$/g, "")) ||
       `product-${Date.now()}`;
+
+    const existingSlug = await ProductRepository.findBySlug(slug);
+    if (existingSlug) {
+      throw new Error(`Product with slug "${slug}" already exists.`);
+    }
 
     const cleanImg = cleanImageUrl(input.image);
     const cleanImgs =
@@ -76,7 +86,7 @@ export class ProductService {
         : [cleanImg];
 
     const productData: Partial<IProduct> = {
-      name: input.name,
+      name: trimmedName,
       slug,
       sku: input.sku ? input.sku.trim().toUpperCase() : undefined,
       category: input.category || "Blankets",
@@ -119,7 +129,22 @@ export class ProductService {
   }
 
   static async updateProduct(id: string, updates: Partial<CreateProductInput>): Promise<SerializedProduct | null> {
+    if (updates.name) {
+      const existingName = await ProductRepository.findByName(updates.name.trim(), id);
+      if (existingName) {
+        throw new Error(`Product with name "${updates.name.trim()}" already exists.`);
+      }
+    }
+    if (updates.slug) {
+      const existingSlug = await ProductRepository.findBySlug(updates.slug.trim().toLowerCase(), id);
+      if (existingSlug) {
+        throw new Error(`Product with slug "${updates.slug.trim().toLowerCase()}" already exists.`);
+      }
+    }
+
     const sanitized: Partial<IProduct> = { ...(updates as Partial<IProduct>) };
+    if (sanitized.name) sanitized.name = sanitized.name.trim();
+    if (sanitized.slug) sanitized.slug = sanitized.slug.trim().toLowerCase();
     if (sanitized.image) {
       sanitized.image = cleanImageUrl(sanitized.image);
     }
