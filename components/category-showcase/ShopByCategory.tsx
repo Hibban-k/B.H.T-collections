@@ -1,15 +1,146 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowLeft } from "lucide-react";
-import { CATEGORY_SHOWCASE_ITEMS } from "@/data/categoryData";
 import { useLanguage } from "@/context/LanguageContext";
+
+export interface CategoryCardData {
+  id: string;
+  slug: string;
+  categoryNameEn: string;
+  categoryNameAr: string;
+  brandName: string;
+  brandLogo: string;
+  productImage: string;
+  href: string;
+  subtitleEn?: string;
+  subtitleAr?: string;
+}
+
+// Fallback visual definitions if images or subcategories aren't configured yet
+const CATEGORY_VISUAL_CONFIG: Record<
+  string,
+  {
+    nameEn: string;
+    nameAr: string;
+    brandName: string;
+    brandLogo: string;
+    defaultImage: string;
+    subtitleEn: string;
+    subtitleAr: string;
+  }
+> = {
+  bedding: {
+    nameEn: "BEDDING",
+    nameAr: "المفروشات",
+    brandName: "ROYALON 3D",
+    brandLogo: "/brandlogo/brand-7-white.png",
+    defaultImage: "/badding/bht-comforters.jpg",
+    subtitleEn: "Hanaa • Damas Gold • Royalon",
+    subtitleAr: "هناء • داماس جولد • رويالون",
+  },
+  "travel-bags": {
+    nameEn: "TRAVEL BAGS",
+    nameAr: "حقائب السفر",
+    brandName: "INFINITY PARIS",
+    brandLogo: "/brandlogo/brand-4-white.png",
+    defaultImage: "/herosection/travel-luggage.png",
+    subtitleEn: "Infinity Paris • TravelGo",
+    subtitleAr: "إنفينيتي باريس • ترافل جو",
+  },
+  footwear: {
+    nameEn: "FOOTWEAR",
+    nameAr: "الأحذية",
+    brandName: "MAGICWALK",
+    brandLogo: "/brandlogo/brand-1-white.png",
+    defaultImage: "/fotware/footwear.png",
+    subtitleEn: "MagicWalk • Adda",
+    subtitleAr: "ماجيك ووك • أدا",
+  },
+};
 
 export const ShopByCategory: React.FC = () => {
   const { language, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
+
+  const [categories, setCategories] = useState<CategoryCardData[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch("/api/store/categories?topOnly=true");
+        if (res.ok) {
+          const data = await res.json();
+          const items: any[] = data.categories || [];
+
+          // Map top-level database categories
+          const mapped: CategoryCardData[] = items.map((cat) => {
+            const normalizedSlug = cat.slug?.toLowerCase();
+            const visual = CATEGORY_VISUAL_CONFIG[normalizedSlug] || {
+              nameEn: cat.name.toUpperCase(),
+              nameAr: cat.name,
+              brandName: cat.name,
+              brandLogo: "/brandlogo/brand-7-white.png",
+              defaultImage: "/collections/bht-collection-banner.png",
+              subtitleEn: "Exclusive Collections",
+              subtitleAr: "تشكيلات حصرية",
+            };
+
+            return {
+              id: cat._id || cat.slug,
+              slug: normalizedSlug,
+              categoryNameEn: visual.nameEn || cat.name.toUpperCase(),
+              categoryNameAr: visual.nameAr || cat.name,
+              brandName: visual.brandName,
+              brandLogo: visual.brandLogo,
+              productImage:
+                cat.image && !cat.image.includes("korean-super-soft-blanket")
+                  ? cat.image
+                  : visual.defaultImage,
+              href: `/collections/${normalizedSlug}`,
+              subtitleEn: visual.subtitleEn,
+              subtitleAr: visual.subtitleAr,
+            };
+          });
+
+          if (isMounted && mapped.length > 0) {
+            setCategories(mapped);
+          }
+        }
+      } catch (err) {
+        console.error("ShopByCategory: failed to load categories", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Display skeleton while loading
+  if (loading && categories.length === 0) {
+    return (
+      <section className="w-full bg-white py-5 sm:py-10 md:py-16 lg:py-20" aria-label="Shop by Category">
+        <div className="max-w-[1760px] mx-auto px-2.5 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+            {[1, 2, 3].map((i) => (
+              <div
+                key={i}
+                className="h-[175px] xs:h-[195px] sm:h-[260px] md:h-[340px] lg:h-[420px] rounded-xl sm:rounded-2xl lg:rounded-3xl bg-neutral-100 animate-pulse border border-neutral-200/50"
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section
@@ -19,7 +150,7 @@ export const ShopByCategory: React.FC = () => {
       <div className="max-w-[1760px] mx-auto px-2.5 sm:px-6 lg:px-8">
         {/* 3 COLUMNS IN A SINGLE HORIZONTAL ROW ACROSS ALL SCREENS (MOBILE INCLUDED) */}
         <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
-          {CATEGORY_SHOWCASE_ITEMS.map((item) => (
+          {categories.map((item) => (
             <Link
               key={item.id}
               href={item.href}

@@ -3,7 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { BrandClientItem } from "@/data/brandsData";
+import { BrandClientItem } from "@/types/brand";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface BrandClientCardProps {

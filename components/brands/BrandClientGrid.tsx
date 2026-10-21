@@ -1,17 +1,98 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { BRAND_CLIENT_ITEMS } from "@/data/brandsData";
+import React, { useState, useEffect, useMemo } from "react";
 import { BrandClientCard } from "./BrandClientCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { ShieldCheck, Truck, Award, MessageCircle } from "lucide-react";
+import { ShieldCheck, Truck, Award, MessageCircle, AlertCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import { BrandClientItem } from "@/types/brand";
+
+interface RawBrandData {
+  _id: string;
+  name: string;
+  slug: string;
+  logo?: string;
+  image?: string;
+  description?: string;
+  isActive?: boolean;
+}
+
+// Map known brand slugs/names to relevant department categories
+function inferBrandCategory(slug: string, name: string): "bedding" | "travel" | "footwear" | "corporate" {
+  const s = slug.toLowerCase();
+  const n = name.toLowerCase();
+
+  if (s.includes("travel") || s.includes("infinity") || n.includes("travel") || n.includes("infinity") || s.includes("luggage")) {
+    return "travel";
+  }
+  if (s.includes("magic") || s.includes("walk") || s.includes("adda") || n.includes("magic") || n.includes("walk") || n.includes("adda") || s.includes("footwear")) {
+    return "footwear";
+  }
+  if (s.includes("bht") || n.includes("bht") || s.includes("corporate")) {
+    return "corporate";
+  }
+  return "bedding";
+}
+
+// Category fallback labels
+const CATEGORY_NAMES: Record<string, { en: string; ar: string; href: string }> = {
+  bedding: { en: "Luxury Bedding", ar: "المفروشات الفاخرة", href: "/collections/bedding" },
+  travel: { en: "Travel & Luggage", ar: "حقائب السفر والترولي", href: "/collections/travel-bags" },
+  footwear: { en: "Footwear & Comfort", ar: "الأحذية والراحة", href: "/collections/footwear" },
+  corporate: { en: "UAE Flagship House", ar: "العلامة الرئيسية للإمارات", href: "/collections" },
+};
 
 export const BrandClientGrid: React.FC = () => {
   const { language } = useLanguage();
   const [selectedCategory, setSelectedCategory] = useState<
     "all" | "bedding" | "travel" | "footwear" | "corporate"
   >("all");
+
+  const [brands, setBrands] = useState<BrandClientItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchBrands = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/store/brands");
+      if (!res.ok) {
+        throw new Error(`Failed to load brands (${res.status})`);
+      }
+      const data = await res.json();
+      const rawBrands: RawBrandData[] = data.brands || [];
+
+      // Transform DB brands into BrandClientItem format
+      const formatted: BrandClientItem[] = rawBrands.map((b) => {
+        const cat = inferBrandCategory(b.slug, b.name);
+        const catInfo = CATEGORY_NAMES[cat];
+        return {
+          id: b._id || b.slug,
+          nameEn: b.name,
+          nameAr: b.name,
+          category: cat,
+          categoryNameEn: catInfo.en,
+          categoryNameAr: catInfo.ar,
+          logo: b.logo || "/logo/logo.png",
+          descriptionEn: b.description || "",
+          descriptionAr: b.description || "",
+          href: catInfo.href,
+        };
+      });
+
+      setBrands(formatted);
+    } catch (err) {
+      console.error("BrandClientGrid error:", err);
+      setError(err instanceof Error ? err.message : "Error loading brands");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBrands();
+  }, []);
 
   const categories = [
     { id: "all", labelEn: "All Brands & Clients", labelAr: "جميع العلامات والعملاء" },
@@ -22,9 +103,9 @@ export const BrandClientGrid: React.FC = () => {
   ];
 
   const filteredItems = useMemo(() => {
-    if (selectedCategory === "all") return BRAND_CLIENT_ITEMS;
-    return BRAND_CLIENT_ITEMS.filter((item) => item.category === selectedCategory);
-  }, [selectedCategory]);
+    if (selectedCategory === "all") return brands;
+    return brands.filter((item) => item.category === selectedCategory);
+  }, [selectedCategory, brands]);
 
   return (
     <section className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-[#F8F9FA]">
@@ -39,6 +120,7 @@ export const BrandClientGrid: React.FC = () => {
       />
 
       <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Category Pills */}
         <div className="flex items-center justify-center flex-wrap gap-2 sm:gap-3 mb-10 sm:mb-14">
           {categories.map((cat) => {
             const isActive = selectedCategory === cat.id;
@@ -59,12 +141,70 @@ export const BrandClientGrid: React.FC = () => {
           })}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-          {filteredItems.map((item) => (
-            <BrandClientCard key={item.id} item={item} />
-          ))}
-        </div>
+        {/* Loading State Skeleton */}
+        {loading && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div
+                key={i}
+                className="bg-white rounded-2xl sm:rounded-3xl border border-neutral-200/60 p-6 sm:p-8 flex items-center justify-center h-32 sm:h-36 md:h-40 animate-pulse"
+              >
+                <div className="w-28 sm:w-36 h-10 bg-neutral-200/70 rounded-md" />
+              </div>
+            ))}
+          </div>
+        )}
 
+        {/* Error State */}
+        {!loading && error && (
+          <div className="bg-red-50/80 border border-red-200 rounded-2xl p-8 text-center max-w-lg mx-auto">
+            <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-2" />
+            <h4 className="text-sm font-bold text-red-900 mb-1">
+              {language === "ar" ? "تعذر تحميل العلامات التجارية" : "Unable to load brands"}
+            </h4>
+            <p className="text-xs text-red-600 mb-4">{error}</p>
+            <button
+              onClick={fetchBrands}
+              type="button"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-xs font-semibold cursor-pointer transition-colors"
+            >
+              <RefreshCw className="w-3.5 h-3.5" />
+              <span>{language === "ar" ? "إعادة المحاولة" : "Try Again"}</span>
+            </button>
+          </div>
+        )}
+
+        {/* Empty State */}
+        {!loading && !error && filteredItems.length === 0 && (
+          <div className="bg-white rounded-2xl border border-neutral-200/80 p-12 text-center max-w-md mx-auto">
+            <p className="text-sm font-bold text-neutral-800 mb-1">
+              {language === "ar" ? "لا توجد علامات تجارية في هذا القسم حالياً" : "No brands found in this section"}
+            </p>
+            <p className="text-xs text-neutral-500 mb-4">
+              {language === "ar"
+                ? "يرجى اختيار قسم آخر أو العودة إلى جميع العلامات."
+                : "Please select another category to view registered brands."}
+            </p>
+            <button
+              onClick={() => setSelectedCategory("all")}
+              type="button"
+              className="px-4 py-2 bg-bht-charcoal text-white rounded-lg text-xs font-semibold"
+            >
+              {language === "ar" ? "عرض جميع العلامات" : "View All Brands"}
+            </button>
+          </div>
+        )}
+
+        {/* Real Data Grid */}
+        {!loading && !error && filteredItems.length > 0 && (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            {filteredItems.map((item) => (
+              <BrandClientCard key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+
+        {/* Trust Badges */}
         <div className="mt-16 sm:mt-20 pt-10 sm:pt-12 border-t border-neutral-200/80 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
           <div className="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-neutral-200/60 shadow-2xs flex flex-col items-center">
             <div className="w-12 h-12 rounded-full bg-red-50 text-bht-red flex items-center justify-center mb-3">
@@ -109,6 +249,7 @@ export const BrandClientGrid: React.FC = () => {
           </div>
         </div>
 
+        {/* Partnership Call to Action */}
         <div className="mt-12 sm:mt-16 bg-white rounded-3xl p-8 sm:p-12 border border-neutral-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-start">
           <div className="max-w-xl">
             <span className="text-xs font-bold uppercase tracking-wider text-bht-red mb-1.5 block">
