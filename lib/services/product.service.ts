@@ -148,8 +148,11 @@ export class ProductService {
     if (sanitized.image) {
       sanitized.image = cleanImageUrl(sanitized.image);
     }
-    if (sanitized.images && sanitized.images.length > 0) {
+    if (Array.isArray(sanitized.images)) {
       sanitized.images = sanitized.images.map(cleanImageUrl);
+      if (!sanitized.image && sanitized.images.length > 0) {
+        sanitized.image = sanitized.images[0];
+      }
     }
     return ProductRepository.update(id, sanitized);
   }

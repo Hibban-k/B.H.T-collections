@@ -5,6 +5,9 @@ export interface SerializedBrand {
   _id: string;
   name: string;
   slug: string;
+  category?: string;
+  categorySlug?: string;
+  categoryId?: string | null;
   logo?: string;
   image?: string;
   pdfUrl?: string;
@@ -23,6 +26,7 @@ export class BrandRepository {
     return {
       ...obj,
       _id: obj._id.toString(),
+      categoryId: obj.categoryId ? obj.categoryId.toString() : null,
       createdAt: obj.createdAt.toISOString(),
       updatedAt: obj.updatedAt.toISOString(),
     };

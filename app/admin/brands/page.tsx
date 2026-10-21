@@ -23,6 +23,9 @@ interface BrandItem {
   _id: string;
   name: string;
   slug: string;
+  category?: string;
+  categorySlug?: string;
+  categoryId?: string | null;
   logo: string;
   image?: string;
   pdfUrl?: string;
@@ -36,6 +39,9 @@ interface BrandItem {
 const defaultFormData = {
   name: "",
   slug: "",
+  category: "",
+  categorySlug: "",
+  categoryId: "",
   logo: "",
   image: "",
   pdfUrl: "",
@@ -48,6 +54,7 @@ const defaultFormData = {
 
 export default function BrandsPage() {
   const [brands, setBrands] = useState<BrandItem[]>([]);
+  const [categories, setCategories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
@@ -62,6 +69,7 @@ export default function BrandsPage() {
   const [uploadingLogo, setUploadingLogo] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [dragActiveTarget, setDragActiveTarget] = useState<string | null>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const imageInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
@@ -81,8 +89,21 @@ export default function BrandsPage() {
     }
   };
 
+  const fetchCategories = async () => {
+    try {
+      const res = await fetch("/api/admin/categories");
+      if (res.ok) {
+        const data = await res.json();
+        setCategories(data.categories || []);
+      }
+    } catch (e) {
+      console.error("Failed to load categories", e);
+    }
+  };
+
   useEffect(() => {
     fetchBrands();
+    fetchCategories();
   }, []);
 
   const handleOpenAdd = () => {
@@ -97,6 +118,9 @@ export default function BrandsPage() {
     setFormData({
       name: brand.name,
       slug: brand.slug,
+      category: brand.category || "",
+      categorySlug: brand.categorySlug || "",
+      categoryId: brand.categoryId || "",
       logo: brand.logo || "",
       image: brand.image || "",
       pdfUrl: brand.pdfUrl || "",
@@ -189,6 +213,9 @@ export default function BrandsPage() {
       ...formData,
       name: trimmedName,
       slug: trimmedSlug,
+      category: formData.category || "",
+      categorySlug: formData.categorySlug || "",
+      categoryId: formData.categoryId || null,
       logo: cleanImageUrl(formData.logo),
       image: cleanImageUrl(formData.image),
       pdfUrl: formData.pdfUrl || "",
@@ -316,6 +343,7 @@ export default function BrandsPage() {
                 <tr>
                   <th className="px-5 py-3.5 font-bold">Brand</th>
                   <th className="px-4 py-3.5 font-bold">Slug</th>
+                  <th className="px-4 py-3.5 font-bold">Category</th>
                   <th className="px-4 py-3.5 font-bold">PDF Brochure</th>
                   <th className="px-4 py-3.5 font-bold">Status</th>
                   <th className="px-5 py-3.5 font-bold text-right">Actions</th>
@@ -345,6 +373,15 @@ export default function BrandsPage() {
                       <span className="px-2.5 py-1 rounded-md bg-[#FAF8F5] border border-[#E8DFC8] font-medium text-[11px] text-[#0B131F]">
                         {brand.slug}
                       </span>
+                    </td>
+                    <td className="px-4 py-3.5">
+                      {brand.category ? (
+                        <span className="px-2.5 py-1 rounded-md bg-emerald-50 border border-emerald-200 font-semibold text-[11px] text-emerald-800 capitalize">
+                          {brand.category}
+                        </span>
+                      ) : (
+                        <span className="text-[#94A3B8] text-[11px] italic">Not set</span>
+                      )}
                     </td>
                     <td className="px-4 py-3.5">
                       {brand.pdfUrl ? (
@@ -459,6 +496,41 @@ export default function BrandsPage() {
                 />
               </div>
 
+              <div>
+                <label className="block font-bold mb-1 uppercase tracking-wider text-[11px]">Category / Department *</label>
+                <select
+                  required
+                  value={formData.categoryId || formData.categorySlug || ""}
+                  onChange={(e) => {
+                    const selectedCat = categories.find((c) => c._id === e.target.value || c.slug === e.target.value);
+                    if (selectedCat) {
+                      setFormData({
+                        ...formData,
+                        categoryId: selectedCat._id,
+                        category: selectedCat.name,
+                        categorySlug: selectedCat.slug,
+                      });
+                    } else {
+                      setFormData({
+                        ...formData,
+                        categoryId: "",
+                        category: e.target.value,
+                        categorySlug: e.target.value.toLowerCase(),
+                      });
+                    }
+                  }}
+                  className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none capitalize font-medium text-xs text-[#0B131F]"
+                >
+                  <option value="">Select Category</option>
+                  {categories.map((c) => (
+                    <option key={c._id || c.slug} value={c._id}>
+                      {c.name} ({c.slug})
+                    </option>
+                  ))}
+                </select>
+                <p className="text-[10px] text-[#64748B] mt-0.5">Connects this brand to its relevant store category</p>
+              </div>
+
               {/* Brand Logo Upload Section */}
               <div className="space-y-1.5">
                 <label className="block font-bold uppercase tracking-wider text-[11px]">Brand Logo</label>
@@ -476,7 +548,31 @@ export default function BrandsPage() {
 
                 <div
                   onClick={() => logoInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#D4AF37]/50 rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 transition-all"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget("logo");
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileUpload(e.dataTransfer.files[0], "logo");
+                    }
+                  }}
+                  className={`border-2 border-dashed rounded-2xl p-3 text-center cursor-pointer transition-all ${
+                    dragActiveTarget === "logo"
+                      ? "border-[#D4AF37] bg-amber-50/70 scale-[1.01]"
+                      : uploadingLogo
+                      ? "border-[#D4AF37] bg-amber-50/40"
+                      : "border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
+                  }`}
                 >
                   {uploadingLogo ? (
                     <div className="py-2 flex items-center justify-center gap-2 text-[#D4AF37]">
@@ -491,7 +587,7 @@ export default function BrandsPage() {
                         </div>
                         <div className="text-left">
                           <p className="font-bold text-xs">Logo Loaded</p>
-                          <span className="text-[10px] text-[#D4AF37]">Click to replace</span>
+                          <span className="text-[10px] text-[#D4AF37]">Drag new file or click to replace</span>
                         </div>
                       </div>
                       <button
@@ -506,9 +602,12 @@ export default function BrandsPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="py-2 flex items-center justify-center gap-2 text-[#64748B]">
-                      <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
-                      <span>Click to upload Brand Logo (JPG, PNG, WebP)</span>
+                    <div className="py-2 flex flex-col items-center justify-center gap-1 text-[#64748B]">
+                      <div className="flex items-center gap-2">
+                        <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+                        <span className="font-semibold text-xs text-[#0B131F]">Drag &amp; drop Brand Logo here</span>
+                      </div>
+                      <span className="text-[10px] text-[#8A95A5]">or click to browse from device (JPG, PNG, WebP)</span>
                     </div>
                   )}
                 </div>
@@ -531,7 +630,31 @@ export default function BrandsPage() {
 
                 <div
                   onClick={() => imageInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#D4AF37]/50 rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 transition-all"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget("image");
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileUpload(e.dataTransfer.files[0], "image");
+                    }
+                  }}
+                  className={`border-2 border-dashed rounded-2xl p-3 text-center cursor-pointer transition-all ${
+                    dragActiveTarget === "image"
+                      ? "border-[#D4AF37] bg-amber-50/70 scale-[1.01]"
+                      : uploadingImage
+                      ? "border-[#D4AF37] bg-amber-50/40"
+                      : "border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
+                  }`}
                 >
                   {uploadingImage ? (
                     <div className="py-2 flex items-center justify-center gap-2 text-[#D4AF37]">
@@ -546,7 +669,7 @@ export default function BrandsPage() {
                         </div>
                         <div className="text-left">
                           <p className="font-bold text-xs">Banner Image Loaded</p>
-                          <span className="text-[10px] text-[#D4AF37]">Click to replace</span>
+                          <span className="text-[10px] text-[#D4AF37]">Drag new file or click to replace</span>
                         </div>
                       </div>
                       <button
@@ -561,9 +684,12 @@ export default function BrandsPage() {
                       </button>
                     </div>
                   ) : (
-                    <div className="py-2 flex items-center justify-center gap-2 text-[#64748B]">
-                      <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
-                      <span>Click to upload Brand Banner / Cover Image</span>
+                    <div className="py-2 flex flex-col items-center justify-center gap-1 text-[#64748B]">
+                      <div className="flex items-center gap-2">
+                        <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
+                        <span className="font-semibold text-xs text-[#0B131F]">Drag &amp; drop Brand Banner here</span>
+                      </div>
+                      <span className="text-[10px] text-[#8A95A5]">or click to browse from device (JPG, PNG, WebP)</span>
                     </div>
                   )}
                 </div>
@@ -632,7 +758,31 @@ export default function BrandsPage() {
 
                 <div
                   onClick={() => pdfInputRef.current?.click()}
-                  className="border-2 border-dashed border-[#E8DFC8] rounded-2xl p-3 text-center cursor-pointer bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37] transition-all"
+                  onDragOver={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget("pdfUrl");
+                  }}
+                  onDragLeave={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                  }}
+                  onDrop={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setDragActiveTarget(null);
+                    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                      handleFileUpload(e.dataTransfer.files[0], "pdfUrl");
+                    }
+                  }}
+                  className={`border-2 border-dashed rounded-2xl p-3 text-center cursor-pointer transition-all ${
+                    dragActiveTarget === "pdfUrl"
+                      ? "border-red-400 bg-red-50/70 scale-[1.01]"
+                      : uploadingPdf
+                      ? "border-red-400 bg-red-50/40"
+                      : "border-[#E8DFC8] bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
+                  }`}
                 >
                   {uploadingPdf ? (
                     <div className="py-2 flex items-center justify-center gap-2 text-red-600">
@@ -673,9 +823,11 @@ export default function BrandsPage() {
                     </div>
                   ) : (
                     <div className="py-3 flex flex-col items-center justify-center gap-1 text-[#64748B]">
-                      <FileText className="w-5 h-5 text-red-500" />
-                      <span className="font-semibold text-xs text-[#0B131F]">Click to upload Brand PDF brochure / catalog</span>
-                      <span className="text-[10px] text-[#94A3B8]">Supports PDF files up to 20MB</span>
+                      <div className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-red-500" />
+                        <span className="font-semibold text-xs text-[#0B131F]">Drag &amp; drop Brand PDF brochure / catalog</span>
+                      </div>
+                      <span className="text-[10px] text-[#94A3B8]">or click to browse from device (PDF format up to 20MB)</span>
                     </div>
                   )}
                 </div>

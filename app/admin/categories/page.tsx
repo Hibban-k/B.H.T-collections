@@ -54,6 +54,7 @@ export default function AdminCategoriesPage() {
 
   // Upload states
   const [uploading, setUploading] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -131,6 +132,40 @@ export default function AdminCategoriesPage() {
       setErrorMsg("Network error while uploading category image.");
     } finally {
       setUploading(false);
+    }
+  };
+
+  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsDragging(false);
+
+    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      const file = e.dataTransfer.files[0];
+      setUploading(true);
+      setErrorMsg("");
+
+      try {
+        const uploadData = new FormData();
+        uploadData.append("file", file);
+        uploadData.append("folder", "categories/images");
+
+        const res = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: uploadData,
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success && data.url) {
+          setFormData((prev: any) => ({ ...prev, image: data.url }));
+        } else {
+          setErrorMsg(data.error || "Failed to upload dropped image");
+        }
+      } catch (err) {
+        setErrorMsg("Failed to upload dropped image");
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -495,8 +530,21 @@ export default function AdminCategoriesPage() {
 
                     <div
                       onClick={() => fileInputRef.current?.click()}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsDragging(true);
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsDragging(false);
+                      }}
+                      onDrop={handleDrop}
                       className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer transition-all ${
-                        uploading
+                        isDragging
+                          ? "border-[#D4AF37] bg-amber-50/70 scale-[1.01]"
+                          : uploading
                           ? "border-[#D4AF37] bg-amber-50/40"
                           : "border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
                       }`}
@@ -520,7 +568,7 @@ export default function AdminCategoriesPage() {
                             <div className="text-left">
                               <p className="font-bold text-[#0B131F] text-xs">Image Loaded</p>
                               <span className="inline-block text-[10px] text-[#D4AF37] font-bold">
-                                Click to choose another file
+                                Drag new file or click to replace
                               </span>
                             </div>
                           </div>
@@ -531,8 +579,9 @@ export default function AdminCategoriesPage() {
                             <UploadCloud className="w-4 h-4" />
                           </div>
                           <p className="text-xs font-bold text-[#0B131F]">
-                            Click here to select an image from your device
+                            Drag &amp; drop category image here, or click to browse
                           </p>
+                          <span className="text-[10px] text-[#8A95A5]">Supports PNG, JPG, WebP</span>
                         </div>
                       )}
                     </div>

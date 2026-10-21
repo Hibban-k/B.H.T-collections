@@ -75,6 +75,7 @@ const defaultFormData = {
   originalPrice: "",
   stock: "50",
   image: "",
+  images: [] as string[],
   variants: [] as ProductVariantItem[],
   description: "",
   shortDescription: "",
@@ -109,7 +110,9 @@ export default function AdminProductsPage() {
   const [uploading, setUploading] = useState(false);
   const [uploadingVariantIndex, setUploadingVariantIndex] = useState<number | null>(null);
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
+  const [isDraggingOver, setIsDraggingOver] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const slotFileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
   const fetchProducts = async () => {
     setLoading(true);
@@ -162,7 +165,7 @@ export default function AdminProductsPage() {
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
-    setFormData(defaultFormData);
+    setFormData({ ...defaultFormData, images: [] });
     setErrorMsg("");
     setImageInputMode("upload");
     setModalOpen(true);
@@ -170,6 +173,10 @@ export default function AdminProductsPage() {
 
   const handleOpenEdit = (product: ProductItem) => {
     setEditingProduct(product);
+    const initialImages = Array.isArray(product.images) && product.images.length > 0
+      ? product.images.slice(0, 4)
+      : product.image ? [product.image] : [];
+
     setFormData({
       name: product.name,
       slug: product.slug || "",
@@ -182,7 +189,8 @@ export default function AdminProductsPage() {
       salePrice: product.salePrice ? product.salePrice.toString() : "",
       originalPrice: product.originalPrice ? product.originalPrice.toString() : "",
       stock: product.stock.toString(),
-      image: product.image,
+      image: product.image || initialImages[0] || "",
+      images: initialImages,
       variants: product.variants || [],
       description: product.description,
       shortDescription: product.shortDescription,
@@ -197,40 +205,114 @@ export default function AdminProductsPage() {
       status: product.status,
     });
     setErrorMsg("");
-    setImageInputMode(product.image?.startsWith("/uploads/") ? "upload" : "upload");
+    setImageInputMode("upload");
     setModalOpen(true);
   };
 
-  // Direct File Upload Handler
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+  // Upload helper for single file
+  const uploadSingleFile = async (file: File): Promise<string> => {
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("folder", "products/images");
 
-    const file = files[0];
+    const res = await fetch("/api/admin/upload", {
+      method: "POST",
+      body: uploadData,
+    });
+
+    const data = await res.json();
+    if (res.ok && data.success && data.url) {
+      return data.url;
+    }
+    throw new Error(data.error || `Failed to upload ${file.name}`);
+  };
+
+  // Multiple File Upload Handler (Up to 4 images)
+  const handleUploadFiles = async (filesList: FileList | File[], replaceIndex?: number) => {
+    const files = Array.from(filesList).filter((f) => f.type.startsWith("image/"));
+    if (files.length === 0) return;
+
     setUploading(true);
     setErrorMsg("");
 
     try {
-      const uploadData = new FormData();
-      uploadData.append("file", file);
-      uploadData.append("folder", "products/images");
-
-      const res = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: uploadData,
-      });
-
-      const data = await res.json();
-      if (res.ok && data.success && data.url) {
-        setFormData((prev: any) => ({ ...prev, image: data.url }));
+      if (replaceIndex !== undefined && replaceIndex >= 0) {
+        // Replacing a specific slot
+        const url = await uploadSingleFile(files[0]);
+        setFormData((prev: any) => {
+          const current = [...(prev.images || [])];
+          while (current.length <= replaceIndex) {
+            current.push("");
+          }
+          current[replaceIndex] = url;
+          const clean = current.filter(Boolean).slice(0, 4);
+          return {
+            ...prev,
+            images: clean,
+            image: clean[0] || "",
+          };
+        });
       } else {
-        setErrorMsg(data.error || "Failed to upload image. Please try again.");
+        // Appending images up to max 4
+        const currentImages = [...(formData.images || [])];
+        const remaining = Math.max(0, 4 - currentImages.length);
+
+        if (remaining <= 0) {
+          setErrorMsg("Maximum of 4 product images reached. Remove an image to upload more, or replace a slot.");
+          setUploading(false);
+          return;
+        }
+
+        const filesToUpload = files.slice(0, remaining);
+        const uploadedUrls: string[] = [];
+
+        for (const file of filesToUpload) {
+          const url = await uploadSingleFile(file);
+          if (url) uploadedUrls.push(url);
+        }
+
+        setFormData((prev: any) => {
+          const combined = [...(prev.images || []), ...uploadedUrls].slice(0, 4);
+          return {
+            ...prev,
+            images: combined,
+            image: combined[0] || prev.image || "",
+          };
+        });
       }
     } catch (err: any) {
-      setErrorMsg("Network error while uploading image.");
+      setErrorMsg(err.message || "Failed to upload image(s).");
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleRemoveImage = (index: number) => {
+    setFormData((prev: any) => {
+      const updated = [...(prev.images || [])];
+      updated.splice(index, 1);
+      return {
+        ...prev,
+        images: updated,
+        image: updated[0] || "",
+      };
+    });
+  };
+
+  const handleSetCoverImage = (index: number) => {
+    if (index === 0) return;
+    setFormData((prev: any) => {
+      const updated = [...(prev.images || [])];
+      const [selected] = updated.splice(index, 1);
+      if (selected) {
+        updated.unshift(selected);
+      }
+      return {
+        ...prev,
+        images: updated,
+        image: updated[0] || "",
+      };
+    });
   };
 
   // Variant Image Upload Handler
@@ -260,38 +342,6 @@ export default function AdminProductsPage() {
       setErrorMsg("Network error while uploading variant image.");
     } finally {
       setUploadingVariantIndex(null);
-    }
-  };
-
-  const handleDrop = async (e: React.DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
-      const file = e.dataTransfer.files[0];
-      setUploading(true);
-      setErrorMsg("");
-
-      try {
-        const uploadData = new FormData();
-        uploadData.append("file", file);
-
-        const res = await fetch("/api/admin/upload", {
-          method: "POST",
-          body: uploadData,
-        });
-
-        const data = await res.json();
-        if (res.ok && data.success && data.url) {
-          setFormData((prev: any) => ({ ...prev, image: data.url }));
-        } else {
-          setErrorMsg(data.error || "Failed to upload image");
-        }
-      } catch (err) {
-        setErrorMsg("Failed to upload dropped image");
-      } finally {
-        setUploading(false);
-      }
     }
   };
 
@@ -330,12 +380,23 @@ export default function AdminProductsPage() {
       }
     }
 
+    const cleanImgs = (formData.images || [])
+      .map((img: string) => cleanImageUrl(img))
+      .filter((img: string) => img && img.trim().length > 0)
+      .slice(0, 4);
+
+    const primaryImg = cleanImgs[0] || cleanImageUrl(formData.image) || "";
+    if (primaryImg && !cleanImgs.includes(primaryImg)) {
+      cleanImgs.unshift(primaryImg);
+    }
+
     const payload = {
       ...formData,
       name: trimmedName,
       slug: trimmedSlug,
       sku: formData.sku ? formData.sku.trim().toUpperCase() : undefined,
-      image: cleanImageUrl(formData.image),
+      image: primaryImg,
+      images: cleanImgs.slice(0, 4),
       subcategoryId: formData.subcategoryId || null,
       subcategorySlug: formData.subcategorySlug || "",
       variants: Array.isArray(formData.variants) ? formData.variants : [],
@@ -556,11 +617,24 @@ export default function AdminProductsPage() {
                       </div>
                     </td>
 
-                    {/* Category */}
+                    {/* Category & Connected Brand */}
                     <td className="px-4 py-3.5">
-                      <span className="px-2.5 py-1 rounded-md bg-[#FAF8F5] border border-[#E8DFC8] font-medium text-[11px] text-[#0B131F]">
-                        {product.category}
-                      </span>
+                      <div className="space-y-1">
+                        <span className="inline-block px-2.5 py-1 rounded-md bg-[#FAF8F5] border border-[#E8DFC8] font-medium text-[11px] text-[#0B131F]">
+                          {product.category}
+                        </span>
+                        {(() => {
+                          const productBrand = brands.find((b) => b._id === product.brand || b.name === product.brand);
+                          if (productBrand) {
+                            return (
+                              <div className="text-[10px] text-[#64748B] flex items-center gap-1 font-semibold">
+                                <span className="text-[#D4AF37]">★</span> {productBrand.name}
+                              </div>
+                            );
+                          }
+                          return null;
+                        })()}
+                      </div>
                     </td>
 
                     {/* Price */}
@@ -841,10 +915,25 @@ export default function AdminProductsPage() {
                   className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                 >
                   <option value="">No Brand (Optional)</option>
-                  {brands.map(b => (
-                    <option key={b._id} value={b._id}>{b.name}</option>
+                  {brands.map((b) => (
+                    <option key={b._id} value={b._id}>
+                      {b.name}{b.category ? ` (${b.category})` : ""}
+                    </option>
                   ))}
                 </select>
+                {(() => {
+                  const selectedBrand = brands.find(
+                    (b) => b._id === formData.brand || b.name === formData.brand
+                  );
+                  if (selectedBrand && selectedBrand.category) {
+                    return (
+                      <p className="text-[10px] text-[#246783] mt-1 font-medium">
+                        Connected Category: <span className="font-bold">{selectedBrand.category}</span>
+                      </p>
+                    );
+                  }
+                  return null;
+                })()}
               </div>
 
               {/* Price & Original/Sale Price */}
@@ -881,12 +970,17 @@ export default function AdminProductsPage() {
                 </div>
               </div>
 
-              {/* IMAGE UPLOAD SECTION (File Upload / Drag & Drop / URL) */}
-              <div className="space-y-2">
+              {/* IMAGE UPLOAD SECTION (Multi-Image 4 slots / Drag & Drop / URL) */}
+              <div className="space-y-3">
                 <div className="flex items-center justify-between">
-                  <label className="block font-bold text-[#0B131F] uppercase tracking-wider text-[11px]">
-                    Product Image *
-                  </label>
+                  <div>
+                    <label className="block font-bold text-[#0B131F] uppercase tracking-wider text-[11px]">
+                      Product Images (Up to 4 images) *
+                    </label>
+                    <p className="text-[10px] text-[#64748B]">
+                      Upload up to 4 images. The 1st image is the primary cover. Drag & drop files onto slots or dropzone.
+                    </p>
+                  </div>
                   <div className="flex items-center gap-1 bg-[#FAF8F5] p-1 rounded-lg border border-[#E8DFC8] text-[10px]">
                     <button
                       type="button"
@@ -897,7 +991,7 @@ export default function AdminProductsPage() {
                           : "text-[#64748B] hover:text-[#0B131F]"
                       }`}
                     >
-                      Upload File
+                      Upload Files
                     </button>
                     <button
                       type="button"
@@ -908,104 +1002,234 @@ export default function AdminProductsPage() {
                           : "text-[#64748B] hover:text-[#0B131F]"
                       }`}
                     >
-                      Image URL
+                      Image URLs
                     </button>
                   </div>
                 </div>
 
                 {imageInputMode === "upload" ? (
-                  <div>
-                    {/* Hidden file input */}
+                  <div className="space-y-3">
+                    {/* Hidden multi-file input */}
                     <input
                       ref={fileInputRef}
                       type="file"
+                      multiple
                       accept="image/*"
-                      onChange={handleFileUpload}
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files.length > 0) {
+                          handleUploadFiles(e.target.files);
+                          e.target.value = "";
+                        }
+                      }}
                       className="hidden"
                     />
 
-                    {/* Drag & Drop Box */}
-                    <div
-                      onClick={() => fileInputRef.current?.click()}
-                      onDragOver={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onDrop={handleDrop}
-                      className={`relative border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer transition-all ${
-                        uploading
-                          ? "border-[#D4AF37] bg-amber-50/40"
-                          : "border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
-                      }`}
-                    >
-                      {uploading ? (
-                        <div className="py-4 flex flex-col items-center justify-center gap-2 text-[#D4AF37]">
-                          <Loader2 className="w-8 h-8 animate-spin" />
-                          <p className="text-xs font-bold">Uploading image from device...</p>
-                        </div>
-                      ) : formData.image ? (
-                        <div className="flex items-center justify-between gap-4 p-2 bg-white rounded-xl border border-[#E8DFC8]">
-                          <div className="flex items-center gap-3">
-                            <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#FAF8F5] border border-[#E8DFC8] shrink-0">
-                              <Image
-                                src={cleanImageUrl(formData.image)}
-                                alt="Selected preview"
-                                fill
-                                className="object-cover"
-                              />
+                    {/* Main Drag & Drop Zone if fewer than 4 images */}
+                    {(!formData.images || formData.images.length < 4) && (
+                      <div
+                        onClick={() => fileInputRef.current?.click()}
+                        onDragOver={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsDraggingOver(true);
+                        }}
+                        onDragLeave={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsDraggingOver(false);
+                        }}
+                        onDrop={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsDraggingOver(false);
+                          if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                            handleUploadFiles(e.dataTransfer.files);
+                          }
+                        }}
+                        className={`border-2 border-dashed rounded-2xl p-5 text-center cursor-pointer transition-all ${
+                          isDraggingOver
+                            ? "border-[#D4AF37] bg-amber-50/80 scale-[1.01]"
+                            : uploading
+                            ? "border-[#D4AF37] bg-amber-50/40"
+                            : "border-[#D4AF37]/50 bg-[#FAF8F5] hover:bg-[#F2EBDC]/60 hover:border-[#D4AF37]"
+                        }`}
+                      >
+                        {uploading ? (
+                          <div className="py-2 flex flex-col items-center justify-center gap-2 text-[#D4AF37]">
+                            <Loader2 className="w-7 h-7 animate-spin" />
+                            <p className="text-xs font-bold">Uploading product image(s)...</p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-center justify-center gap-2 text-[#64748B]">
+                            <div className="w-10 h-10 rounded-full bg-amber-100/70 text-[#D4AF37] flex items-center justify-center">
+                              <UploadCloud className="w-5 h-5" />
                             </div>
-                            <div className="text-left">
-                              <p className="font-bold text-[#0B131F] text-xs">Image Loaded</p>
-                              <p className="text-[10px] text-[#64748B] font-mono truncate max-w-[240px]">
-                                {formData.image}
+                            <div>
+                              <p className="text-xs font-bold text-[#0B131F]">
+                                Click or drag &amp; drop images here ({4 - (formData.images?.length || 0)} slot{(4 - (formData.images?.length || 0)) > 1 ? "s" : ""} remaining)
                               </p>
-                              <span className="inline-block text-[10px] text-[#D4AF37] font-bold mt-1">
-                                Click to replace with another file
-                              </span>
+                              <p className="text-[10px] text-[#94A3B8] mt-0.5">
+                                Select up to 4 images (JPG, PNG, WEBP, JPEG). You can drop multiple files at once.
+                              </p>
                             </div>
                           </div>
+                        )}
+                      </div>
+                    )}
 
-                          <button
-                            type="button"
-                            onClick={(e) => {
+                    {/* 4 Image Slots Grid */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                      {[0, 1, 2, 3].map((slotIdx) => {
+                        const imgUrl = formData.images?.[slotIdx];
+                        const isCover = slotIdx === 0;
+
+                        return (
+                          <div
+                            key={slotIdx}
+                            onDragOver={(e) => {
+                              e.preventDefault();
                               e.stopPropagation();
-                              setFormData({ ...formData, image: "" });
                             }}
-                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                            title="Remove image"
+                            onDrop={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              if (e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+                                handleUploadFiles(e.dataTransfer.files, slotIdx);
+                              }
+                            }}
+                            className={`relative rounded-xl border p-2 flex flex-col items-center justify-between text-center transition-all min-h-[140px] ${
+                              imgUrl
+                                ? isCover
+                                  ? "bg-amber-50/30 border-[#D4AF37] ring-1 ring-[#D4AF37]/50"
+                                  : "bg-white border-[#E8DFC8]"
+                                : "border-dashed border-[#D8D4CC] bg-[#FAF8F5] hover:bg-[#F2EBDC]/50 cursor-pointer"
+                            }`}
+                            onClick={() => {
+                              if (!imgUrl) {
+                                slotFileInputRefs.current[slotIdx]?.click();
+                              }
+                            }}
                           >
-                            <X className="w-4 h-4" />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="py-5 flex flex-col items-center justify-center gap-2 text-[#64748B]">
-                          <div className="w-10 h-10 rounded-full bg-amber-100/60 text-[#D4AF37] flex items-center justify-center">
-                            <UploadCloud className="w-5 h-5" />
+                            <input
+                              ref={(el) => {
+                                slotFileInputRefs.current[slotIdx] = el;
+                              }}
+                              type="file"
+                              accept="image/*"
+                              onChange={(e) => {
+                                if (e.target.files && e.target.files.length > 0) {
+                                  handleUploadFiles(e.target.files, slotIdx);
+                                  e.target.value = "";
+                                }
+                              }}
+                              className="hidden"
+                            />
+
+                            {imgUrl ? (
+                              <>
+                                <div className="w-full flex items-center justify-between mb-1">
+                                  <span
+                                    className={`text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${
+                                      isCover
+                                        ? "bg-[#D4AF37] text-white"
+                                        : "bg-gray-100 text-[#64748B]"
+                                    }`}
+                                  >
+                                    {isCover ? "Cover (Main)" : `Image ${slotIdx + 1}`}
+                                  </span>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      handleRemoveImage(slotIdx);
+                                    }}
+                                    className="p-1 text-red-500 hover:bg-red-50 rounded transition-colors"
+                                    title="Remove image"
+                                  >
+                                    <X className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+
+                                <div className="relative w-full h-20 rounded-lg overflow-hidden bg-[#FAF8F5] border border-[#E8DFC8] my-1">
+                                  <Image
+                                    src={cleanImageUrl(imgUrl)}
+                                    alt={`Product image ${slotIdx + 1}`}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+
+                                <div className="w-full flex items-center justify-center gap-2 mt-1">
+                                  {!isCover && (
+                                    <button
+                                      type="button"
+                                      onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleSetCoverImage(slotIdx);
+                                      }}
+                                      className="text-[9px] font-bold text-[#D4AF37] hover:underline"
+                                      title="Set as cover image"
+                                    >
+                                      Make Cover
+                                    </button>
+                                  )}
+                                  <button
+                                    type="button"
+                                    onClick={(e) => {
+                                      e.stopPropagation();
+                                      slotFileInputRefs.current[slotIdx]?.click();
+                                    }}
+                                    className="text-[9px] font-medium text-[#64748B] hover:text-[#0B131F]"
+                                    title="Replace this image"
+                                  >
+                                    Replace
+                                  </button>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="flex flex-col items-center justify-center py-4 text-[#94A3B8] h-full w-full">
+                                <div className="w-8 h-8 rounded-full border border-dashed border-[#CBD5E1] flex items-center justify-center mb-1">
+                                  <Plus className="w-4 h-4 text-[#94A3B8]" />
+                                </div>
+                                <span className="text-[10px] font-bold text-[#64748B]">
+                                  Slot {slotIdx + 1}
+                                </span>
+                                <span className="text-[8px] text-[#94A3B8]">
+                                  Click or drop file
+                                </span>
+                              </div>
+                            )}
                           </div>
-                          <div>
-                            <p className="text-xs font-bold text-[#0B131F]">
-                              Click here to choose an image from your device
-                            </p>
-                            <p className="text-[10px] text-[#94A3B8] mt-0.5">
-                              Supports JPG, PNG, WEBP, JPEG up to 10MB (or drag &amp; drop)
-                            </p>
-                          </div>
-                        </div>
-                      )}
+                        );
+                      })}
                     </div>
                   </div>
                 ) : (
                   <div>
-                    <input
-                      type="text"
-                      required
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                      placeholder="https://example.com/image.jpg or /collections/korean-super-soft-blanket.png"
-                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
+                    <textarea
+                      rows={3}
+                      value={
+                        formData.images && formData.images.length > 0
+                          ? formData.images.join("\n")
+                          : formData.image || ""
+                      }
+                      onChange={(e) => {
+                        const lines = e.target.value
+                          .split("\n")
+                          .map((s) => s.trim())
+                          .filter(Boolean)
+                          .slice(0, 4);
+                        setFormData({
+                          ...formData,
+                          images: lines,
+                          image: lines[0] || "",
+                        });
+                      }}
+                      placeholder="Enter up to 4 image URLs (one per line):&#10;https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
+                      className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono text-xs"
                     />
                     <p className="text-[10px] text-[#94A3B8] mt-1">
-                      Tip: Google Image search URLs are automatically converted to direct clean images.
+                      Enter up to 4 image URLs (one per line). First image is used as primary cover.
                     </p>
                   </div>
                 )}
@@ -1350,7 +1574,20 @@ export default function AdminProductsPage() {
                           </div>
 
                           <div className="flex items-center gap-1.5">
-                            <label className="cursor-pointer px-2.5 py-1.5 bg-white hover:bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#D4AF37] text-[11px] font-bold rounded-xl text-[#0B131F] flex items-center gap-1.5 transition-colors">
+                            <label
+                              onDragOver={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                              }}
+                              onDrop={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+                                  handleVariantImageUpload(e.dataTransfer.files[0], index);
+                                }
+                              }}
+                              className="cursor-pointer px-2.5 py-1.5 bg-white hover:bg-[#FAF8F5] border border-[#E8DFC8] hover:border-[#D4AF37] text-[11px] font-bold rounded-xl text-[#0B131F] flex items-center gap-1.5 transition-colors"
+                            >
                               {uploadingVariantIndex === index ? (
                                 <>
                                   <Loader2 className="w-3.5 h-3.5 animate-spin text-[#D4AF37]" />

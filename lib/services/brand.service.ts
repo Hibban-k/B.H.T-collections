@@ -4,6 +4,9 @@ import type { IBrand } from "@/lib/db/models/Brand";
 export interface CreateBrandInput {
   name: string;
   slug?: string;
+  category?: string;
+  categorySlug?: string;
+  categoryId?: string | null;
   logo?: string;
   image?: string;
   pdfUrl?: string;
@@ -46,6 +49,9 @@ export class BrandService {
     const brandData: Partial<IBrand> = {
       name: trimmedName,
       slug,
+      category: input.category || "",
+      categorySlug: input.categorySlug || "",
+      categoryId: (input.categoryId as any) || undefined,
       logo: input.logo || "",
       image: input.image || "",
       pdfUrl: input.pdfUrl || "",
@@ -76,6 +82,9 @@ export class BrandService {
     const sanitized: Partial<IBrand> = { ...(updates as Partial<IBrand>) };
     if (sanitized.name) sanitized.name = sanitized.name.trim();
     if (sanitized.slug) sanitized.slug = sanitized.slug.trim().toLowerCase();
+    if ((sanitized.categoryId as unknown) === "" || (sanitized.categoryId as unknown) === null) {
+      delete sanitized.categoryId;
+    }
     return BrandRepository.update(id, sanitized);
   }
 
