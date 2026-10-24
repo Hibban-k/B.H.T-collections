@@ -14,9 +14,14 @@ import {
 import { HERO_SLIDES, HeroSlide } from "@/data/heroData";
 import { useLanguage } from "@/context/LanguageContext";
 
-export const HeroCarousel: React.FC = () => {
+interface HeroCarouselProps {
+  slides?: HeroSlide[];
+}
+
+export const HeroCarousel: React.FC<HeroCarouselProps> = ({
+  slides = HERO_SLIDES,
+}) => {
   const { language, isRTL } = useLanguage();
-  const [slides, setSlides] = useState<HeroSlide[]>(HERO_SLIDES);
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
@@ -27,58 +32,6 @@ export const HeroCarousel: React.FC = () => {
   const NextArrow = isRTL ? ChevronLeft : ChevronRight;
   const PrevArrow = isRTL ? ChevronRight : ChevronLeft;
   const CtaArrow = isRTL ? ArrowLeft : ArrowRight;
-
-  // Dynamically fetch hero category images from database
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadCategoryImages = async () => {
-      try {
-        const res = await fetch("/api/store/categories");
-        if (res.ok) {
-          const data = await res.json();
-          const categories: any[] = data.categories || [];
-
-          if (categories.length > 0 && isMounted) {
-            setSlides((prevSlides) =>
-              prevSlides.map((slide) => {
-                const matched = categories.find((c) => {
-                  const cSlug = (c.slug || "").toLowerCase();
-                  const cName = (c.name || "").toLowerCase();
-                  const dest = slide.destination.toLowerCase();
-                  const slideCat = slide.category.toLowerCase();
-
-                  return (
-                    dest.includes(cSlug) ||
-                    slideCat.includes(cName) ||
-                    (slideCat === "blankets" && (cSlug === "bedding" || cSlug === "blankets" || cName === "bedding")) ||
-                    (slideCat === "trolleys" && (cSlug === "travel-bags" || cSlug === "trolly" || cSlug === "trolleys" || cName === "travel bags")) ||
-                    (slideCat === "footwear" && (cSlug === "footwear" || cName === "footwear"))
-                  );
-                });
-
-                if (matched && matched.image && matched.image.trim()) {
-                  return {
-                    ...slide,
-                    image: matched.image,
-                  };
-                }
-                return slide;
-              })
-            );
-          }
-        }
-      } catch (err) {
-        console.error("HeroCarousel: failed to load category images from DB", err);
-      }
-    };
-
-    loadCategoryImages();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
 
   const nextSlide = useCallback(() => {
     setCurrentSlideIndex((prev) => (prev + 1) % totalSlides);
@@ -111,7 +64,7 @@ export const HeroCarousel: React.FC = () => {
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* FULL-WIDTH SLIDES */}
+      {/* FULL-WIDTH SLIDES (SERVER-RENDERED WITH DATABASE BACKGROUND IMAGES) */}
       {slides.map((slide, index) => {
         const isCurrent = index === currentSlideIndex;
         return (
