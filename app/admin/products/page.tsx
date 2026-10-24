@@ -380,6 +380,37 @@ export default function AdminProductsPage() {
       }
     }
 
+    // Home screen featured limit: max 4 products per main category
+    if (formData.showOnHomepage || formData.featured) {
+      const getCategoryGroup = (cat?: string, catSlug?: string) => {
+        const s = `${cat || ""} ${catSlug || ""}`.toLowerCase();
+        if (s.includes("travel") || s.includes("bag") || s.includes("trolley") || s.includes("trolly") || s.includes("luggage")) {
+          return "travel-bags";
+        }
+        if (s.includes("footwear") || s.includes("shoe") || s.includes("slipper") || s.includes("flip-flop") || s.includes("clog")) {
+          return "footwear";
+        }
+        return "bedding";
+      };
+
+      const targetGroup = getCategoryGroup(formData.category, formData.categorySlug);
+      const featuredCount = products.filter((p) => {
+        if (editingProduct && p._id === editingProduct._id) return false;
+        return (
+          getCategoryGroup(p.category, p.categorySlug) === targetGroup &&
+          (p.showOnHomepage || p.featured)
+        );
+      }).length;
+
+      if (featuredCount >= 4) {
+        setErrorMsg(
+          `A maximum of 4 products in category "${formData.category || 'this category'}" can be featured / shown on the home screen. There are already 4 featured products in this category. More than 4 is restricted. Please uncheck another product first.`
+        );
+        setSaving(false);
+        return;
+      }
+    }
+
     const cleanImgs = (formData.images || [])
       .map((img: string) => cleanImageUrl(img))
       .filter((img: string) => img && img.trim().length > 0)
@@ -1297,9 +1328,44 @@ export default function AdminProductsPage() {
 
               {/* Display & Status Switches */}
               <div className="p-4 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl space-y-3">
-                <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
-                  Storefront Visibility &amp; Status
-                </h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#64748B]">
+                    Storefront Visibility &amp; Status
+                  </h4>
+                  {(() => {
+                    const getCategoryGroup = (cat?: string, catSlug?: string) => {
+                      const s = `${cat || ""} ${catSlug || ""}`.toLowerCase();
+                      if (s.includes("travel") || s.includes("bag") || s.includes("trolley") || s.includes("trolly") || s.includes("luggage")) {
+                        return "travel-bags";
+                      }
+                      if (s.includes("footwear") || s.includes("shoe") || s.includes("slipper") || s.includes("flip-flop") || s.includes("clog")) {
+                        return "footwear";
+                      }
+                      return "bedding";
+                    };
+                    const targetGroup = getCategoryGroup(formData.category, formData.categorySlug);
+                    const featuredCount = products.filter((p) => {
+                      if (editingProduct && p._id === editingProduct._id) return false;
+                      return (
+                        getCategoryGroup(p.category, p.categorySlug) === targetGroup &&
+                        (p.showOnHomepage || p.featured)
+                      );
+                    }).length;
+                    const isLimitReached = featuredCount >= 4;
+
+                    return (
+                      <span
+                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                          isLimitReached
+                            ? "bg-amber-100 text-amber-800 border border-amber-300"
+                            : "bg-emerald-50 text-emerald-700 border border-emerald-200"
+                        }`}
+                      >
+                        {featuredCount}/4 Home Featured in category
+                      </span>
+                    );
+                  })()}
+                </div>
 
                 <div className="grid sm:grid-cols-3 gap-3">
                   <label className="flex items-center gap-2 cursor-pointer">

@@ -162,6 +162,39 @@ export class ProductRepository {
     return doc ? serialize(doc) : null;
   }
 
+  static async countFeaturedOrHomepage(categoryPattern: string, excludeId?: string): Promise<number> {
+    await connectToDatabase();
+    let regex: RegExp;
+    if (/travel|bag|trolley|trolly|luggage/i.test(categoryPattern)) {
+      regex = /travel|bag|trolley|trolly|luggage/i;
+    } else if (/footwear|shoe|slipper|flip-flop|clog/i.test(categoryPattern)) {
+      regex = /footwear|shoe|slipper|flip-flop|clog/i;
+    } else {
+      regex = /bed|blanket|comferter|comforter|sheet/i;
+    }
+
+    const query: any = {
+      $and: [
+        { status: { $ne: "disabled" } },
+        {
+          $or: [
+            { categorySlug: { $regex: regex } },
+            { category: { $regex: regex } },
+          ],
+        },
+        {
+          $or: [{ showOnHomepage: true }, { featured: true }],
+        },
+      ],
+    };
+
+    if (excludeId) {
+      query.$and.push({ _id: { $ne: excludeId } });
+    }
+
+    return ProductModel.countDocuments(query);
+  }
+
   static async delete(id: string): Promise<boolean> {
     await connectToDatabase();
     const result = await ProductModel.findByIdAndDelete(id);

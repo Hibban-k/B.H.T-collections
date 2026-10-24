@@ -143,13 +143,18 @@ export const FeaturedProducts: React.FC = () => {
     return ALL_PRODUCTS;
   }, [dbProducts]);
 
-  // Filtered by selected tab
+  // Filtered by selected tab (Enforcing strict limit: max 4 products per main category)
   const displayedProducts = useMemo(() => {
-    let list = allProductsPool;
-    if (activeTab !== "all") {
-      list = list.filter((p) => p.category === activeTab);
-    }
-    return list.slice(0, 8);
+    const beddingList = allProductsPool.filter((p) => p.category === "bedding").slice(0, 4);
+    const travelList = allProductsPool.filter((p) => p.category === "travel-bags").slice(0, 4);
+    const footwearList = allProductsPool.filter((p) => p.category === "footwear").slice(0, 4);
+
+    if (activeTab === "bedding") return beddingList;
+    if (activeTab === "travel-bags") return travelList;
+    if (activeTab === "footwear") return footwearList;
+
+    // "all": strictly at most 4 products per main category
+    return [...beddingList, ...travelList, ...footwearList];
   }, [allProductsPool, activeTab]);
 
   return (

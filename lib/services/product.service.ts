@@ -79,6 +79,17 @@ export class ProductService {
       throw new Error(`Product with slug "${slug}" already exists.`);
     }
 
+    const shouldBeOnHomepage = Boolean(input.featured || input.showOnHomepage);
+    if (shouldBeOnHomepage) {
+      const catCheck = input.categorySlug || input.category || "bedding";
+      const count = await ProductRepository.countFeaturedOrHomepage(catCheck);
+      if (count >= 4) {
+        throw new Error(
+          `A maximum of 4 products in main category "${input.category || catCheck}" can be featured/shown on the home screen. More than 4 is restricted.`
+        );
+      }
+    }
+
     const cleanImg = cleanImageUrl(input.image);
     const cleanImgs =
       input.images && input.images.length > 0
@@ -139,6 +150,17 @@ export class ProductService {
       const existingSlug = await ProductRepository.findBySlug(updates.slug.trim().toLowerCase(), id);
       if (existingSlug) {
         throw new Error(`Product with slug "${updates.slug.trim().toLowerCase()}" already exists.`);
+      }
+    }
+
+    if (updates.featured === true || updates.showOnHomepage === true) {
+      const existingProduct = await ProductRepository.findById(id);
+      const catCheck = updates.categorySlug || updates.category || existingProduct?.categorySlug || existingProduct?.category || "bedding";
+      const count = await ProductRepository.countFeaturedOrHomepage(catCheck, id);
+      if (count >= 4) {
+        throw new Error(
+          `A maximum of 4 products in main category "${updates.category || existingProduct?.category || catCheck}" can be featured/shown on the home screen. More than 4 is restricted.`
+        );
       }
     }
 
