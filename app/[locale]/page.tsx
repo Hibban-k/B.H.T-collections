@@ -2,7 +2,7 @@ import { Navbar } from "@/components/header/Navbar";
 import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
 import { HeroCarousel } from "@/components/hero/HeroCarousel";
 import { ShopByCategory } from "@/components/category-showcase/ShopByCategory";
-import { CollectionShowcase } from "@/components/collection-showcase/CollectionShowcase";
+import { FeaturedProducts } from "@/components/featured-products/FeaturedProducts";
 import { WhyChooseUs } from "@/components/why-choose-us/WhyChooseUs";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { RegionalPresence } from "@/components/regional-presence/RegionalPresence";
@@ -21,11 +21,11 @@ export default function HomePage() {
         {/* 2. Announcement Ticker (Directly above hero, transparent/no background) */}
         <AnnouncementTicker />
 
-        {/* 4. Shop by Category Showcase (3 Pure White Containers) */}
+        {/* 4. Shop by Category Showcase (3 Pure White Containers with DB Sliding Brand Logos & Banners) */}
         <ShopByCategory />
 
-        {/* 5. Collection Showcase with Distributor Logos (3 Tabs + 6 Products Gallery) */}
-        <CollectionShowcase />
+        {/* 5. Featured Products Section (Real DB Products with Category Tabs & Quick View) */}
+        <FeaturedProducts />
 
         {/* 6. Why Choose Us (6 Items Grid, Strictly NO Heading) */}
         <WhyChooseUs />
