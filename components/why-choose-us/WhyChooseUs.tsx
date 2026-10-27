@@ -1,14 +1,7 @@
 "use client";
 
 import React from "react";
-import {
-  Truck,
-  Users,
-  Handshake,
-  ShieldCheck,
-  Building2,
-  Sparkles,
-} from "lucide-react";
+import { Truck, Handshake, ShieldCheck } from "lucide-react";
 import { TRUST_FEATURES } from "@/data/trustData";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -23,16 +16,10 @@ export const WhyChooseUs: React.FC = () => {
     switch (iconName) {
       case "truck":
         return <Truck {...iconProps} />;
-      case "users":
-        return <Users {...iconProps} />;
       case "handshake":
         return <Handshake {...iconProps} />;
       case "shield-check":
         return <ShieldCheck {...iconProps} />;
-      case "warehouse":
-        return <Building2 {...iconProps} />;
-      case "sparkles":
-        return <Sparkles {...iconProps} />;
       default:
         return <ShieldCheck {...iconProps} />;
     }
@@ -40,16 +27,16 @@ export const WhyChooseUs: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-white py-16 md:py-24 border-t border-[#F0F0F0]"
+      className="w-full bg-white py-14 sm:py-18 md:py-20 border-t border-[#F0F0F0]"
       aria-label="Core Business Strengths"
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* NO SECTION HEADING - Straight to the 6-item Grid as explicitly requested */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-y-12 sm:gap-y-16 gap-x-8 lg:gap-x-12">
+      <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* 3 Pillars Grid matching reference design */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-10 md:gap-y-0 gap-x-8 lg:gap-x-12">
           {TRUST_FEATURES.map((feature) => (
             <div
               key={feature.id}
-              className="flex flex-col items-center text-center px-4"
+              className="flex flex-col items-center text-center px-2 sm:px-4"
             >
               {/* Black Outline Icon at Top */}
               <div className="mb-4 flex items-center justify-center h-12 w-12 text-black transition-transform duration-300 hover:scale-110">
@@ -57,12 +44,12 @@ export const WhyChooseUs: React.FC = () => {
               </div>
 
               {/* Bold Title */}
-              <h3 className="text-base sm:text-lg font-extrabold text-[#171717] tracking-tight mb-2.5 max-w-xs">
+              <h3 className="text-base sm:text-lg font-extrabold text-[#111827] tracking-tight mb-2.5 max-w-xs">
                 {language === "ar" ? feature.titleAr : feature.titleEn}
               </h3>
 
               {/* Concise Description */}
-              <p className="text-xs sm:text-sm text-[#444444] leading-relaxed max-w-sm">
+              <p className="text-xs sm:text-sm text-[#4B5563] leading-relaxed max-w-sm">
                 {language === "ar" ? feature.descAr : feature.descEn}
               </p>
             </div>

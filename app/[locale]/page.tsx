@@ -4,6 +4,7 @@ import { HeroCarousel } from "@/components/hero/HeroCarousel";
 import { ShopByCategory } from "@/components/category-showcase/ShopByCategory";
 import { FeaturedProducts } from "@/components/featured-products/FeaturedProducts";
 import { WhyChooseUs } from "@/components/why-choose-us/WhyChooseUs";
+import { OurCustomers } from "@/components/customers/OurCustomers";
 import { Testimonials } from "@/components/testimonials/Testimonials";
 import { RegionalPresence } from "@/components/regional-presence/RegionalPresence";
 import { Footer } from "@/components/footer/Footer";
@@ -63,17 +64,20 @@ export default async function HomePage() {
         {/* 5. Featured Products Section (Real DB Products with Category Tabs & Quick View) */}
         <FeaturedProducts />
 
-        {/* 6. Why Choose Us (6 Items Grid, Strictly NO Heading) */}
+        {/* 6. Why Choose Us (3 Items: Timely Delivery, Price Match Guarantee, Strong Accountability) */}
         <WhyChooseUs />
 
-        {/* 7. Testimonials (5 Boxes: 1 Black + 4 White, Strictly NO Heading) */}
+        {/* 7. Our Customers / Clientele Section */}
+        <OurCustomers />
+
+        {/* 8. Testimonials (5 Boxes: 1 Black + 4 White, Strictly NO Heading) */}
         <Testimonials />
 
-        {/* 8. Our Regional Presence (Burj Khalifa Split Layout + 6 Circular Country Flags) */}
+        {/* 9. Our Regional Presence (Burj Khalifa Split Layout + 6 Circular Country Flags) */}
         <RegionalPresence />
       </main>
 
-      {/* 9. Luxury Charcoal Footer */}
+      {/* 10. Luxury Charcoal Footer */}
       <Footer />
     </div>
   );
