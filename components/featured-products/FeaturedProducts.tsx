@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowLeft, Eye, Star, CheckCircle2, Sparkles } from "lucide-react";
+import { ArrowRight, ArrowLeft, Eye, Star, CheckCircle2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
 import { ALL_PRODUCTS, Product } from "@/data/productsData";
@@ -166,10 +166,6 @@ export const FeaturedProducts: React.FC = () => {
         {/* SECTION HEADER & TABS ROW */}
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-50 border border-red-100 text-bht-red text-[11px] font-extrabold uppercase tracking-widest mb-2">
-              <Sparkles className="w-3 h-3" />
-              <span>{language === "ar" ? "تشكيلات مميزة" : "FEATURED PRODUCTS"}</span>
-            </div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-bht-charcoal tracking-tight">
               {language === "ar"
                 ? "أحدث وأرقى المنتجات المختارة"
@@ -280,13 +276,7 @@ export const FeaturedProducts: React.FC = () => {
                               : `-${discountPercentage}% OFF`}
                           </span>
                         )}
-                        {product.isFeatured && (
-                          <span className="bg-bht-charcoal text-white text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md shadow-xs flex items-center gap-1">
-                            <Sparkles className="w-2.5 h-2.5 text-amber-400" />
-                            <span>{language === "ar" ? "مميز" : "FEATURED"}</span>
-                          </span>
-                        )}
-                      </div>
+                        </div>
 
                       {/* In Stock Badge */}
                       {product.inStock && (

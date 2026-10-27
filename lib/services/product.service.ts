@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import { ProductRepository, ProductFilter, SerializedProduct } from "@/lib/repositories/product.repository";
+import { BrandRepository } from "@/lib/repositories/brand.repository";
 import { cleanImageUrl } from "@/lib/utils/image";
 import type { IProduct } from "@/lib/db/models/Product";
 import type { IProductVariant } from "@/lib/db/models/Product";
@@ -16,7 +18,7 @@ export interface CreateProductInput {
   originalPrice?: number;
   rating?: number;
   reviewCount?: number;
-  brand?: string;
+  brand?: string | null;
   image?: string;
   images?: string[];
   description?: string;
@@ -36,6 +38,43 @@ export interface CreateProductInput {
   metaDescription?: string;
   keywords?: string[];
   status?: "published" | "draft" | "disabled";
+}
+
+/**
+ * Resolves a brand input (ObjectId string, brand slug, or brand name)
+ * to a valid mongoose ObjectId or null to prevent CastError: Cast to ObjectId failed for value ""
+ */
+async function resolveBrandId(val?: string | null): Promise<mongoose.Types.ObjectId | null> {
+  if (!val || val === "" || val === "null" || val === "undefined") return null;
+  const s = String(val).trim();
+  if (mongoose.isValidObjectId(s)) {
+    return new mongoose.Types.ObjectId(s);
+  }
+  try {
+    const bySlug = await BrandRepository.findBySlug(s);
+    if (bySlug && mongoose.isValidObjectId(bySlug._id)) {
+      return new mongoose.Types.ObjectId(bySlug._id);
+    }
+    const byName = await BrandRepository.findByName(s);
+    if (byName && mongoose.isValidObjectId(byName._id)) {
+      return new mongoose.Types.ObjectId(byName._id);
+    }
+  } catch {
+    // ignore lookup error and fallback to null
+  }
+  return null;
+}
+
+/**
+ * Resolves category/subcategoryId to a valid ObjectId or null
+ */
+function resolveCategoryId(val?: string | null): mongoose.Types.ObjectId | null {
+  if (!val || val === "" || val === "null" || val === "undefined") return null;
+  const s = String(val).trim();
+  if (mongoose.isValidObjectId(s)) {
+    return new mongoose.Types.ObjectId(s);
+  }
+  return null;
 }
 
 export class ProductService {
@@ -96,20 +135,23 @@ export class ProductService {
         ? input.images.map(cleanImageUrl)
         : [cleanImg];
 
+    const resolvedBrand = await resolveBrandId(input.brand);
+    const resolvedSubcat = resolveCategoryId(input.subcategoryId);
+
     const productData: Partial<IProduct> = {
       name: trimmedName,
       slug,
       sku: input.sku ? input.sku.trim().toUpperCase() : undefined,
       category: input.category || "Blankets",
       categorySlug: input.categorySlug || "blankets",
-      subcategoryId: (input.subcategoryId as any) || undefined,
+      subcategoryId: (resolvedSubcat as any) ?? null,
       subcategorySlug: input.subcategorySlug || "",
       price: Number(input.price) || 0,
       salePrice: input.salePrice ? Number(input.salePrice) : undefined,
       originalPrice: input.originalPrice ? Number(input.originalPrice) : undefined,
       rating: input.rating || 5.0,
       reviewCount: input.reviewCount || 1,
-      brand: input.brand ? (input.brand as any) : undefined,
+      brand: (resolvedBrand as any) ?? null,
       image: cleanImg,
       images: cleanImgs,
       description: input.description || "",
@@ -176,6 +218,19 @@ export class ProductService {
         sanitized.image = sanitized.images[0];
       }
     }
+
+    // Safely resolve brand to ObjectId or null (never empty string)
+    if ("brand" in updates) {
+      const resolvedBrand = await resolveBrandId(updates.brand);
+      sanitized.brand = (resolvedBrand as any) ?? null;
+    }
+
+    // Safely resolve subcategoryId to ObjectId or null (never empty string)
+    if ("subcategoryId" in updates) {
+      const resolvedSubcat = resolveCategoryId(updates.subcategoryId);
+      sanitized.subcategoryId = (resolvedSubcat as any) ?? null;
+    }
+
     return ProductRepository.update(id, sanitized);
   }
 

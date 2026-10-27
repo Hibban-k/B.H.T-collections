@@ -12,6 +12,15 @@ export const GET = withAuth("products:read", async (req: Request, { params }: { 
 export const PUT = withAuth("products:write", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const body = await req.json();
+
+  // Ensure empty string foreign keys are converted to null
+  if (body.brand === "" || body.brand === "null" || body.brand === "undefined") {
+    body.brand = null;
+  }
+  if (body.subcategoryId === "" || body.subcategoryId === "null" || body.subcategoryId === "undefined") {
+    body.subcategoryId = null;
+  }
+
   const updated = await ProductService.updateProduct(id, body);
   if (!updated) throw new Error("Product not found");
   return NextResponse.json({ success: true, product: updated });

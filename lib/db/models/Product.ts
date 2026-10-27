@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IBrand } from "./Brand";
+
 export interface IProductVariant {
   name: string;
   sku?: string;
@@ -17,7 +18,7 @@ export interface IProduct extends Document {
   sku?: string;
   category: string;
   categorySlug: string;
-  subcategoryId?: mongoose.Types.ObjectId;
+  subcategoryId?: mongoose.Types.ObjectId | null;
   subcategorySlug?: string;
   price: number;
   salePrice?: number;
@@ -32,7 +33,7 @@ export interface IProduct extends Document {
   colors: string[];
   materials: string[];
   variants?: IProductVariant[];
-  brand?: mongoose.Types.ObjectId | IBrand; // Or string, but usually ObjectId
+  brand?: mongoose.Types.ObjectId | IBrand | null;
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
@@ -70,7 +71,15 @@ const ProductSchema = new Schema<IProduct>(
     sku: { type: String, unique: true, sparse: true, trim: true, uppercase: true },
     category: { type: String, required: true },
     categorySlug: { type: String, required: true, index: true },
-    subcategoryId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
+    subcategoryId: {
+      type: Schema.Types.ObjectId,
+      ref: "Category",
+      default: null,
+      set: (val: any) => {
+        if (!val || val === "" || val === "null" || val === "undefined") return null;
+        return mongoose.isValidObjectId(val) ? val : null;
+      },
+    },
     subcategorySlug: { type: String, default: "" },
     price: { type: Number, required: true, min: 0 },
     salePrice: { type: Number, default: null },
@@ -86,7 +95,15 @@ const ProductSchema = new Schema<IProduct>(
     materials: { type: [String], default: ["100% Premium Material"] },
     variants: { type: [ProductVariantSchema], default: [] },
     stock: { type: Number, default: 50 },
-    brand: { type: Schema.Types.ObjectId, ref: "Brand" },
+    brand: {
+      type: Schema.Types.ObjectId,
+      ref: "Brand",
+      default: null,
+      set: (val: any) => {
+        if (!val || val === "" || val === "null" || val === "undefined") return null;
+        return mongoose.isValidObjectId(val) ? val : null;
+      },
+    },
     metaTitle: { type: String, default: "" },
     metaDescription: { type: String, default: "" },
     keywords: { type: [String], default: [] },
@@ -101,6 +118,12 @@ const ProductSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 );
+
+// Pre-save hook to ensure empty string brand / subcategoryId are never persisted as invalid ObjectIds
+ProductSchema.pre("save", function () {
+  if (this.brand === ("" as any)) this.brand = null;
+  if (this.subcategoryId === ("" as any)) this.subcategoryId = null;
+});
 
 export const ProductModel: Model<IProduct> =
   mongoose.models.Product || mongoose.model<IProduct>("Product", ProductSchema);

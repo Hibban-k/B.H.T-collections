@@ -18,6 +18,14 @@ export const POST = withAuth("products:write", async (req: Request) => {
     throw new Error("Product name and price are required");
   }
 
+  // Ensure empty string foreign keys are converted to null
+  if (body.brand === "" || body.brand === "null" || body.brand === "undefined") {
+    body.brand = null;
+  }
+  if (body.subcategoryId === "" || body.subcategoryId === "null" || body.subcategoryId === "undefined") {
+    body.subcategoryId = null;
+  }
+
   const created = await ProductService.createProduct(body);
   return NextResponse.json({ success: true, product: created }, { status: 201 });
 });

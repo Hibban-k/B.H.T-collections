@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/db/mongodb";
 import { ProductModel, IProduct } from "@/lib/db/models/Product";
 import type { UpdateQuery } from "mongoose";
@@ -9,6 +10,7 @@ export interface ProductFilter {
   showOnCollection?: boolean;
   featured?: boolean;
   search?: string;
+  brand?: string;
 }
 
 export interface SerializedProductVariant {
@@ -75,6 +77,11 @@ function buildMongoFilter(options?: ProductFilter): Record<string, unknown> {
   if (options.showOnHomepage !== undefined) filter.showOnHomepage = options.showOnHomepage;
   if (options.showOnCollection !== undefined) filter.showOnCollection = options.showOnCollection;
   if (options.featured !== undefined) filter.featured = options.featured;
+  if (options.brand && options.brand.trim() !== "") {
+    if (mongoose.isValidObjectId(options.brand.trim())) {
+      filter.brand = new mongoose.Types.ObjectId(options.brand.trim());
+    }
+  }
   if (options.search) {
     // If $or already exists (from categorySlug), we must use $and to combine them
     const searchOr = [
@@ -148,12 +155,22 @@ export class ProductRepository {
 
   static async create(data: Partial<IProduct>): Promise<SerializedProduct> {
     await connectToDatabase();
+    // Safety check: ensure brand/subcategoryId are never empty string
+    if ((data as any).brand === "") (data as any).brand = null;
+    if ((data as any).subcategoryId === "") (data as any).subcategoryId = null;
     const doc = await ProductModel.create(data);
     return serialize(doc.toObject());
   }
 
   static async update(id: string, data: UpdateQuery<IProduct>): Promise<SerializedProduct | null> {
     await connectToDatabase();
+    // Safety check: ensure brand/subcategoryId are never empty string in update payload
+    if (data && (data as any).brand === "") {
+      (data as any).brand = null;
+    }
+    if (data && (data as any).subcategoryId === "") {
+      (data as any).subcategoryId = null;
+    }
     const doc = await ProductModel.findByIdAndUpdate(
       id,
       { ...data, updatedAt: new Date() },
