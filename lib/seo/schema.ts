@@ -34,7 +34,7 @@ export function generateBreadcrumbSchema(items: { name: string; path: string }[]
   };
 }
 
-export function generateItemListSchema(products: any[], categoryUrl: string) {
+export function generateItemListSchema(products: SerializedProduct[], categoryUrl: string) {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -49,7 +49,7 @@ export function generateItemListSchema(products: any[], categoryUrl: string) {
   };
 }
 
-export function generateProductSchema(product: any) {
+export function generateProductSchema(product: SerializedProduct) {
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -62,7 +62,7 @@ export function generateProductSchema(product: any) {
       url: getAbsoluteUrl(`/collections/${product.categorySlug}/${product.slug}`),
       priceCurrency: "AED",
       price: product.price,
-      availability: product.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: (product.stock ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "Blanket House Trading L.L.C.",

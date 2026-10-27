@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { ProductService } from "@/lib/services/product.service";
 
+export const revalidate = 30; // Cache store products for 30 seconds
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category") || undefined;

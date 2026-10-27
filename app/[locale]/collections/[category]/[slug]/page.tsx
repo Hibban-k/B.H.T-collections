@@ -1,5 +1,4 @@
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
 import { CollectionPageView } from "@/components/collection/CollectionPageView";
 import { COLLECTION_CATEGORIES_META, ALL_PRODUCTS } from "@/data/productsData";
 
