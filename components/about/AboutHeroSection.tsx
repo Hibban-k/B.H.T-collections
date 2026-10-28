@@ -64,12 +64,11 @@ export const AboutHeroSection: React.FC = () => {
   const { language } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
 
-  // Smooth scroll listener for up-down animation
+  // Smooth scroll listener for opposite alignment animation
   useEffect(() => {
     let ticking = false;
 
     const handleScroll = () => {
-      // Only track within hero section range
       if (window.scrollY < 1200) {
         setScrollY(window.scrollY);
       }
@@ -87,23 +86,24 @@ export const AboutHeroSection: React.FC = () => {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  // Clamped scroll offset for parallax
-  const clampedScroll = Math.min(Math.max(scrollY, 0), 800);
+  // Alignment progress: 0 at top -> 1 at 380px scroll
+  // As user scrolls down, UP cards glide down and DOWN cards glide up into the SAME alignment!
+  const alignProgress = Math.min(Math.max(scrollY / 380, 0), 1);
 
-  // Desktop offsets: UP cards glide upwards, DOWN cards glide downwards
+  // Desktop offsets: UP and DOWN cards converge to +16px
   const getDesktopTransform = (isUp: boolean) => {
     if (isUp) {
-      const offset = -16 - clampedScroll * 0.08;
+      const offset = -16 + alignProgress * 32;
       return `translate3d(0, ${offset}px, 0)`;
     } else {
-      const offset = 48 + clampedScroll * 0.08;
+      const offset = 48 - alignProgress * 32;
       return `translate3d(0, ${offset}px, 0)`;
     }
   };
 
-  // Mobile column offsets
-  const mobileCol1Transform = `translate3d(0, ${-clampedScroll * 0.05}px, 0)`;
-  const mobileCol2Transform = `translate3d(0, ${48 + clampedScroll * 0.05}px, 0)`;
+  // Mobile column offsets: Left and Right columns converge to +24px
+  const mobileCol1Transform = `translate3d(0, ${alignProgress * 24}px, 0)`;
+  const mobileCol2Transform = `translate3d(0, ${48 - alignProgress * 24}px, 0)`;
 
   const renderCard = (card: HeroCardItem, isMobile: boolean = false) => {
     const subtitle = language === "ar" ? card.subtitleAr : card.subtitleEn;
@@ -116,7 +116,7 @@ export const AboutHeroSection: React.FC = () => {
         style={!isMobile ? { transform: getDesktopTransform(card.isUp) } : undefined}
         className={`group block relative w-full h-[240px] sm:h-[280px] lg:h-[420px] ${
           isMobile ? "rounded-2xl" : "rounded-[28px]"
-        } overflow-hidden border-2 border-white shadow-xl shadow-black/15 will-change-transform transition-all duration-300 ease-out hover:shadow-2xl hover:scale-[1.02]`}
+        } overflow-hidden border-2 border-white shadow-xl shadow-black/15 will-change-transform transition-transform duration-300 ease-out hover:shadow-2xl hover:scale-[1.02]`}
       >
         {/* Background Photography - Exact same height on all cards */}
         <Image
@@ -205,9 +205,9 @@ export const AboutHeroSection: React.FC = () => {
       {/* 2. OVERLAPPING STAGGERED CARDS ROW (MIDDLE)                  */}
       {/* ============================================================ */}
       <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 -mt-28 sm:-mt-36 lg:-mt-44 relative z-10">
-        {/* MOBILE & TABLET VIEW: 2-Column Staggered Masonry with Scroll Up-Down Animation */}
+        {/* MOBILE & TABLET VIEW: Converges into same alignment on scroll */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden items-start">
-          {/* Column 1: Card 1 (UP) & Card 3 (UP) */}
+          {/* Column 1: Card 1 (UP) & Card 3 (UP) - Glides DOWN on scroll */}
           <div
             style={{ transform: mobileCol1Transform }}
             className="flex flex-col gap-3 sm:gap-4 will-change-transform transition-transform duration-300 ease-out"
@@ -216,7 +216,7 @@ export const AboutHeroSection: React.FC = () => {
             {renderCard(ABOUT_HERO_CARDS[2], true)}
           </div>
 
-          {/* Column 2: Card 2 (DOWN) & Card 4 (DOWN) - Glides downward on scroll */}
+          {/* Column 2: Card 2 (DOWN) & Card 4 (DOWN) - Glides UP into same alignment on scroll */}
           <div
             style={{ transform: mobileCol2Transform }}
             className="flex flex-col gap-3 sm:gap-4 will-change-transform transition-transform duration-300 ease-out"
@@ -226,7 +226,7 @@ export const AboutHeroSection: React.FC = () => {
           </div>
         </div>
 
-        {/* DESKTOP VIEW: 4 Columns with Identical Photo Height & Alternating Up/Down Scroll Animation */}
+        {/* DESKTOP VIEW: 4 Columns with Identical Photo Height - Converges into same alignment on scroll */}
         <div className="hidden lg:grid lg:grid-cols-4 gap-6 items-start">
           {ABOUT_HERO_CARDS.map((card) => renderCard(card, false))}
         </div>
