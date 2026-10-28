@@ -135,14 +135,6 @@ export const SecondaryNav: React.FC = () => {
                       }`}
                     />
                   </button>
-
-                  {/* Luxury Mega Dropdown matching user reference image */}
-                  <CollectionDropdown
-                    isOpen={isCollectionOpen}
-                    onClose={() => setIsCollectionOpen(false)}
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  />
                 </div>
               );
             }
