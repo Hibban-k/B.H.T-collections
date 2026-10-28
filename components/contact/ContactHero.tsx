@@ -77,19 +77,60 @@ export const ContactHero: React.FC = () => {
     }
   };
 
+  const renderCard = (card: ContactHeroCardItem, isMobile: boolean = false) => {
+    const subtitle = language === "ar" ? card.subtitleAr : card.subtitleEn;
+    const title = language === "ar" ? card.titleAr : card.titleEn;
+
+    return (
+      <button
+        key={card.id}
+        type="button"
+        onClick={() => handleCardClick(card)}
+        className={`group block text-start relative w-full ${
+          isMobile
+            ? "h-[220px] sm:h-[260px] rounded-2xl"
+            : `${card.desktopHeight} ${card.desktopTranslate} rounded-[28px]`
+        } overflow-hidden border-2 border-white shadow-xl shadow-black/15 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] cursor-pointer`}
+      >
+        {/* Background Photography */}
+        <Image
+          src={card.image}
+          alt={title}
+          fill
+          priority
+          className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
+          sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 25vw"
+        />
+
+        {/* Dark Vignette / Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
+
+        {/* Content Overlay at Bottom */}
+        <div className="absolute bottom-0 inset-x-0 p-3 sm:p-5 text-start z-10">
+          <span className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-0.5 truncate drop-shadow-xs">
+            {subtitle}
+          </span>
+          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug truncate drop-shadow-md">
+            {title}
+          </h3>
+        </div>
+      </button>
+    );
+  };
+
   return (
     <section className="w-full bg-white select-none overflow-hidden" aria-label="Contact Us Hero">
       {/* ============================================================ */}
       {/* 1. VIBRANT RED HERO BANNER (TOP)                            */}
       {/* ============================================================ */}
-      <div className="relative w-full bg-[#E52B25] text-white pt-14 sm:pt-20 lg:pt-24 pb-32 sm:pb-40 lg:pb-52 overflow-visible">
+      <div className="relative w-full bg-[#E52B25] text-white pt-12 sm:pt-18 lg:pt-24 pb-28 sm:pb-36 lg:pb-52 overflow-visible">
         {/* Subtle decorative background watermarks */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/30 via-transparent to-transparent pointer-events-none" />
 
         <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
           {/* Main Title with Playful Sparkle Star Accent */}
           <div className="relative inline-block mb-3 sm:mb-4">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-xs">
+            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-xs">
               {language === "ar" ? "تواصل معنا" : "Contact us"}
             </h1>
 
@@ -137,51 +178,32 @@ export const ContactHero: React.FC = () => {
       {/* ============================================================ */}
       {/* 2. OVERLAPPING STAGGERED CARDS ROW (MIDDLE)                  */}
       {/* ============================================================ */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 -mt-24 sm:-mt-32 lg:-mt-44 relative z-10">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5 lg:gap-6 items-start">
-          {CONTACT_HERO_CARDS.map((card) => {
-            const subtitle = language === "ar" ? card.subtitleAr : card.subtitleEn;
-            const title = language === "ar" ? card.titleAr : card.titleEn;
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 -mt-20 sm:-mt-28 lg:-mt-44 relative z-10">
+        {/* MOBILE & TABLET VIEW: 2-Column Staggered Masonry (Matching Screenshot) */}
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden items-start">
+          {/* Column 1: Card 1 (Showroom) & Card 3 (Wholesale) */}
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {renderCard(CONTACT_HERO_CARDS[0], true)}
+            {renderCard(CONTACT_HERO_CARDS[2], true)}
+          </div>
 
-            return (
-              <button
-                key={card.id}
-                type="button"
-                onClick={() => handleCardClick(card)}
-                className={`group block text-start relative w-full h-[300px] sm:h-[340px] ${card.desktopHeight} ${card.desktopTranslate} rounded-[24px] sm:rounded-[28px] overflow-hidden border-2 border-white shadow-xl shadow-black/15 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] cursor-pointer`}
-              >
-                {/* Background Photography */}
-                <Image
-                  src={card.image}
-                  alt={title}
-                  fill
-                  priority
-                  className="object-cover object-center transition-transform duration-700 ease-out group-hover:scale-108"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                />
+          {/* Column 2: Card 2 (Concierge) & Card 4 (Direct Message) - Offset Downwards */}
+          <div className="flex flex-col gap-3 sm:gap-4 pt-10 sm:pt-14">
+            {renderCard(CONTACT_HERO_CARDS[1], true)}
+            {renderCard(CONTACT_HERO_CARDS[3], true)}
+          </div>
+        </div>
 
-                {/* Dark Vignette / Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
-
-                {/* Content Overlay at Bottom */}
-                <div className="absolute bottom-0 inset-x-0 p-5 sm:p-6 text-start z-10">
-                  <span className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-1 drop-shadow-xs">
-                    {subtitle}
-                  </span>
-                  <h3 className="text-white font-bold text-sm sm:text-base lg:text-lg leading-snug drop-shadow-md">
-                    {title}
-                  </h3>
-                </div>
-              </button>
-            );
-          })}
+        {/* DESKTOP VIEW: 4 Columns Staggered in Single Row */}
+        <div className="hidden lg:grid lg:grid-cols-4 gap-6 items-start">
+          {CONTACT_HERO_CARDS.map((card) => renderCard(card, false))}
         </div>
       </div>
 
       {/* ============================================================ */}
       {/* 3. QUICK CONTACT HIGHLIGHT PILLARS (BOTTOM)                  */}
       {/* ============================================================ */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-24 pb-14 sm:pb-18">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-18 lg:pt-24 pb-14 sm:pb-18">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-neutral-100">
           {/* Item 1 */}
           <div className="space-y-1.5">
