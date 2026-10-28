@@ -141,7 +141,7 @@ export const FeaturedProducts: React.FC = () => {
     return ALL_PRODUCTS;
   }, [dbProducts]);
 
-  // Display exactly 4 products organized category-wise (no tabs)
+  // Display exactly 4 products organized category-wise without obsolete tab logic
   const displayedProducts = useMemo(() => {
     const bedding = allProductsPool.filter((p) => p.category === "bedding");
     const travel = allProductsPool.filter((p) => p.category === "travel-bags");
@@ -175,7 +175,7 @@ export const FeaturedProducts: React.FC = () => {
     >
       <div className="max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* SECTION HEADER ROW */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
           <div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-bht-charcoal tracking-tight">
               {language === "ar"
@@ -190,15 +190,13 @@ export const FeaturedProducts: React.FC = () => {
           </div>
 
           {/* VIEW ALL LINK */}
-          <div>
-            <Link
-              href="/collections"
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group"
-            >
-              <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
-              <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
-            </Link>
-          </div>
+          <Link
+            href="/collections"
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group self-start sm:self-auto shrink-0"
+          >
+            <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
+            <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+          </Link>
         </div>
 
         {/* PRODUCTS GRID (EXACTLY 4 PRODUCTS) */}
