@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { BrandClientCard } from "./BrandClientCard";
 import { useLanguage } from "@/context/LanguageContext";
-import { ShieldCheck, Truck, Award, MessageCircle, AlertCircle, RefreshCw } from "lucide-react";
+import { MessageCircle, AlertCircle, RefreshCw } from "lucide-react";
 import Link from "next/link";
 import { BrandClientItem } from "@/types/brand";
 
@@ -204,50 +204,7 @@ export const BrandClientGrid: React.FC = () => {
           </div>
         )}
 
-        {/* Trust Badges */}
-        <div className="mt-16 sm:mt-20 pt-10 sm:pt-12 border-t border-neutral-200/80 grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8 text-center">
-          <div className="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-neutral-200/60 shadow-2xs flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-red-50 text-bht-red flex items-center justify-center mb-3">
-              <ShieldCheck className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <h4 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
-              {language === "ar" ? "علامات تجارية معتمدة 100%" : "100% Certified Trademarks"}
-            </h4>
-            <p className="text-xs text-neutral-500 max-w-xs leading-relaxed">
-              {language === "ar"
-                ? "حقوق توزيع حصرية وتوريد أصلي مضمون لكافة العلامات التجارية والمنتجات."
-                : "Exclusive distribution rights and authentic warranties across all product divisions."}
-            </p>
-          </div>
 
-          <div className="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-neutral-200/60 shadow-2xs flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-blue-50 text-bht-blue flex items-center justify-center mb-3">
-              <Truck className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <h4 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
-              {language === "ar" ? "توريد شامل لدول الخليج" : "GCC-Wide Distribution"}
-            </h4>
-            <p className="text-xs text-neutral-500 max-w-xs leading-relaxed">
-              {language === "ar"
-                ? "لوجستيات سريعة وتوريد بالجملة للفنادق والشركات وتجار التجزئة في 6 دول خليجية."
-                : "Fast logistics and wholesale corporate fulfillment across all 6 GCC member states."}
-            </p>
-          </div>
-
-          <div className="bg-white/80 backdrop-blur-xs p-6 rounded-2xl border border-neutral-200/60 shadow-2xs flex flex-col items-center">
-            <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3">
-              <Award className="w-6 h-6 stroke-[1.8]" />
-            </div>
-            <h4 className="text-sm sm:text-base font-bold text-neutral-900 mb-1">
-              {language === "ar" ? "معايير جودة معتمدة" : "Licensed Quality Standards"}
-            </h4>
-            <p className="text-xs text-neutral-500 max-w-xs leading-relaxed">
-              {language === "ar"
-                ? "فحص دوري ومطابقة لأعلى مواصفات الراحة والمتانة العالمية."
-                : "Continuous testing ensuring maximum durability, ergonomic comfort, and prestige."}
-            </p>
-          </div>
-        </div>
 
         {/* Partnership Call to Action */}
         <div className="mt-12 sm:mt-16 bg-white rounded-3xl p-8 sm:p-12 border border-neutral-200 shadow-sm flex flex-col lg:flex-row items-center justify-between gap-6 text-center lg:text-start">
