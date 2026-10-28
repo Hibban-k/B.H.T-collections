@@ -33,6 +33,7 @@ export const FeaturedProducts: React.FC = () => {
   const { language, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
+  const [activeTab, setActiveTab] = useState<"bedding" | "travel-bags" | "footwear">("bedding");
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
@@ -141,41 +142,21 @@ export const FeaturedProducts: React.FC = () => {
     return ALL_PRODUCTS;
   }, [dbProducts]);
 
-  // Display exactly 4 products organized category-wise without obsolete tab logic
+  // Display strictly 4 products for the currently active category tab
   const displayedProducts = useMemo(() => {
-    const bedding = allProductsPool.filter((p) => p.category === "bedding");
-    const travel = allProductsPool.filter((p) => p.category === "travel-bags");
-    const footwear = allProductsPool.filter((p) => p.category === "footwear");
-
-    const selected: Product[] = [];
-    if (bedding[0]) selected.push(bedding[0]);
-    if (travel[0]) selected.push(travel[0]);
-    if (footwear[0]) selected.push(footwear[0]);
-    if (bedding[1]) selected.push(bedding[1]);
-    else if (travel[1]) selected.push(travel[1]);
-    else if (footwear[1]) selected.push(footwear[1]);
-
-    // Safety fallback: if fewer than 4, fill from remaining pool
-    const seenIds = new Set(selected.map((p) => p.id));
-    for (const p of allProductsPool) {
-      if (selected.length >= 4) break;
-      if (!seenIds.has(p.id)) {
-        selected.push(p);
-        seenIds.add(p.id);
-      }
-    }
-
-    return selected.slice(0, 4);
-  }, [allProductsPool]);
+    return allProductsPool
+      .filter((p) => p.category === activeTab)
+      .slice(0, 4);
+  }, [allProductsPool, activeTab]);
 
   return (
     <section
       className="w-full bg-[#FAFAFA] py-12 md:py-20 border-t border-[#EDEDED]"
-      aria-label="Product Showcase"
+      aria-label="Products Showcase"
     >
       <div className="max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* SECTION HEADER ROW */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8 sm:mb-12">
+        {/* SECTION HEADER & TABS ROW */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-bht-charcoal tracking-tight">
               {language === "ar"
@@ -189,19 +170,50 @@ export const FeaturedProducts: React.FC = () => {
             </p>
           </div>
 
-          {/* VIEW ALL LINK */}
-          <Link
-            href="/collections"
-            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group self-start sm:self-auto shrink-0"
-          >
-            <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
-            <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
-          </Link>
+          {/* CATEGORY FILTER TABS & VIEW ALL */}
+          <div className="flex flex-wrap items-center gap-2 self-start md:self-auto">
+            <div
+              role="tablist"
+              className="inline-flex items-center gap-1 p-1 bg-white rounded-xl border border-[#E0E0E0] shadow-2xs"
+            >
+              {[
+                { id: "bedding" as const, nameEn: "Bedding", nameAr: "المفروشات" },
+                { id: "travel-bags" as const, nameEn: "Travel Bags", nameAr: "حقائب السفر" },
+                { id: "footwear" as const, nameEn: "Footwear", nameAr: "الأحذية" },
+              ].map((tab) => {
+                const isActive = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    role="tab"
+                    aria-selected={isActive}
+                    onClick={() => setActiveTab(tab.id)}
+                    className={`px-3 sm:px-4 py-1.5 text-xs font-bold rounded-lg transition-all duration-200 ${
+                      isActive
+                        ? "bg-bht-charcoal text-white shadow-xs"
+                        : "text-[#555555] hover:text-bht-charcoal hover:bg-neutral-100"
+                    }`}
+                  >
+                    {language === "ar" ? tab.nameAr : tab.nameEn}
+                  </button>
+                );
+              })}
+            </div>
+
+            <Link
+              href={`/collections/${activeTab}`}
+              className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group"
+            >
+              <span>{language === "ar" ? "عرض الكل" : "View All"}</span>
+              <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+            </Link>
+          </div>
         </div>
 
-        {/* PRODUCTS GRID (EXACTLY 4 PRODUCTS) */}
+        {/* PRODUCTS GRID */}
         {loading && displayedProducts.length === 0 ? (
-          <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div
                 key={i}
@@ -217,7 +229,7 @@ export const FeaturedProducts: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
             {displayedProducts.map((product) => {
               const discountPercentage = product.originalPrice
                 ? Math.round(
@@ -285,24 +297,14 @@ export const FeaturedProducts: React.FC = () => {
                   {/* 2. CARD CONTENT AREA */}
                   <div className="p-3 sm:p-4 flex-1 flex flex-col justify-between">
                     <div>
-                      {/* Brand, Category & Rating Row */}
+                      {/* Brand & Rating Row */}
                       <div className="flex items-center justify-between gap-1 mb-1.5">
-                        <div className="flex items-center gap-1 truncate max-w-[70%]">
-                          <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-bht-red truncate">
-                            {product.brand}
-                          </span>
-                          <span className="text-gray-300">•</span>
-                          <span className="text-[10px] text-gray-500 font-medium truncate capitalize">
-                            {product.category === "bedding"
-                              ? (language === "ar" ? "المفروشات" : "Bedding")
-                              : product.category === "travel-bags"
-                              ? (language === "ar" ? "حقائب السفر" : "Travel Bags")
-                              : (language === "ar" ? "الأحذية" : "Footwear")}
-                          </span>
-                        </div>
+                        <span className="text-[10px] sm:text-[11px] font-extrabold uppercase tracking-wider text-bht-red truncate max-w-[65%]">
+                          {product.brand}
+                        </span>
 
                         {/* Stars */}
-                        <div className="flex items-center gap-0.5 text-amber-500 shrink-0">
+                        <div className="flex items-center gap-0.5 text-amber-500">
                           <Star className="w-3 h-3 fill-amber-500 stroke-amber-500" />
                           <span className="text-[10px] font-bold text-gray-700">
                             {product.rating}
@@ -347,6 +349,17 @@ export const FeaturedProducts: React.FC = () => {
             })}
           </div>
         )}
+
+        {/* MOBILE VIEW ALL BUTTON */}
+        <div className="mt-8 text-center lg:hidden">
+          <Link
+            href={`/collections/${activeTab}`}
+            className="inline-flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 rounded-xl bg-bht-charcoal text-white text-xs font-bold hover:bg-black transition-all shadow-sm"
+          >
+            <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
+            <ArrowIcon className="w-4 h-4" />
+          </Link>
+        </div>
       </div>
 
       {/* QUICK VIEW MODAL */}

@@ -10,24 +10,19 @@ export const Testimonials: React.FC = () => {
 
   return (
     <section
-      className="relative w-full border-t border-[#EAEAEA] bg-[#FAFAFA] overflow-hidden"
+      className="w-full bg-white py-14 md:py-20 border-t border-[#F0F0F0]"
       aria-label="Customer Trust & Reviews"
     >
-      <div className="max-w-[1760px] mx-auto">
-        {/* Split Grid: Left Column is FULL-SECTION BLACK from top to bottom, Right is full height light */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch min-h-[380px]">
-          
-          {/* LEFT COLUMN: Static Content - Full section black from top to bottom */}
-          <div className="lg:col-span-3 xl:col-span-3 relative bg-bht-charcoal text-white flex flex-col justify-between py-12 sm:py-16 px-6 sm:px-8 xl:px-10 z-10">
-            {/* Full-bleed black backdrop extending from column edge to screen boundary */}
-            <div className="absolute inset-y-0 end-0 -start-[100vw] bg-bht-charcoal -z-10 hidden lg:block pointer-events-none" />
-
-            {/* Static Content Copy */}
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+        {/* NO HEADING - Exactly 5 boxes in horizontal row on desktop with increased height */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5 items-stretch">
+          {/* BOX 1: Black Introductory Trust Box */}
+          <div className="bg-bht-charcoal text-white rounded-2xl p-7 lg:p-8 flex flex-col justify-between shadow-md min-h-[320px] sm:min-h-[350px] lg:min-h-[360px]">
             <div>
-              <span className="text-[10px] sm:text-[11px] font-extrabold tracking-widest uppercase text-bht-red block mb-2.5">
+              <span className="text-[10px] font-extrabold tracking-widest uppercase text-bht-red block mb-3">
                 {language === "ar" ? "ثقة وأصالة" : "TRUST & CARE"}
               </span>
-              <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight mb-3">
+              <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mb-3">
                 {language === "ar"
                   ? INTRO_TRUST_BOX.titleAr
                   : INTRO_TRUST_BOX.titleEn}
@@ -38,9 +33,7 @@ export const Testimonials: React.FC = () => {
                   : INTRO_TRUST_BOX.contentEn}
               </p>
             </div>
-
-            {/* Brand LLC Footer */}
-            <div className="pt-6 mt-6 border-t border-gray-800">
+            <div className="pt-5 mt-6 border-t border-gray-800">
               <span className="text-[11px] font-bold text-gray-400">
                 {language === "ar"
                   ? "بيت البطانيات للتجارة ذ.م.م"
@@ -49,51 +42,40 @@ export const Testimonials: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT COLUMN: Full-Height Light Color with the 4 Same Review Cards as Old */}
-          <div className="lg:col-span-9 xl:col-span-9 relative bg-[#FAFAFA] flex items-center py-10 sm:py-14 lg:py-16 px-4 sm:px-6 xl:px-8 z-10">
-            {/* Full-bleed light backdrop extending to right screen boundary */}
-            <div className="absolute inset-y-0 start-0 -end-[100vw] bg-[#FAFAFA] -z-10 hidden lg:block pointer-events-none" />
-
-            <div className="w-full grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 lg:gap-5 items-stretch">
-              {TESTIMONIALS_DATA.map((rev) => (
-                <div
-                  key={rev.id}
-                  className="bg-white rounded-2xl border border-bht-border p-6 flex flex-col justify-between hover:border-[#CCCCCC] hover:shadow-md transition-all duration-300 h-full min-h-[220px]"
-                >
-                  <div>
-                    {/* 5 Warm Gold Stars */}
-                    <div
-                      className="flex items-center gap-1 mb-4"
-                      aria-label="5 out of 5 stars"
-                    >
-                      {[...Array(rev.rating)].map((_, i) => (
-                        <Star
-                          key={i}
-                          className="w-4 h-4 fill-bht-gold text-bht-gold"
-                        />
-                      ))}
-                    </div>
-
-                    {/* Review Text */}
-                    <p className="text-xs sm:text-sm text-[#333333] leading-relaxed italic">
-                      &ldquo;{language === "ar" ? rev.quoteAr : rev.quoteEn}&rdquo;
-                    </p>
-                  </div>
-
-                  {/* Verified Author & UAE Location */}
-                  <div className="pt-4 mt-4 border-t border-[#F2F2F2] flex items-center justify-between">
-                    <span className="text-xs font-bold text-bht-charcoal">
-                      {language === "ar" ? rev.authorAr : rev.authorEn}
-                    </span>
-                    <span className="text-[11px] text-[#888888]">
-                      {language === "ar" ? rev.locationAr : rev.locationEn}
-                    </span>
-                  </div>
+          {/* BOXES 2 - 5: White Testimonial Review Boxes with increased height */}
+          {TESTIMONIALS_DATA.map((rev) => (
+            <div
+              key={rev.id}
+              className="bg-white rounded-2xl border border-bht-border p-7 lg:p-8 flex flex-col justify-between hover:border-[#CCCCCC] hover:shadow-md transition-all duration-300 min-h-[320px] sm:min-h-[350px] lg:min-h-[360px]"
+            >
+              <div>
+                {/* 5 Warm Gold Stars */}
+                <div className="flex items-center gap-1 mb-4" aria-label="5 out of 5 stars">
+                  {[...Array(rev.rating)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className="w-4 h-4 fill-bht-gold text-bht-gold"
+                    />
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
 
+                {/* Review Text */}
+                <p className="text-xs sm:text-sm text-[#333333] leading-relaxed italic">
+                  &ldquo;{language === "ar" ? rev.quoteAr : rev.quoteEn}&rdquo;
+                </p>
+              </div>
+
+              {/* Verified Author & UAE Location */}
+              <div className="pt-5 mt-6 border-t border-[#F2F2F2] flex items-center justify-between">
+                <span className="text-xs font-bold text-bht-charcoal">
+                  {language === "ar" ? rev.authorAr : rev.authorEn}
+                </span>
+                <span className="text-[11px] text-[#888888]">
+                  {language === "ar" ? rev.locationAr : rev.locationEn}
+                </span>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     </section>
