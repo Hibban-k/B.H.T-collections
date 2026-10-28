@@ -11,7 +11,7 @@ export const Testimonials: React.FC = () => {
   const [isPaused, setIsPaused] = useState(false);
 
   const totalReviews = TESTIMONIALS_DATA.length; // 4
-  // Duplicate reviews to ensure seamless sliding without trailing whitespace
+  // Duplicate reviews to ensure continuous seamless sliding without trailing whitespace
   const slidingReviews = [...TESTIMONIALS_DATA, ...TESTIMONIALS_DATA];
 
   const handleNext = useCallback(() => {
@@ -34,66 +34,68 @@ export const Testimonials: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-white py-14 md:py-20 border-t border-[#F0F0F0]"
+      className="relative w-full border-t border-[#EAEAEA] bg-[#FAFAFA] overflow-hidden"
       aria-label="Customer Trust & Reviews"
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* 2-Column Grid: Column 1 = Static Content, Column 2 = Sliding Reviews */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 lg:gap-6 items-stretch">
+      <div className="max-w-[1440px] mx-auto">
+        {/* 2-Column Grid: Left Column is FULL SECTION BLACK from top to bottom */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 items-stretch min-h-[440px]">
           
-          {/* COLUMN 1: Static Content Box (Full Height with Black Background) */}
-          <div className="lg:col-span-4 flex flex-col h-full">
-            <div className="bg-bht-charcoal text-white rounded-2xl p-6 sm:p-8 flex flex-col justify-between shadow-md h-full min-h-[300px]">
-              <div>
-                <span className="text-[10px] sm:text-[11px] font-extrabold tracking-widest uppercase text-bht-red block mb-2.5">
-                  {language === "ar" ? "ثقة وأصالة" : "TRUST & CARE"}
-                </span>
-                <h3 className="text-xl sm:text-2xl font-black text-white tracking-tight mb-3">
-                  {language === "ar"
-                    ? INTRO_TRUST_BOX.titleAr
-                    : INTRO_TRUST_BOX.titleEn}
-                </h3>
-                <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-normal">
-                  {language === "ar"
-                    ? INTRO_TRUST_BOX.contentAr
-                    : INTRO_TRUST_BOX.contentEn}
-                </p>
-              </div>
+          {/* COLUMN 1: Full-Height Solid Black Static Content Column */}
+          <div className="lg:col-span-4 xl:col-span-4 relative bg-bht-charcoal text-white flex flex-col justify-between py-12 sm:py-16 lg:py-20 px-6 sm:px-10 lg:px-12 z-10">
+            {/* Seamless full-bleed black backdrop extending from column edge all the way to screen boundary */}
+            <div className="absolute inset-y-0 end-0 -start-[100vw] bg-bht-charcoal z-[-1] hidden lg:block pointer-events-none" />
 
-              {/* Footer info & slider controls */}
-              <div className="pt-6 mt-6 border-t border-gray-800/80 flex items-center justify-between">
-                <span className="text-[11px] font-bold text-gray-400">
-                  {language === "ar"
-                    ? "بيت البطانيات للتجارة ذ.م.م"
-                    : "Blanket House Trading LLC"}
-                </span>
+            {/* Static Content */}
+            <div className="relative z-10">
+              <span className="text-[10px] sm:text-[11px] font-extrabold tracking-widest uppercase text-bht-red block mb-3">
+                {language === "ar" ? "ثقة وأصالة" : "TRUST & CARE"}
+              </span>
+              <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight mb-4">
+                {language === "ar"
+                  ? INTRO_TRUST_BOX.titleAr
+                  : INTRO_TRUST_BOX.titleEn}
+              </h3>
+              <p className="text-xs sm:text-sm text-gray-300 leading-relaxed font-normal">
+                {language === "ar"
+                  ? INTRO_TRUST_BOX.contentAr
+                  : INTRO_TRUST_BOX.contentEn}
+              </p>
+            </div>
 
-                {/* Slider Navigation Buttons */}
-                <div className="flex items-center gap-1.5" dir="ltr">
-                  <button
-                    type="button"
-                    onClick={handlePrev}
-                    className="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-white flex items-center justify-center transition-colors shadow-xs active:scale-95"
-                    aria-label="Previous review"
-                  >
-                    <PrevIcon className="w-4 h-4" />
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleNext}
-                    className="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-white flex items-center justify-center transition-colors shadow-xs active:scale-95"
-                    aria-label="Next review"
-                  >
-                    <NextIcon className="w-4 h-4" />
-                  </button>
-                </div>
+            {/* Bottom Brand Name & Slider Navigation Arrows */}
+            <div className="relative z-10 pt-8 mt-8 border-t border-gray-800/80 flex items-center justify-between">
+              <span className="text-[11px] font-bold text-gray-400">
+                {language === "ar"
+                  ? "بيت البطانيات للتجارة ذ.م.م"
+                  : "Blanket House Trading LLC"}
+              </span>
+
+              {/* Slider Navigation Controls */}
+              <div className="flex items-center gap-2" dir="ltr">
+                <button
+                  type="button"
+                  onClick={handlePrev}
+                  className="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-white flex items-center justify-center transition-all active:scale-95 border border-neutral-700/80"
+                  aria-label="Previous review"
+                >
+                  <PrevIcon className="w-4 h-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="w-8 h-8 rounded-full bg-neutral-800 hover:bg-neutral-700 text-white flex items-center justify-center transition-all active:scale-95 border border-neutral-700/80"
+                  aria-label="Next review"
+                >
+                  <NextIcon className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>
 
           {/* COLUMN 2: Reviews Sliding Column */}
           <div
-            className="lg:col-span-8 flex flex-col justify-between overflow-hidden relative"
+            className="lg:col-span-8 xl:col-span-8 bg-[#FAFAFA] flex flex-col justify-between py-12 sm:py-16 lg:py-20 px-4 sm:px-8 lg:px-12 overflow-hidden relative z-10"
             onMouseEnter={() => setIsPaused(true)}
             onMouseLeave={() => setIsPaused(false)}
           >
@@ -108,7 +110,7 @@ export const Testimonials: React.FC = () => {
                 {slidingReviews.map((rev, idx) => (
                   <div
                     key={`${rev.id}-${idx}`}
-                    className="w-[var(--card-width)] shrink-0 bg-white rounded-2xl border border-bht-border p-6 sm:p-7 flex flex-col justify-between hover:border-[#CCCCCC] hover:shadow-md transition-all duration-300 h-full min-h-[280px]"
+                    className="w-[var(--card-width)] shrink-0 bg-white rounded-2xl border border-neutral-200/90 shadow-sm p-6 sm:p-7 flex flex-col justify-between hover:shadow-md transition-all duration-300 h-full min-h-[280px]"
                   >
                     <div>
                       {/* 5 Warm Gold Stars */}
@@ -125,17 +127,17 @@ export const Testimonials: React.FC = () => {
                       </div>
 
                       {/* Review Text */}
-                      <p className="text-xs sm:text-sm text-[#333333] leading-relaxed italic">
+                      <p className="text-xs sm:text-sm text-neutral-700 leading-relaxed italic">
                         &ldquo;{language === "ar" ? rev.quoteAr : rev.quoteEn}&rdquo;
                       </p>
                     </div>
 
                     {/* Verified Author & UAE Location */}
                     <div className="pt-4 mt-6 border-t border-[#F2F2F2] flex items-center justify-between">
-                      <span className="text-xs font-bold text-bht-charcoal">
+                      <span className="text-xs font-bold text-neutral-900">
                         {language === "ar" ? rev.authorAr : rev.authorEn}
                       </span>
-                      <span className="text-[11px] text-[#888888]">
+                      <span className="text-[11px] text-neutral-500">
                         {language === "ar" ? rev.locationAr : rev.locationEn}
                       </span>
                     </div>
@@ -145,7 +147,7 @@ export const Testimonials: React.FC = () => {
             </div>
 
             {/* Pagination Dots */}
-            <div className="flex items-center justify-center gap-1.5 pt-4">
+            <div className="flex items-center justify-center gap-1.5 pt-6">
               {TESTIMONIALS_DATA.map((_, dotIdx) => (
                 <button
                   key={dotIdx}
@@ -156,7 +158,7 @@ export const Testimonials: React.FC = () => {
                       ? "w-6 bg-bht-charcoal"
                       : "w-2 bg-gray-300 hover:bg-gray-400"
                   }`}
-                  aria-label={`Go to slide ${dotIdx + 1}`}
+                  aria-label={`Go to review ${dotIdx + 1}`}
                 />
               ))}
             </div>
