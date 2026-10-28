@@ -59,7 +59,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
   return (
     <section
-      className="relative w-full h-[460px] xs:h-[500px] sm:h-[600px] md:h-[660px] lg:h-[720px] overflow-hidden select-none bg-black"
+      className="relative w-full h-[480px] xs:h-[520px] sm:h-[600px] md:h-[660px] lg:h-[calc(100vh-128px)] lg:min-h-[660px] overflow-hidden select-none bg-black"
       aria-label="Editorial Featured Collections Carousel"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -88,15 +88,15 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 sizes="100vw"
               />
 
-              {/* REFINED EDITORIAL GRADIENT OVERLAYS */}
+              {/* SEAMLESS FULL-WIDTH GRADIENT OVERLAY (NO HARD SEAM OR DIVIDER LINE) */}
               <div
-                className={`absolute inset-0 ${
+                className={`absolute inset-0 pointer-events-none ${
                   isRTL
-                    ? "bg-gradient-to-l from-black/85 via-black/55 to-black/20 md:w-3/4 lg:w-3/5"
-                    : "bg-gradient-to-r from-black/85 via-black/55 to-black/20 md:w-3/4 lg:w-3/5"
+                    ? "bg-gradient-to-l from-black/85 via-black/45 via-50% to-transparent"
+                    : "bg-gradient-to-r from-black/85 via-black/45 via-50% to-transparent"
                 }`}
               />
-              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 h-32 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none" />
             </div>
 
             {/* EDITORIAL CONTENT OVERLAY */}
