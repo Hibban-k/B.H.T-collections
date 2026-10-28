@@ -53,18 +53,23 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
       >
         {/* Drawer Header */}
         <div className="flex items-center justify-between p-4 border-b border-[#F0F0F0]">
-          <div className="flex items-center gap-2">
-            <div className="relative w-8 h-8">
+          <div className="flex items-center gap-2.5">
+            <div className="relative w-11 h-11 shrink-0">
               <Image
                 src="/logo/logo.png"
-                alt="BHT Logo"
+                alt="Blanket House Trading LLC Logo"
                 fill
                 className="object-contain"
               />
             </div>
-            <span className="text-xs font-bold text-bht-charcoal">
-              {language === "ar" ? "بيت البطانيات" : "BHT Collections"}
-            </span>
+            <div className="flex flex-col text-start">
+              <span className="text-[11px] font-bold text-bht-red font-arabic leading-tight">
+                بيت البطانيات للتجارة ذ.م.م
+              </span>
+              <span className="text-sm font-extrabold text-bht-charcoal leading-tight">
+                Blanket House Trading LLC
+              </span>
+            </div>
           </div>
           <button
             type="button"

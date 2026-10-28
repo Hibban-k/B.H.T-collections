@@ -11,37 +11,43 @@ export const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-[#111111] text-white pt-12 pb-8 border-t border-neutral-800 select-none">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* TOP ROW: LOGO & NAME (WHITE BG + RADIUS) + CATEGORIES & QUICK LINKS */}
+        {/* TOP ROW: BRAND CARD (ALL-WHITE CONTAINER WITH LOGO, NAME & TAGLINE) + CATEGORIES & QUICK LINKS */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-start">
-          {/* BRAND PILL: White background with rounded border radius */}
-          <div className="md:col-span-5 flex flex-col items-start gap-3">
-            <Link
-              href="/"
-              className="bg-white rounded-xl sm:rounded-2xl p-2.5 sm:p-3 px-4 sm:px-5 shadow-sm inline-flex items-center gap-3 transition-transform hover:scale-[1.02]"
-            >
-              <div className="relative w-10 h-10 bg-white rounded-lg p-0.5 shrink-0">
-                <Image
-                  src="/logo/logo.png"
-                  alt="Blanket House Trading LLC Logo"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-              <div>
-                <span className="text-xs font-bold text-bht-red block font-arabic leading-tight">
-                  بيت البطانيات للتجارة ذ.م.م
-                </span>
-                <span className="text-sm sm:text-base font-extrabold text-neutral-900 tracking-tight block">
-                  Blanket House Trading LLC
-                </span>
-              </div>
-            </Link>
+          {/* BRAND PILL: Full white section with increased logo, larger name, and integrated tagline */}
+          <div className="md:col-span-5 flex flex-col items-start">
+            <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-neutral-200/40 w-full max-w-md">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-3.5 sm:gap-4 group mb-3 transition-transform hover:scale-[1.01]"
+              >
+                {/* Increased Logo Size */}
+                <div className="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0">
+                  <Image
+                    src="/logo/logo.png"
+                    alt="Blanket House Trading LLC Logo"
+                    fill
+                    className="object-contain transition-transform group-hover:scale-105"
+                  />
+                </div>
 
-            <p className="text-xs text-neutral-400 max-w-sm leading-relaxed mt-1">
-              {language === "ar"
-                ? "الوجهة الرائدة للمفروشات الفاخرة، وحقائب السفر، وأحذية الراحة في دبي وكافة أنحاء الإمارات."
-                : "Premier luxury bedding, travel luggage, and comfort footwear house based in Dubai, UAE."}
-            </p>
+                {/* Increased Name Typography */}
+                <div className="flex flex-col text-start">
+                  <span className="text-xs sm:text-sm font-bold text-bht-red block font-arabic leading-tight">
+                    بيت البطانيات للتجارة ذ.م.م
+                  </span>
+                  <span className="text-lg sm:text-xl font-black text-neutral-900 tracking-tight block leading-tight mt-0.5">
+                    Blanket House Trading LLC
+                  </span>
+                </div>
+              </Link>
+
+              {/* Tagline inside the white container */}
+              <p className="text-xs sm:text-[13px] text-neutral-600 leading-relaxed font-normal pt-2.5 border-t border-neutral-100">
+                {language === "ar"
+                  ? "الوجهة الرائدة للمفروشات الفاخرة، وحقائب السفر، وأحذية الراحة في دبي وكافة أنحاء الإمارات."
+                  : "Premier luxury bedding, travel luggage, and comfort footwear house based in Dubai, UAE."}
+              </p>
+            </div>
           </div>
 
           {/* MAIN CATEGORIES */}

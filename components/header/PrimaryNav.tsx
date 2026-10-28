@@ -37,21 +37,21 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
             href="/"
             className="flex items-center gap-2 sm:gap-3 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-bht-red rounded-lg"
           >
-            <div className="relative w-10 h-10 sm:w-14 sm:h-14 shrink-0 transition-transform group-hover:scale-102">
+            <div className="relative w-12 h-12 sm:w-16 sm:h-16 shrink-0 transition-transform group-hover:scale-102">
               <Image
                 src="/logo/logo.png"
                 alt="Blanket House Trading LLC Logo"
                 fill
                 priority
                 className="object-contain"
-                sizes="(max-width: 640px) 40px, 56px"
+                sizes="(max-width: 640px) 48px, 64px"
               />
             </div>
             <div className="flex flex-col text-start">
-              <span className="text-[10px] xs:text-xs sm:text-sm font-bold text-bht-red leading-tight font-arabic truncate max-w-[125px] xs:max-w-[170px] sm:max-w-none">
+              <span className="text-xs sm:text-[14px] lg:text-[15px] font-bold text-bht-red leading-tight font-arabic truncate max-w-[140px] xs:max-w-[190px] sm:max-w-none">
                 بيت البطانيات للتجارة ذ.م.م
               </span>
-              <span className="text-[11px] xs:text-xs sm:text-sm font-extrabold tracking-tight text-bht-charcoal leading-tight truncate max-w-[125px] xs:max-w-[170px] sm:max-w-none">
+              <span className="text-xs sm:text-base lg:text-[17px] font-black tracking-tight text-bht-charcoal leading-tight truncate max-w-[140px] xs:max-w-[190px] sm:max-w-none">
                 Blanket House Trading LLC
               </span>
             </div>
