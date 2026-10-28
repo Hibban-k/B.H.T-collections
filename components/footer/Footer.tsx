@@ -12,34 +12,34 @@ export const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-[#111111] text-white pt-12 pb-8 border-t border-neutral-800 select-none">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* TOP ROW: CORPORATE BUSINESS CARD + CATEGORIES & QUICK LINKS */}
+        {/* TOP ROW: COMPACT CORPORATE BUSINESS CARD + CATEGORIES & QUICK LINKS */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-stretch">
-          {/* BRAND CARD: Designed exactly like the official corporate business card */}
-          <div className="md:col-span-7 lg:col-span-7 flex flex-col items-start w-full">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-6 sm:p-7 lg:p-8 shadow-sm border border-neutral-200/70 w-full relative overflow-hidden flex flex-col justify-between">
+          {/* BRAND CARD: Compact business card proportion */}
+          <div className="md:col-span-5 lg:col-span-5 flex flex-col items-start w-full">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm border border-neutral-200/70 w-full max-w-[430px] relative overflow-hidden flex flex-col justify-between">
               
               {/* TOP ROW: Contact & Representative on Left, Official Logo on Right */}
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-3">
                 {/* Person & Contact Details */}
                 <div className="flex flex-col text-start">
-                  <span className="text-sm sm:text-base lg:text-lg font-bold text-bht-red leading-tight">
+                  <span className="text-xs sm:text-sm font-bold text-bht-red leading-tight">
                     Syed Mohamed Umais
                   </span>
-                  <span className="text-xs sm:text-sm text-neutral-900 font-semibold mt-0.5 mb-2">
+                  <span className="text-[11px] sm:text-xs text-neutral-900 font-semibold mt-0.5 mb-2">
                     Sales & Marketing
                   </span>
 
                   {/* Direct Mobile */}
                   <a
                     href="tel:+971558879237"
-                    className="flex items-center gap-2 text-xs sm:text-[13px] text-neutral-800 font-medium hover:text-bht-red transition-colors mb-2 group"
+                    className="flex items-center gap-2 text-[11px] sm:text-xs text-neutral-800 font-medium hover:text-bht-red transition-colors mb-1.5 group"
                   >
                     <Smartphone className="w-3.5 h-3.5 text-bht-red shrink-0" />
                     <span dir="ltr" className="tracking-wide group-hover:underline">+971 55 887 9237</span>
                   </a>
 
                   {/* Office Phone, Fax, Email */}
-                  <div className="space-y-1 text-xs sm:text-[13px] text-neutral-800 font-medium">
+                  <div className="space-y-1 text-[11px] sm:text-xs text-neutral-800 font-medium">
                     <a
                       href="tel:+97142266095"
                       className="flex items-center gap-2 hover:text-bht-red transition-colors group"
@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
                 {/* Official Butterfly Logo on Top Right */}
                 <Link
                   href="/"
-                  className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 shrink-0 transition-transform hover:scale-105"
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 transition-transform hover:scale-105"
                   title="Blanket House Trading LLC"
                 >
                   <Image
@@ -79,7 +79,7 @@ export const Footer: React.FC = () => {
               </div>
 
               {/* HORIZONTAL MULTI-COLOR DIVIDER (Green | Red | Blue | Charcoal) */}
-              <div className="w-full flex h-[2.5px] rounded-full overflow-hidden my-5" aria-hidden="true">
+              <div className="w-full flex h-[2.5px] rounded-full overflow-hidden my-4" aria-hidden="true">
                 <span className="w-1/4 bg-[#26964B]" />
                 <span className="w-1/4 bg-[#E52B25]" />
                 <span className="w-1/4 bg-[#258CCB]" />
@@ -89,10 +89,10 @@ export const Footer: React.FC = () => {
               {/* BOTTOM ROW: Centered Arabic & English Company Titles */}
               <div className="flex flex-col items-center justify-center text-center">
                 <Link href="/" className="group inline-flex flex-col items-center">
-                  <span className="text-sm sm:text-base lg:text-lg font-bold text-bht-red font-arabic leading-snug">
+                  <span className="text-xs sm:text-sm font-bold text-bht-red font-arabic leading-snug">
                     بيت البطانيات للتجارة (ذ.م.م.)
                   </span>
-                  <span className="text-base sm:text-lg lg:text-xl font-black text-neutral-900 tracking-wide leading-snug mt-0.5">
+                  <span className="text-sm sm:text-base font-black text-neutral-900 tracking-tight leading-snug mt-0.5">
                     Blanket House Trading LLC
                   </span>
                 </Link>
@@ -102,7 +102,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* MAIN CATEGORIES */}
-          <div className="md:col-span-3 lg:col-span-3 space-y-3.5 pt-2">
+          <div className="md:col-span-4 lg:col-span-4 space-y-3.5 pt-2">
             <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
               {language === "ar" ? "التشكيلات الرئيسية" : "Main Categories"}
             </h4>
@@ -126,7 +126,7 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* QUICK LINKS */}
-          <div className="md:col-span-2 lg:col-span-2 space-y-3.5 pt-2">
+          <div className="md:col-span-3 lg:col-span-3 space-y-3.5 pt-2">
             <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
               {language === "ar" ? "روابط سريعة" : "Quick Links"}
             </h4>
