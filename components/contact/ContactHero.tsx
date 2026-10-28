@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 import { PhoneCall, MapPin, Clock, Mail } from "lucide-react";
@@ -14,8 +14,7 @@ interface ContactHeroCardItem {
   image: string;
   targetId?: string;
   href?: string;
-  desktopHeight: string;
-  desktopTranslate: string;
+  isUp: boolean; // Alternates UP / DOWN
 }
 
 const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
@@ -27,8 +26,7 @@ const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
     titleAr: "زيارة صالة العرض الرئيسية",
     image: "/contact/dubai-flagship.jpg",
     targetId: "store-location",
-    desktopHeight: "lg:h-[410px]",
-    desktopTranslate: "lg:translate-y-4",
+    isUp: true,
   },
   {
     id: "concierge",
@@ -38,8 +36,7 @@ const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
     titleAr: "المحادثة الفورية والكونسيرج",
     image: "/contact/contact-hero-lifestyle.jpg",
     targetId: "contact-form-section",
-    desktopHeight: "lg:h-[360px]",
-    desktopTranslate: "lg:translate-y-16",
+    isUp: false,
   },
   {
     id: "wholesale",
@@ -49,8 +46,7 @@ const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
     titleAr: "طلبات الجملة والمشاريع",
     image: "/contact/dubai-regional.jpg",
     targetId: "contact-form-section",
-    desktopHeight: "lg:h-[450px]",
-    desktopTranslate: "lg:-translate-y-6",
+    isUp: true,
   },
   {
     id: "message",
@@ -60,13 +56,54 @@ const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
     titleAr: "إرسال استفسار مباشر",
     image: "/contact/dubai-store-map.jpg",
     targetId: "contact-form-section",
-    desktopHeight: "lg:h-[360px]",
-    desktopTranslate: "lg:translate-y-16",
+    isUp: false,
   },
 ];
 
 export const ContactHero: React.FC = () => {
   const { language } = useLanguage();
+  const [scrollY, setScrollY] = useState(0);
+
+  // Smooth scroll listener for up-down animation
+  useEffect(() => {
+    let ticking = false;
+
+    const handleScroll = () => {
+      // Only track within hero section range
+      if (window.scrollY < 1200) {
+        setScrollY(window.scrollY);
+      }
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(handleScroll);
+        ticking = true;
+      }
+    };
+
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Clamped scroll offset for parallax
+  const clampedScroll = Math.min(Math.max(scrollY, 0), 800);
+
+  // Desktop offsets: UP cards glide upwards, DOWN cards glide downwards
+  const getDesktopTransform = (isUp: boolean) => {
+    if (isUp) {
+      const offset = -16 - clampedScroll * 0.08;
+      return `translate3d(0, ${offset}px, 0)`;
+    } else {
+      const offset = 48 + clampedScroll * 0.08;
+      return `translate3d(0, ${offset}px, 0)`;
+    }
+  };
+
+  // Mobile column offsets
+  const mobileCol1Transform = `translate3d(0, ${-clampedScroll * 0.05}px, 0)`;
+  const mobileCol2Transform = `translate3d(0, ${48 + clampedScroll * 0.05}px, 0)`;
 
   const handleCardClick = (card: ContactHeroCardItem) => {
     if (card.targetId) {
@@ -86,13 +123,12 @@ export const ContactHero: React.FC = () => {
         key={card.id}
         type="button"
         onClick={() => handleCardClick(card)}
-        className={`group block text-start relative w-full ${
-          isMobile
-            ? "h-[235px] sm:h-[270px] rounded-2xl"
-            : `${card.desktopHeight} ${card.desktopTranslate} rounded-[28px]`
-        } overflow-hidden border-2 border-white shadow-xl shadow-black/15 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] cursor-pointer`}
+        style={!isMobile ? { transform: getDesktopTransform(card.isUp) } : undefined}
+        className={`group block text-start relative w-full h-[240px] sm:h-[280px] lg:h-[420px] ${
+          isMobile ? "rounded-2xl" : "rounded-[28px]"
+        } overflow-hidden border-2 border-white shadow-xl shadow-black/15 will-change-transform transition-all duration-300 ease-out hover:shadow-2xl hover:scale-[1.02] cursor-pointer`}
       >
-        {/* Background Photography */}
+        {/* Background Photography - Exact same height on all cards */}
         <Image
           src={card.image}
           alt={title}
@@ -106,7 +142,7 @@ export const ContactHero: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
 
         {/* Content Overlay at Bottom */}
-        <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-start z-10">
+        <div className="absolute bottom-0 inset-x-0 p-3.5 sm:p-5 text-start z-10">
           <span className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-0.5 truncate drop-shadow-xs">
             {subtitle}
           </span>
@@ -179,22 +215,28 @@ export const ContactHero: React.FC = () => {
       {/* 2. OVERLAPPING STAGGERED CARDS ROW (MIDDLE)                  */}
       {/* ============================================================ */}
       <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 -mt-28 sm:-mt-36 lg:-mt-44 relative z-10">
-        {/* MOBILE & TABLET VIEW: 2-Column Staggered Masonry (Matching Screenshot) */}
+        {/* MOBILE & TABLET VIEW: 2-Column Staggered Masonry with Scroll Up-Down Animation */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden items-start">
-          {/* Column 1: Card 1 (Showroom) & Card 3 (Wholesale) */}
-          <div className="flex flex-col gap-3 sm:gap-4">
+          {/* Column 1: Card 1 (UP) & Card 3 (UP) */}
+          <div
+            style={{ transform: mobileCol1Transform }}
+            className="flex flex-col gap-3 sm:gap-4 will-change-transform transition-transform duration-300 ease-out"
+          >
             {renderCard(CONTACT_HERO_CARDS[0], true)}
             {renderCard(CONTACT_HERO_CARDS[2], true)}
           </div>
 
-          {/* Column 2: Card 2 (Concierge) & Card 4 (Direct Message) - Offset Downwards */}
-          <div className="flex flex-col gap-3 sm:gap-4 pt-12 sm:pt-16">
+          {/* Column 2: Card 2 (DOWN) & Card 4 (DOWN) - Glides downward on scroll */}
+          <div
+            style={{ transform: mobileCol2Transform }}
+            className="flex flex-col gap-3 sm:gap-4 will-change-transform transition-transform duration-300 ease-out"
+          >
             {renderCard(CONTACT_HERO_CARDS[1], true)}
             {renderCard(CONTACT_HERO_CARDS[3], true)}
           </div>
         </div>
 
-        {/* DESKTOP VIEW: 4 Columns Staggered in Single Row */}
+        {/* DESKTOP VIEW: 4 Columns with Identical Photo Height & Alternating Up/Down Scroll Animation */}
         <div className="hidden lg:grid lg:grid-cols-4 gap-6 items-start">
           {CONTACT_HERO_CARDS.map((card) => renderCard(card, false))}
         </div>
@@ -203,7 +245,7 @@ export const ContactHero: React.FC = () => {
       {/* ============================================================ */}
       {/* 3. QUICK CONTACT HIGHLIGHT PILLARS (BOTTOM)                  */}
       {/* ============================================================ */}
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-14 sm:pt-18 lg:pt-24 pb-14 sm:pb-18">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 lg:pt-28 pb-14 sm:pb-18">
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-8 border-t border-neutral-100">
           {/* Item 1 */}
           <div className="space-y-1.5">
