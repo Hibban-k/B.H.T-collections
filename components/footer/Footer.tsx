@@ -11,17 +11,17 @@ export const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-[#111111] text-white pt-12 pb-8 border-t border-neutral-800 select-none">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* TOP ROW: BRAND CARD (ALL-WHITE CONTAINER WITH LOGO, NAME & TAGLINE) + CATEGORIES & QUICK LINKS */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-start">
-          {/* BRAND PILL: Full white section with increased logo, larger name, and integrated tagline */}
+        {/* TOP ROW: BRAND CARD (ELEVATED WHITE CONTAINER WITH INCREASED HEIGHT) + CATEGORIES & QUICK LINKS */}
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-stretch">
+          {/* BRAND PILL: Full white section with increased height, generous padding, and prominent branding */}
           <div className="md:col-span-5 flex flex-col items-start">
-            <div className="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-neutral-200/40 w-full max-w-md">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-7 sm:p-8 lg:p-9 shadow-sm border border-neutral-200/40 w-full max-w-md min-h-[230px] sm:min-h-[260px] lg:min-h-[280px] flex flex-col justify-between">
               <Link
                 href="/"
-                className="inline-flex items-center gap-3.5 sm:gap-4 group mb-3 transition-transform hover:scale-[1.01]"
+                className="inline-flex items-center gap-4 sm:gap-5 group mb-4 transition-transform hover:scale-[1.01]"
               >
-                {/* Increased Logo Size */}
-                <div className="relative w-14 h-14 sm:w-16 sm:h-16 shrink-0">
+                {/* Prominent Logo */}
+                <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
                   <Image
                     src="/logo/logo.png"
                     alt="Blanket House Trading LLC Logo"
@@ -30,19 +30,19 @@ export const Footer: React.FC = () => {
                   />
                 </div>
 
-                {/* Increased Name Typography */}
+                {/* Prominent Name Typography */}
                 <div className="flex flex-col text-start">
                   <span className="text-xs sm:text-sm font-bold text-bht-red block font-arabic leading-tight">
                     بيت البطانيات للتجارة ذ.م.م
                   </span>
-                  <span className="text-lg sm:text-xl font-black text-neutral-900 tracking-tight block leading-tight mt-0.5">
+                  <span className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight block leading-tight mt-1">
                     Blanket House Trading LLC
                   </span>
                 </div>
               </Link>
 
-              {/* Tagline inside the white container */}
-              <p className="text-xs sm:text-[13px] text-neutral-600 leading-relaxed font-normal pt-2.5 border-t border-neutral-100">
+              {/* Tagline nested inside with generous vertical spacing */}
+              <p className="text-xs sm:text-sm text-neutral-600 leading-relaxed font-normal pt-4 border-t border-neutral-100">
                 {language === "ar"
                   ? "الوجهة الرائدة للمفروشات الفاخرة، وحقائب السفر، وأحذية الراحة في دبي وكافة أنحاء الإمارات."
                   : "Premier luxury bedding, travel luggage, and comfort footwear house based in Dubai, UAE."}
@@ -51,11 +51,11 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* MAIN CATEGORIES */}
-          <div className="md:col-span-4 space-y-3">
+          <div className="md:col-span-4 space-y-3.5 pt-2">
             <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
               {language === "ar" ? "التشكيلات الرئيسية" : "Main Categories"}
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-neutral-400">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
               <li>
                 <Link href="/collections/bedding" className="hover:text-white transition-colors">
                   {language === "ar" ? "المفروشات الفاخرة واللحف" : "Luxury Bedding & Quilts"}
@@ -75,11 +75,11 @@ export const Footer: React.FC = () => {
           </div>
 
           {/* QUICK LINKS */}
-          <div className="md:col-span-3 space-y-3">
+          <div className="md:col-span-3 space-y-3.5 pt-2">
             <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
               {language === "ar" ? "روابط سريعة" : "Quick Links"}
             </h4>
-            <ul className="space-y-2 text-xs sm:text-sm text-neutral-400">
+            <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
               <li>
                 <Link href="/collections" className="hover:text-white transition-colors">
                   {language === "ar" ? "كافة التشكيلات" : "All Collections"}
