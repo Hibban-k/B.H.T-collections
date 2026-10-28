@@ -207,31 +207,10 @@ export const Footer: React.FC = () => {
           </div>
         </div>
 
-        {/* MIDDLE ROW: REGIONAL IDENTITY & NEWSLETTER */}
-        <div className="py-8 grid grid-cols-1 md:grid-cols-2 gap-8 items-center border-b border-gray-800">
-          {/* Regional UAE Identity */}
-          <div>
-            <h5 className="text-xs font-bold text-white uppercase tracking-wider mb-1">
-              {language === "ar" ? "فخر الصناعة والريادة الإماراتية" : "Proudly based in the UAE"}
-            </h5>
-            <p className="text-xs text-gray-400 mb-3">
-              {language === "ar"
-                ? "نخدم عملاءنا في جميع دول مجلس التعاون الخليجي والشرق الأوسط"
-                : "Serving customers across the region"}
-            </p>
-            {/* 6 Country Flags Compact Row */}
-            <div className="flex items-center gap-3">
-              <CircularFlag country="uae" size={28} />
-              <CircularFlag country="ksa" size={28} />
-              <CircularFlag country="qatar" size={28} />
-              <CircularFlag country="bahrain" size={28} />
-              <CircularFlag country="kuwait" size={28} />
-              <CircularFlag country="oman" size={28} />
-            </div>
-          </div>
-
+        {/* MIDDLE ROW: DIRECT WHATSAPP CONTACT */}
+        <div className="py-7 border-b border-gray-800 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           {/* Direct WhatsApp Contact Section */}
-          <div>
+          <div className="max-w-xl">
             <div className="flex items-center gap-2 mb-1">
               <h5 className="text-xs font-bold text-white uppercase tracking-wider">
                 {language === "ar" ? "تواصل مباشر عبر واتساب" : "Direct WhatsApp Contact"}

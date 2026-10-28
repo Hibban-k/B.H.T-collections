@@ -5,7 +5,6 @@ import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import { BrandClientHero } from "./BrandClientHero";
 import { BrandClientGrid } from "./BrandClientGrid";
-import { ContactRegionalStrip } from "@/components/contact/ContactRegionalStrip";
 
 export const BrandClientPageView: React.FC = () => {
   return (
@@ -15,7 +14,6 @@ export const BrandClientPageView: React.FC = () => {
       <main className="flex-1">
         <BrandClientHero />
         <BrandClientGrid />
-        <ContactRegionalStrip />
       </main>
 
       <Footer />

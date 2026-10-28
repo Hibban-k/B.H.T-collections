@@ -6,7 +6,6 @@ import { Footer } from "@/components/footer/Footer";
 import { ContactHero } from "./ContactHero";
 import { ContactDetailsAndForm } from "./ContactDetailsAndForm";
 import { ContactStoreLocation } from "./ContactStoreLocation";
-import { ContactRegionalStrip } from "./ContactRegionalStrip";
 
 export const ContactPageView: React.FC = () => {
   return (
@@ -23,12 +22,9 @@ export const ContactPageView: React.FC = () => {
 
         {/* 4. Visit Our Store: Stylized Dubai Coastline Map + Dubai UAE Store CTA */}
         <ContactStoreLocation />
-
-        {/* 5. Regional Identity Strip: Proudly based in UAE + 6 Gulf Country Flags */}
-        <ContactRegionalStrip />
       </main>
 
-      {/* 6. Luxury Dark Footer */}
+      {/* 5. Luxury Dark Footer */}
       <Footer />
     </div>
   );
