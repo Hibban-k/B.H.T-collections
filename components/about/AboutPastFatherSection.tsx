@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
-import { ArrowRight, ArrowLeft, Star, Quote } from "lucide-react";
+import { ArrowRight, ArrowLeft, Star, ShieldCheck, CheckCircle2 } from "lucide-react";
 
 export const AboutPastFatherSection: React.FC = () => {
   const { language, isRTL } = useLanguage();
@@ -14,7 +14,7 @@ export const AboutPastFatherSection: React.FC = () => {
     <section className="w-full bg-white py-16 sm:py-24 overflow-hidden border-b border-[#F0F0F0]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
-          {/* LEFT: Worldpackers-Style Narrative & Father's Wisdom */}
+          {/* LEFT: History & Trust-Building Narrative */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Heritage Monogram Badge */}
             <div className="flex items-center gap-2 mb-4">
@@ -52,17 +52,31 @@ export const AboutPastFatherSection: React.FC = () => {
                 : "Decades ago in the historic trading souqs of Dubai, our journey began with our founding father. He believed that genuine trade is built on sacred handshake trust and honorable service. Inspecting every woven textile himself, he dedicated his life to bringing authentic warmth and comfort to every family."}
             </p>
 
-            {/* Father's Quote Callout */}
-            <div className="mb-8 p-4 sm:p-5 rounded-2xl bg-[#F8F9FA] border border-neutral-200/80 relative">
-              <Quote className="w-6 h-6 text-neutral-300 absolute top-3 end-3" />
-              <p className="text-xs sm:text-sm font-serif italic text-neutral-800 leading-relaxed pe-5">
-                {language === "ar"
-                  ? "«الجودة أمانة وعهد نقطعه مع كل عائلة تدخل منتجاتنا إلى بيتها لتنعم بالدفء والراحة.»"
-                  : "“Quality is never an accident; it is the sacred promise we make to every family that invites our blankets into their home.”"}
-              </p>
-              <span className="text-[11px] font-bold text-neutral-500 uppercase tracking-wider block mt-2">
-                {language === "ar" ? "— وصية الوالد المؤسس" : "— Words of the Founding Father"}
-              </span>
+            {/* Trust-Building Quality & Verification Card */}
+            <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#FAF9F6] to-white border border-[#E8E5DF] shadow-sm relative overflow-hidden">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 rounded-xl bg-red-50 text-bht-red flex items-center justify-center shrink-0 border border-red-100 shadow-2xs">
+                  <ShieldCheck className="w-6 h-6 stroke-[2]" />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2 mb-1.5 flex-wrap">
+                    <h4 className="text-sm sm:text-base font-bold text-neutral-900 tracking-tight">
+                      {language === "ar"
+                        ? "عهد الجودة والأمانة المعتمدة"
+                        : "Certified Quality & Handshake Trust"}
+                    </h4>
+                    <span className="inline-flex items-center gap-1 text-[10px] font-bold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      <CheckCircle2 className="w-3 h-3" />
+                      {language === "ar" ? "معايير معتمدة" : "UAE Verified"}
+                    </span>
+                  </div>
+                  <p className="text-xs sm:text-[13px] text-neutral-600 leading-relaxed font-normal">
+                    {language === "ar"
+                      ? "كل قطعة تمر بفحص يدوي دقيق للأقمشة والدرزات والمتانة، لضمان أعلى مستويات الراحة والأصالة التي توارثتها عائلات الإمارات عبر العقود."
+                      : "Every textile, luggage seam, and sole undergoes rigorous hands-on inspection to guarantee the enduring comfort and authentic reliability trusted by UAE families for decades."}
+                  </p>
+                </div>
+              </div>
             </div>
 
             {/* Link to Brands */}

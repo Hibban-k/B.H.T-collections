@@ -25,7 +25,7 @@ const ABOUT_HERO_PRINCIPLES: HeroPrincipleCardItem[] = [
     titleAr: "نهج الوالد المؤسس الأصيل",
     descEn: "Honoring our founding father's core virtue: building lasting relationships based on honesty and transparent ethics.",
     descAr: "وفاءً لنهج الوالد المؤسس: بناء علاقات وثيقة ومستدامة تقوم على الصدق والنزاهة والشفافية التامة مع عملائنا.",
-    image: "/about/founder-father-heritage.jpg",
+    image: "/about/principles-integrity.jpg",
     isUp: true,
   },
   {
@@ -36,7 +36,7 @@ const ABOUT_HERO_PRINCIPLES: HeroPrincipleCardItem[] = [
     titleAr: "انتقاء أجود الخامات والأقمشة",
     descEn: "Selecting only the highest quality fibers, resilient polycarbonate luggage, and comfortable soles tested to endure everyday life.",
     descAr: "انتقاء أجود خامات النسيج، وحقائب السفر فائقة المتانة، والأحذية المريحة المصممة لتدوم وتوفر أعلى درجات الراحة.",
-    image: "/badding/bht-comforters.jpg",
+    image: "/about/principles-craftsmanship.jpg",
     isUp: false,
   },
   {
@@ -47,7 +47,7 @@ const ABOUT_HERO_PRINCIPLES: HeroPrincipleCardItem[] = [
     titleAr: "كل عميل فرد عزيز من العائلة",
     descEn: "Treating every customer who steps into our showrooms or orders online as a valued guest and extended family member.",
     descAr: "معاملة كل عميل يزور معارضنا أو يتواصل معنا كفرد عزيز من العائلة، وتقديم الدعم والاهتمام الصادق دائماً.",
-    image: "/contact/contact-hero-lifestyle.jpg",
+    image: "/about/principles-hospitality.jpg",
     isUp: true,
   },
   {
@@ -58,7 +58,7 @@ const ABOUT_HERO_PRINCIPLES: HeroPrincipleCardItem[] = [
     titleAr: "جذور راسخة في دبي وتوسع خليجي",
     descEn: "Proud of our deep roots in Dubai while continuously innovating with modern design to serve the dynamic lifestyle of the GCC.",
     descAr: "فخورون بجذورنا الراسخة في دبي، ومستمرون في الابتكار والتوسع لتلبية تطلعات أسلوب الحياة العصري في دول الخليج.",
-    image: "/contact/dubai-flagship.jpg",
+    image: "/about/principles-heritage-vision.jpg",
     isUp: false,
   },
 ];

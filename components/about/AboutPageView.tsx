@@ -5,6 +5,7 @@ import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import { AboutHeroSection } from "./AboutHeroSection";
 import { AboutPresentDarkSection } from "./AboutPresentDarkSection";
+import { AboutPastFatherSection } from "./AboutPastFatherSection";
 import { ContactRegionalStrip } from "@/components/contact/ContactRegionalStrip";
 
 export const AboutPageView: React.FC = () => {
@@ -20,11 +21,14 @@ export const AboutPageView: React.FC = () => {
         {/* 3. Dark Full-Bleed Section with Modern Dubai Flagship & +100,000 Customers Narrative */}
         <AboutPresentDarkSection />
 
-        {/* 4. GCC Regional Presence Strip (6 Countries) */}
+        {/* 4. History of BHT Collections: The Father's Story with Trust & Quality Verification Card */}
+        <AboutPastFatherSection />
+
+        {/* 5. GCC Regional Presence Strip (6 Countries) */}
         <ContactRegionalStrip />
       </main>
 
-      {/* 5. Luxury Dark Footer */}
+      {/* 6. Luxury Dark Footer */}
       <Footer />
     </div>
   );
