@@ -15,11 +15,7 @@ import { SECONDARY_NAV_ITEMS } from "@/data/navigationData";
 import { useLanguage } from "@/context/LanguageContext";
 import { CollectionDropdown } from "./CollectionDropdown";
 
-interface SecondaryNavProps {
-  variant?: "static" | "floating";
-}
-
-export const SecondaryNav: React.FC<SecondaryNavProps> = ({ variant = "static" }) => {
+export const SecondaryNav: React.FC = () => {
   const pathname = usePathname();
   const { language } = useLanguage();
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
@@ -122,7 +118,7 @@ export const SecondaryNav: React.FC<SecondaryNavProps> = ({ variant = "static" }
                 >
                   <button
                     type="button"
-                    id={`${variant}-secondary-nav-collection`}
+                    id="secondary-nav-collection"
                     onClick={handleToggleClick}
                     className={`relative inline-flex items-center gap-2 text-sm font-medium transition-colors py-1 cursor-pointer ${
                       isActive || isCollectionOpen

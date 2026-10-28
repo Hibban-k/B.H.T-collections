@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
           {/* BRAND CARD: Compact business card proportion */}
           <div className="md:col-span-5 lg:col-span-5 flex flex-col items-start w-full">
             <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm border border-neutral-200/70 w-full max-w-[430px] relative overflow-hidden flex flex-col justify-between">
-              
+
               {/* TOP ROW: Contact & Representative on Left, Official Logo on Right */}
               <div className="flex items-start justify-between gap-3">
                 {/* Person & Contact Details */}
@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
                 {/* Official Butterfly Logo on Top Right */}
                 <Link
                   href="/"
-                  className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 transition-transform hover:scale-105"
+                  className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-34 lg:h-34 shrink-0 transition-transform hover:scale-105"
                   title="Blanket House Trading LLC"
                 >
                   <Image

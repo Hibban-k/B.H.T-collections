@@ -8,10 +8,6 @@ import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
 interface PrimaryNavProps {
-  onOpenMegaMenu?: (categoryId?: string) => void;
-  onCloseMegaMenu?: () => void;
-  isMegaMenuOpen?: boolean;
-  activeMegaCategory?: string | null;
   onToggleMobileMenu: () => void;
 }
 
@@ -92,7 +88,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
 
         {/* RIGHT: High-End Language Switcher & Mobile Menu Toggle */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
-          {/* New Luxury Language Switcher */}
+          {/* Luxury Language Switcher */}
           <LanguageSwitcher />
 
           {/* Mobile Menu Drawer Toggle */}
