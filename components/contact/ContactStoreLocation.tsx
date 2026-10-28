@@ -10,7 +10,7 @@ export const ContactStoreLocation: React.FC = () => {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="w-full bg-[#FAFAFA] py-14 sm:py-20 border-b border-[#F0F0F0]">
+    <section id="store-location" className="w-full bg-[#FAFAFA] py-14 sm:py-20 border-b border-[#F0F0F0] scroll-mt-20">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
           {/* Left Column: Stylized Dubai Coastline Map Graphic */}
