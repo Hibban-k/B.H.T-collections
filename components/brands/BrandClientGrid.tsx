@@ -197,7 +197,7 @@ export const BrandClientGrid: React.FC = () => {
 
         {/* Real Data Grid */}
         {!loading && !error && filteredItems.length > 0 && (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div data-reveal-group="stagger" className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {filteredItems.map((item) => (
               <BrandClientCard key={item.id} item={item} />
             ))}

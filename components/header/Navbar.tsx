@@ -70,6 +70,10 @@ export const Navbar: React.FC = () => {
       className="sticky top-0 z-40 w-full bg-white shadow-xs"
       onMouseEnter={handleHeaderMouseEnter}
       onMouseLeave={handleHeaderMouseLeave}
+      onFocusCapture={handleHeaderMouseEnter}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) handleHeaderMouseLeave();
+      }}
     >
       <PrimaryNav
         onOpenMegaMenu={handleOpenMegaMenu}
@@ -81,7 +85,7 @@ export const Navbar: React.FC = () => {
 
       {/* Floating Secondary Navigation revealed on Main Header Hover */}
       <div
-        className={`hidden md:block absolute top-full inset-x-0 z-30 transition-all duration-200 ease-out ${
+        className={`hidden md:block absolute top-full inset-x-0 z-30 transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
           isSecondaryVisible
             ? "opacity-100 translate-y-0 pointer-events-auto visible shadow-xl"
             : "opacity-0 -translate-y-1 pointer-events-none invisible"

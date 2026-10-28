@@ -30,12 +30,12 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
 
   return (
     <div className="w-full bg-white border-b border-[#F0F0F0]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4 sm:gap-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-8">
         {/* LEFT: Brand Logo & Bilingual Company Name */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0 sm:shrink-0">
           <Link
             href="/"
-            className="flex items-center gap-2 sm:gap-3 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-bht-red rounded-lg"
+            className="flex items-center gap-2 sm:gap-3 min-w-0 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-bht-red rounded-lg"
           >
             <div className="relative w-14 h-14 sm:w-20 sm:h-20 shrink-0 transition-transform group-hover:scale-102">
               <Image
@@ -47,7 +47,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
                 sizes="(max-width: 640px) 56px, 80px"
               />
             </div>
-            <div className="flex flex-col text-start">
+            <div className="flex flex-col text-start min-w-0">
               <span className="text-xs sm:text-sm lg:text-[16px] font-bold text-bht-red leading-tight font-arabic truncate max-w-[140px] xs:max-w-[190px] sm:max-w-none">
                 بيت البطانيات للتجارة ذ.م.م
               </span>
@@ -67,6 +67,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
             <Search className="w-4 h-4 text-neutral-400 group-focus-within:text-bht-charcoal absolute start-4 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
             <input
               type="text"
+              aria-label={language === "ar" ? "البحث عن المنتجات" : "Search products"}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
@@ -112,6 +113,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
           <Search className="w-4 h-4 text-neutral-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
           <input
             type="text"
+            aria-label={language === "ar" ? "البحث عن المنتجات" : "Search products"}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={
@@ -124,6 +126,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
               type="button"
               onClick={() => setSearchQuery("")}
               className="absolute end-3 top-1/2 -translate-y-1/2 text-neutral-400 p-0.5"
+              aria-label="Clear search"
             >
               <X className="w-3 h-3" />
             </button>

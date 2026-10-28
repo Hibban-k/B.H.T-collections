@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { useReducedMotion } from "@/components/common/useReducedMotion";
 import { PhoneCall, MapPin, Clock, Mail } from "lucide-react";
 
 interface ContactHeroCardItem {
@@ -63,9 +64,11 @@ const CONTACT_HERO_CARDS: ContactHeroCardItem[] = [
 export const ContactHero: React.FC = () => {
   const { language } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
+  const reducedMotion = useReducedMotion();
 
   // Smooth scroll listener for opposite alignment animation
   useEffect(() => {
+    if (reducedMotion) return;
     let ticking = false;
 
     const handleScroll = () => {
@@ -84,7 +87,7 @@ export const ContactHero: React.FC = () => {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [reducedMotion]);
 
   // Alignment progress: 0 at top -> 1 at 380px scroll
   // As user scrolls down, UP cards glide down and DOWN cards glide up into the SAME alignment!
@@ -92,6 +95,7 @@ export const ContactHero: React.FC = () => {
 
   // Desktop offsets: UP and DOWN cards converge to +16px
   const getDesktopTransform = (isUp: boolean) => {
+    if (reducedMotion) return "none";
     if (isUp) {
       const offset = -16 + alignProgress * 32;
       return `translate3d(0, ${offset}px, 0)`;
@@ -102,14 +106,14 @@ export const ContactHero: React.FC = () => {
   };
 
   // Mobile column offsets: Left and Right columns converge to +24px
-  const mobileCol1Transform = `translate3d(0, ${alignProgress * 24}px, 0)`;
-  const mobileCol2Transform = `translate3d(0, ${48 - alignProgress * 24}px, 0)`;
+  const mobileCol1Transform = reducedMotion ? "none" : `translate3d(0, ${alignProgress * 24}px, 0)`;
+  const mobileCol2Transform = reducedMotion ? "none" : `translate3d(0, ${48 - alignProgress * 24}px, 0)`;
 
   const handleCardClick = (card: ContactHeroCardItem) => {
     if (card.targetId) {
       const el = document.getElementById(card.targetId);
       if (el) {
-        el.scrollIntoView({ behavior: "smooth" });
+        el.scrollIntoView({ behavior: reducedMotion ? "auto" : "smooth" });
       }
     }
   };
@@ -146,7 +150,7 @@ export const ContactHero: React.FC = () => {
           <span className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-0.5 truncate drop-shadow-xs">
             {subtitle}
           </span>
-          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug truncate drop-shadow-md">
+          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug line-clamp-2 sm:line-clamp-1 drop-shadow-md">
             {title}
           </h3>
         </div>

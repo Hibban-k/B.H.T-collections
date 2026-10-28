@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { HERO_SLIDES, HeroSlide } from "@/data/heroData";
 import { useLanguage } from "@/context/LanguageContext";
+import { useReducedMotion } from "@/components/common/useReducedMotion";
 
 interface HeroCarouselProps {
   slides?: HeroSlide[];
@@ -25,10 +26,11 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
   const [currentSlideIndex, setCurrentSlideIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const reducedMotion = useReducedMotion();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const totalSlides = slides.length;
-  const currentSlide = slides[currentSlideIndex] || slides[0];
   const NextArrow = isRTL ? ChevronLeft : ChevronRight;
   const PrevArrow = isRTL ? ChevronRight : ChevronLeft;
   const CtaArrow = isRTL ? ArrowLeft : ArrowRight;
@@ -45,17 +47,17 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     setCurrentSlideIndex(index);
   };
 
-  // 2.5 second autoplay timer
+  // Allow time to read each slide; pause during interaction and for reduced motion.
   useEffect(() => {
-    if (isPlaying && !isHovered) {
+    if (isPlaying && !isHovered && !isFocused && !reducedMotion && totalSlides > 1) {
       timerRef.current = setInterval(() => {
-        nextSlide();
-      }, 2500);
+        if (!document.hidden) nextSlide();
+      }, 6000);
     }
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isPlaying, isHovered, nextSlide]);
+  }, [isPlaying, isHovered, isFocused, reducedMotion, totalSlides, nextSlide, currentSlideIndex]);
 
   return (
     <section
@@ -63,6 +65,10 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
       aria-label="Editorial Featured Collections Carousel"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      onFocusCapture={() => setIsFocused(true)}
+      onBlurCapture={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false);
+      }}
     >
       {/* FULL-WIDTH SLIDES (SERVER-RENDERED WITH DATABASE BACKGROUND IMAGES) */}
       {slides.map((slide, index) => {
@@ -70,16 +76,18 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
         return (
           <div
             key={slide.id}
-            className={`absolute inset-0 w-full h-full transition-all duration-1000 ease-in-out ${
+            className={`absolute inset-0 w-full h-full transition-[opacity,transform] duration-1000 ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transform-none ${
               isCurrent
                 ? "opacity-100 scale-100 pointer-events-auto z-10"
-                : "opacity-0 scale-105 pointer-events-none z-0"
+                : "opacity-0 scale-[1.025] pointer-events-none z-0"
             }`}
             aria-hidden={!isCurrent}
+            inert={!isCurrent}
           >
             {/* FULL WIDTH BACKGROUND IMAGE FROM DATABASE CATEGORY */}
             <div className="relative w-full h-full">
               <Image
+                data-parallax
                 src={slide.image}
                 alt={slide.alt}
                 fill
@@ -101,8 +109,8 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
             {/* EDITORIAL CONTENT OVERLAY */}
             <div className="absolute inset-0 z-20 flex items-center">
-              <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8">
-                <div className="max-w-xl lg:max-w-2xl text-start space-y-4 sm:space-y-6">
+              <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 md:px-20 lg:px-24">
+                <div className={`max-w-xl lg:max-w-2xl text-start space-y-4 sm:space-y-6 ${isCurrent ? "hero-copy" : ""}`}>
                   {/* Eyebrow */}
                   <div className="inline-flex items-center gap-2.5">
                     <span className="w-8 h-[2.5px] bg-bht-red" />
@@ -125,12 +133,12 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   <div className="pt-1.5 sm:pt-4">
                     <Link
                       href={slide.destination}
-                      className="inline-flex items-center gap-2 sm:gap-3 bg-bht-red hover:bg-bht-red-hover text-white text-xs sm:text-sm font-extrabold tracking-wider uppercase px-5 sm:px-9 py-2.5 sm:py-4 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:gap-4 active:scale-95"
+                      className="group inline-flex items-center gap-2 sm:gap-3 bg-bht-red hover:bg-bht-red-hover text-white text-xs sm:text-sm font-extrabold tracking-wider uppercase px-5 sm:px-9 py-2.5 sm:py-4 rounded-full shadow-xl hover:shadow-2xl transition-[background-color,box-shadow,transform] duration-300 active:scale-[0.98]"
                     >
                       <span>
                         {language === "ar" ? slide.ctaTextAr : slide.ctaTextEn}
                       </span>
-                      <CtaArrow className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5]" />
+                      <CtaArrow className="w-3.5 h-3.5 sm:w-4 sm:h-4 stroke-[2.5] transition-transform duration-300 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 motion-reduce:transform-none" />
                     </Link>
                   </div>
                 </div>
@@ -169,12 +177,13 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                 key={idx}
                 type="button"
                 onClick={() => goToSlide(idx)}
-                className={`h-1.5 rounded-full transition-all duration-300 ${
+                className={`relative h-6 after:absolute after:left-1/2 after:top-1/2 after:h-1.5 after:-translate-x-1/2 after:-translate-y-1/2 after:rounded-full transition-[width] duration-300 ${
                   idx === currentSlideIndex
-                    ? "w-8 bg-bht-red"
-                    : "w-2 bg-white/40 hover:bg-white/70"
+                    ? "w-8 after:w-8 after:bg-bht-red"
+                    : "w-6 after:w-2 after:bg-white/40 hover:after:bg-white/70"
                 }`}
                 aria-label={`Go to slide ${idx + 1}`}
+                aria-current={idx === currentSlideIndex ? "true" : undefined}
               />
             ))}
           </div>
@@ -184,8 +193,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
             <button
               type="button"
               onClick={() => setIsPlaying(!isPlaying)}
-              className="p-1 hover:bg-white/20 rounded-full transition-colors"
-              aria-label={isPlaying ? "Pause carousel" : "Play carousel"}
+              className="p-2 hover:bg-white/20 rounded-full transition-colors disabled:opacity-50"
+              disabled={reducedMotion}
+              aria-label={reducedMotion ? "Autoplay disabled for reduced motion" : isPlaying ? "Pause carousel" : "Play carousel"}
             >
               {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
             </button>
@@ -195,7 +205,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 type="button"
                 onClick={prevSlide}
-                className="p-1.5 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
                 aria-label="Previous slide"
               >
                 <PrevArrow className="w-3.5 h-3.5" />
@@ -203,7 +213,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
               <button
                 type="button"
                 onClick={nextSlide}
-                className="p-1.5 hover:bg-white/20 rounded-full transition-colors"
+                className="p-2 hover:bg-white/20 rounded-full transition-colors"
                 aria-label="Next slide"
               >
                 <NextArrow className="w-3.5 h-3.5" />

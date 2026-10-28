@@ -18,10 +18,11 @@ export const RegionalPresence: React.FC = () => {
       aria-label="Our Regional Presence"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 rounded-3xl overflow-hidden border border-bht-border bg-white shadow-xs">
+        <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 rounded-3xl overflow-hidden border border-bht-border bg-white shadow-xs">
           {/* LEFT: Authentic Dubai Burj Khalifa Image (~45% / 5 Cols on desktop) */}
-          <div className="lg:col-span-5 relative w-full min-h-[220px] sm:min-h-[380px] lg:min-h-[580px] bg-slate-900">
+          <div className="lg:col-span-5 relative w-full min-h-[220px] sm:min-h-[380px] lg:min-h-[580px] bg-slate-900 overflow-hidden">
             <Image
+              data-parallax
               src="/travallingbag/dubai-portfolio-circle.jpg"
               alt="Dubai Burj Khalifa Skyline - BHT Collections Regional Hub"
               fill

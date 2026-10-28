@@ -283,6 +283,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
                 {displayedProducts.length > 0 ? (
                   <>
                     <div
+                      data-reveal-group="stagger"
                       className={`grid gap-4 sm:gap-6 ${
                         gridColumns === 4
                           ? "grid-cols-2 md:grid-cols-3 lg:grid-cols-4"

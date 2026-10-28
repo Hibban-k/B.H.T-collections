@@ -44,11 +44,11 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 md:hidden bg-black/40 backdrop-blur-xs flex justify-end"
+      className="fixed inset-0 z-50 md:hidden bg-black/40 backdrop-blur-xs flex justify-end animate-fade-in"
       onClick={onClose}
     >
       <div
-        className="w-[85vw] max-w-[380px] h-full bg-white flex flex-col shadow-2xl overflow-y-auto"
+        className="bht-mobile-drawer w-[85vw] max-w-[380px] h-full bg-white flex flex-col shadow-2xl overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Drawer Header */}

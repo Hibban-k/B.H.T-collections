@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "../globals.css";
 import { LanguageProvider } from "@/context/LanguageContext";
 import { FloatingWhatsApp } from "@/components/common/FloatingWhatsApp";
+import { ScrollReveals } from "@/components/common/ScrollReveals";
 import { RegionService } from "@/lib/services/region.service";
 
 export async function generateMetadata({
@@ -71,9 +72,10 @@ export default async function RegionalStoreLayout({
 
   return (
     <html lang={locale} dir={isArabic ? "rtl" : "ltr"} suppressHydrationWarning>
-      <body className="min-h-screen flex flex-col bg-white text-bht-charcoal antialiased">
+      <body className="bht-storefront min-h-screen flex flex-col bg-white text-bht-charcoal antialiased">
         <LanguageProvider>
           {children}
+          <ScrollReveals />
           <FloatingWhatsApp />
         </LanguageProvider>
       </body>

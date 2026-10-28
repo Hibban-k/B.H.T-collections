@@ -54,7 +54,7 @@ export const OurCustomers: React.FC = () => {
     >
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Minimal Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+        <div data-reveal className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <span className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#888888] block mb-2">
             {language === "ar" ? "عملاؤنا المميزون" : "OUR CLIENTELE"}
           </span>
@@ -71,7 +71,7 @@ export const OurCustomers: React.FC = () => {
         </div>
 
         {/* Minimal Customer Logos Row */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
+        <div data-reveal-group="stagger" className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-6 sm:gap-8 lg:gap-10 items-center justify-items-center">
           {CUSTOMERS.map((customer) => (
             <div
               key={customer.id}

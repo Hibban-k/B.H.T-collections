@@ -34,7 +34,6 @@ export const FloatingWhatsApp: React.FC = () => {
         }`}
       >
         <span className="relative flex h-2.5 w-2.5">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
           <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
         </span>
         <div className="text-start">
@@ -55,8 +54,8 @@ export const FloatingWhatsApp: React.FC = () => {
         aria-label={`Chat with BHT Collections on WhatsApp at ${formattedNumber}`}
         className="relative group w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#20BA5A] text-white shadow-2xl flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 border-2 border-white focus:outline-hidden focus:ring-4 focus:ring-[#25D366]/40"
       >
-        {/* Soft Ambient Pulse Ring */}
-        <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-30 group-hover:opacity-60 animate-ping -z-10" />
+        {/* Quiet halo keeps the contact action visible without continuous motion. */}
+        <span className="absolute -inset-1 rounded-full bg-[#25D366] opacity-15 group-hover:opacity-25 transition-opacity duration-300 -z-10" />
 
         {/* Official WhatsApp SVG Glyph */}
         <svg

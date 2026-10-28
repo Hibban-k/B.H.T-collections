@@ -58,7 +58,7 @@ export const Testimonials: React.FC = () => {
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Exactly 5 boxes in horizontal row on desktop with increased height */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5 items-stretch">
+        <div data-reveal-group="stagger" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5 items-stretch">
           {/* BOX 1: Black Introductory Trust Box */}
           <div className="bg-bht-charcoal text-white rounded-2xl p-7 lg:p-8 flex flex-col justify-between shadow-md min-h-[320px] sm:min-h-[350px] lg:min-h-[360px]">
             <div>

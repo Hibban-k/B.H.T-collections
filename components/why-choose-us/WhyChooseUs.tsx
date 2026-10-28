@@ -32,7 +32,7 @@ export const WhyChooseUs: React.FC = () => {
     >
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* 3 Pillars Grid matching reference design */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-y-10 md:gap-y-0 gap-x-8 lg:gap-x-12">
+        <div data-reveal-group="stagger" className="grid grid-cols-1 md:grid-cols-3 gap-y-10 md:gap-y-0 gap-x-8 lg:gap-x-12">
           {TRUST_FEATURES.map((feature) => (
             <div
               key={feature.id}

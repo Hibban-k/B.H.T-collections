@@ -60,7 +60,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Quick View Hover Button */}
-        <div className="absolute inset-x-0 bottom-3 px-3 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+        <div className="product-quick-view absolute inset-x-0 bottom-3 px-3 flex justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 z-10">
           <button
             type="button"
             onClick={() => onQuickView(product)}
@@ -98,9 +98,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* 3. PRICE & COLOR SWATCHES ROW */}
-        <div className="pt-2 border-t border-[#F2F2F2] flex items-center justify-between gap-2 mt-auto">
+        <div className="pt-2 border-t border-[#F2F2F2] flex flex-wrap items-center justify-between gap-2 mt-auto">
           {/* Price */}
-          <div className="flex items-baseline gap-1.5">
+          <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
             <span className="text-sm sm:text-base font-black text-bht-charcoal tracking-tight">
               AED {product.price}
             </span>

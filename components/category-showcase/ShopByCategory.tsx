@@ -5,6 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useReducedMotion } from "@/components/common/useReducedMotion";
 
 export interface BrandSlide {
   name: string;
@@ -123,20 +124,29 @@ const CategorySlidingCard: React.FC<{
   isRTL: boolean;
 }> = ({ category, language, isRTL }) => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
+  const reducedMotion = useReducedMotion();
   const brands = category.brands || [];
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   useEffect(() => {
-    if (brands.length <= 1) return;
+    if (brands.length <= 1 || reducedMotion || isHovered || isFocused) return;
     const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % brands.length);
-    }, 4000);
+      if (!document.hidden) setCurrentSlide((prev) => (prev + 1) % brands.length);
+    }, 6000);
     return () => clearInterval(timer);
-  }, [brands.length]);
+  }, [brands.length, reducedMotion, isHovered, isFocused]);
 
   return (
     <Link
       href={category.href}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      onFocus={() => setIsFocused(true)}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setIsFocused(false);
+      }}
       className="group relative block h-[180px] xs:h-[210px] sm:h-[280px] md:h-[360px] lg:h-[440px] rounded-xl sm:rounded-2xl lg:rounded-3xl overflow-hidden shadow-xs hover:shadow-2xl transition-all duration-500 active:scale-[0.98] select-none"
     >
       {/* 1. SLIDING BANNER IMAGES FROM DATABASE */}
@@ -337,7 +347,7 @@ export const ShopByCategory: React.FC = () => {
     >
       <div className="max-w-[1760px] mx-auto px-2.5 sm:px-6 lg:px-8">
         {/* 3 COLUMNS IN A SINGLE HORIZONTAL ROW ACROSS ALL SCREENS (MOBILE INCLUDED) */}
-        <div className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
+        <div data-reveal-group="stagger" className="grid grid-cols-3 gap-2 sm:gap-4 md:gap-6 lg:gap-8">
           {categories.map((category) => (
             <CategorySlidingCard
               key={category.id}

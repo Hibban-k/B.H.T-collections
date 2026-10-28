@@ -156,7 +156,7 @@ export const FeaturedProducts: React.FC = () => {
     >
       <div className="max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* SECTION HEADER & TABS ROW */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
+        <div data-reveal className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-8 sm:mb-12">
           <div>
             <h2 className="text-2xl sm:text-3xl md:text-4xl font-black text-bht-charcoal tracking-tight">
               {language === "ar"
@@ -229,7 +229,7 @@ export const FeaturedProducts: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
+          <div data-reveal-group="stagger" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
             {displayedProducts.map((product) => {
               const discountPercentage = product.originalPrice
                 ? Math.round(
@@ -281,7 +281,7 @@ export const FeaturedProducts: React.FC = () => {
                     </div>
 
                     {/* Quick View Hover Button */}
-                    <div className="absolute inset-x-0 bottom-3 px-3 flex justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10">
+                    <div className="product-quick-view absolute inset-x-0 bottom-3 px-3 flex justify-center opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300 z-10">
                       <button
                         type="button"
                         onClick={() => setQuickViewProduct(product)}
@@ -321,9 +321,9 @@ export const FeaturedProducts: React.FC = () => {
                     </div>
 
                     {/* 3. PRICE & INQUIRY FOOTER */}
-                    <div className="pt-2 border-t border-[#F2F2F2] flex items-center justify-between gap-2 mt-auto">
+                    <div className="pt-2 border-t border-[#F2F2F2] flex flex-wrap items-center justify-between gap-2 mt-auto">
                       {/* Price */}
-                      <div className="flex items-baseline gap-1.5">
+                      <div className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
                         <span className="text-sm sm:text-base font-black text-bht-charcoal tracking-tight">
                           AED {product.price}
                         </span>

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
+import { useReducedMotion } from "@/components/common/useReducedMotion";
 
 interface HeroPrincipleCardItem {
   id: string;
@@ -66,9 +67,11 @@ const ABOUT_HERO_PRINCIPLES: HeroPrincipleCardItem[] = [
 export const AboutHeroSection: React.FC = () => {
   const { language } = useLanguage();
   const [scrollY, setScrollY] = useState(0);
+  const reducedMotion = useReducedMotion();
 
   // Smooth scroll listener for opposite alignment animation
   useEffect(() => {
+    if (reducedMotion) return;
     let ticking = false;
 
     const handleScroll = () => {
@@ -87,7 +90,7 @@ export const AboutHeroSection: React.FC = () => {
 
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+  }, [reducedMotion]);
 
   // Alignment progress: 0 at top -> 1 at 380px scroll
   // As user scrolls down, UP cards glide down and DOWN cards glide up into the SAME alignment!
@@ -95,6 +98,7 @@ export const AboutHeroSection: React.FC = () => {
 
   // Desktop offsets: UP and DOWN cards converge to +16px
   const getDesktopTransform = (isUp: boolean) => {
+    if (reducedMotion) return "none";
     if (isUp) {
       const offset = -16 + alignProgress * 32;
       return `translate3d(0, ${offset}px, 0)`;
@@ -105,8 +109,8 @@ export const AboutHeroSection: React.FC = () => {
   };
 
   // Mobile column offsets: Left and Right columns converge to +24px
-  const mobileCol1Transform = `translate3d(0, ${alignProgress * 24}px, 0)`;
-  const mobileCol2Transform = `translate3d(0, ${48 - alignProgress * 24}px, 0)`;
+  const mobileCol1Transform = reducedMotion ? "none" : `translate3d(0, ${alignProgress * 24}px, 0)`;
+  const mobileCol2Transform = reducedMotion ? "none" : `translate3d(0, ${48 - alignProgress * 24}px, 0)`;
 
   const renderCard = (card: HeroPrincipleCardItem, isMobile: boolean = false) => {
     const tag = language === "ar" ? card.tagAr : card.tagEn;
@@ -142,7 +146,7 @@ export const AboutHeroSection: React.FC = () => {
           </span>
 
           {/* Sub-Headline */}
-          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug drop-shadow-md mb-1.5 line-clamp-1">
+          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug drop-shadow-md mb-1.5 line-clamp-2 sm:line-clamp-1">
             {title}
           </h3>
 
