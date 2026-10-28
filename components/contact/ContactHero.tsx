@@ -88,7 +88,7 @@ export const ContactHero: React.FC = () => {
         onClick={() => handleCardClick(card)}
         className={`group block text-start relative w-full ${
           isMobile
-            ? "h-[220px] sm:h-[260px] rounded-2xl"
+            ? "h-[235px] sm:h-[270px] rounded-2xl"
             : `${card.desktopHeight} ${card.desktopTranslate} rounded-[28px]`
         } overflow-hidden border-2 border-white shadow-xl shadow-black/15 transition-all duration-500 hover:shadow-2xl hover:scale-[1.02] cursor-pointer`}
       >
@@ -106,7 +106,7 @@ export const ContactHero: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent pointer-events-none" />
 
         {/* Content Overlay at Bottom */}
-        <div className="absolute bottom-0 inset-x-0 p-3 sm:p-5 text-start z-10">
+        <div className="absolute bottom-0 inset-x-0 p-3 sm:p-4 text-start z-10">
           <span className="block text-[10px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-0.5 truncate drop-shadow-xs">
             {subtitle}
           </span>
@@ -123,7 +123,7 @@ export const ContactHero: React.FC = () => {
       {/* ============================================================ */}
       {/* 1. VIBRANT RED HERO BANNER (TOP)                            */}
       {/* ============================================================ */}
-      <div className="relative w-full bg-[#E52B25] text-white pt-12 sm:pt-18 lg:pt-24 pb-28 sm:pb-36 lg:pb-52 overflow-visible">
+      <div className="relative w-full bg-[#E52B25] text-white pt-12 sm:pt-18 lg:pt-24 pb-36 sm:pb-44 lg:pb-52 overflow-visible">
         {/* Subtle decorative background watermarks */}
         <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/30 via-transparent to-transparent pointer-events-none" />
 
@@ -178,7 +178,7 @@ export const ContactHero: React.FC = () => {
       {/* ============================================================ */}
       {/* 2. OVERLAPPING STAGGERED CARDS ROW (MIDDLE)                  */}
       {/* ============================================================ */}
-      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 -mt-20 sm:-mt-28 lg:-mt-44 relative z-10">
+      <div className="max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 -mt-28 sm:-mt-36 lg:-mt-44 relative z-10">
         {/* MOBILE & TABLET VIEW: 2-Column Staggered Masonry (Matching Screenshot) */}
         <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:hidden items-start">
           {/* Column 1: Card 1 (Showroom) & Card 3 (Wholesale) */}
@@ -188,7 +188,7 @@ export const ContactHero: React.FC = () => {
           </div>
 
           {/* Column 2: Card 2 (Concierge) & Card 4 (Direct Message) - Offset Downwards */}
-          <div className="flex flex-col gap-3 sm:gap-4 pt-10 sm:pt-14">
+          <div className="flex flex-col gap-3 sm:gap-4 pt-12 sm:pt-16">
             {renderCard(CONTACT_HERO_CARDS[1], true)}
             {renderCard(CONTACT_HERO_CARDS[3], true)}
           </div>
