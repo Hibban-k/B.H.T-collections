@@ -12,8 +12,19 @@ export const Navbar: React.FC = () => {
   const [isMegaMenuOpen, setIsMegaMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isSecondaryVisible, setIsSecondaryVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Track scroll position: visible naturally at rest, hidden when scrolled
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 40);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Close menus on Escape key
   useEffect(() => {
@@ -21,7 +32,7 @@ export const Navbar: React.FC = () => {
       if (e.key === "Escape") {
         setIsMegaMenuOpen(false);
         setIsMobileMenuOpen(false);
-        setIsSecondaryVisible(false);
+        setIsHovered(false);
       }
     };
     window.addEventListener("keydown", handleKeyDown);
@@ -31,25 +42,25 @@ export const Navbar: React.FC = () => {
     };
   }, []);
 
-  // Close secondary nav on route change
+  // Close hover dropdown on route change
   useEffect(() => {
-    setIsSecondaryVisible(false);
+    setIsHovered(false);
   }, [pathname]);
 
-  const handleHeaderMouseEnter = () => {
+  const handleMouseEnter = () => {
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
       hideTimeoutRef.current = null;
     }
-    setIsSecondaryVisible(true);
+    setIsHovered(true);
   };
 
-  const handleHeaderMouseLeave = () => {
+  const handleMouseLeave = () => {
     if (hideTimeoutRef.current) {
       clearTimeout(hideTimeoutRef.current);
     }
     hideTimeoutRef.current = setTimeout(() => {
-      setIsSecondaryVisible(false);
+      setIsHovered(false);
     }, 200);
   };
 
@@ -66,46 +77,54 @@ export const Navbar: React.FC = () => {
   };
 
   return (
-    <header
-      className="sticky top-0 z-40 w-full bg-white shadow-xs"
-      onMouseEnter={handleHeaderMouseEnter}
-      onMouseLeave={handleHeaderMouseLeave}
-      onFocusCapture={handleHeaderMouseEnter}
-      onBlurCapture={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget)) handleHeaderMouseLeave();
-      }}
-    >
-      <PrimaryNav
-        onOpenMegaMenu={handleOpenMegaMenu}
-        onCloseMegaMenu={handleCloseMegaMenu}
-        isMegaMenuOpen={isMegaMenuOpen}
-        activeMegaCategory={activeCategory}
-        onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
-      />
-
-      {/* Floating Secondary Navigation revealed on Main Header Hover */}
-      <div
-        className={`hidden md:block absolute top-full inset-x-0 z-30 transition-[opacity,transform,visibility] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
-          isSecondaryVisible
-            ? "opacity-100 translate-y-0 pointer-events-auto visible shadow-xl"
-            : "opacity-0 -translate-y-1 pointer-events-none invisible"
-        }`}
+    <div className="w-full relative">
+      {/* Sticky Main Header Container */}
+      <header
+        className="sticky top-0 z-40 w-full bg-white shadow-xs"
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+        onFocusCapture={handleMouseEnter}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) handleMouseLeave();
+        }}
       >
-        <SecondaryNav />
+        <PrimaryNav
+          onOpenMegaMenu={handleOpenMegaMenu}
+          onCloseMegaMenu={handleCloseMegaMenu}
+          isMegaMenuOpen={isMegaMenuOpen}
+          activeMegaCategory={activeCategory}
+          onToggleMobileMenu={() => setIsMobileMenuOpen(true)}
+        />
+
+        {/* Floating Secondary Nav: appears under sticky header ONLY when scrolled down AND hovered */}
+        <div
+          className={`hidden md:block absolute top-full inset-x-0 z-30 transition-[opacity,transform,visibility] duration-200 ease-out ${
+            isScrolled && (isHovered || isMegaMenuOpen)
+              ? "opacity-100 translate-y-0 pointer-events-auto visible shadow-xl"
+              : "opacity-0 -translate-y-1 pointer-events-none invisible"
+          }`}
+        >
+          <SecondaryNav variant="floating" />
+        </div>
+
+        {/* Mega Menu overlay */}
+        <MegaMenu
+          isOpen={isMegaMenuOpen}
+          onClose={handleCloseMegaMenu}
+          activeCategory={activeCategory}
+        />
+
+        {/* Mobile Drawer */}
+        <MobileNav
+          isOpen={isMobileMenuOpen}
+          onClose={() => setIsMobileMenuOpen(false)}
+        />
+      </header>
+
+      {/* Static Secondary Nav: naturally visible at top of page when NOT scrolled, scrolls away with page */}
+      <div className="hidden md:block w-full">
+        <SecondaryNav variant="static" />
       </div>
-
-      {/* Mega Menu overlay */}
-      <MegaMenu
-        isOpen={isMegaMenuOpen}
-        onClose={handleCloseMegaMenu}
-        activeCategory={activeCategory}
-      />
-
-      {/* Mobile Drawer */}
-      <MobileNav
-        isOpen={isMobileMenuOpen}
-        onClose={() => setIsMobileMenuOpen(false)}
-      />
-    </header>
+    </div>
   );
 };
