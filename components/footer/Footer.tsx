@@ -11,17 +11,17 @@ export const Footer: React.FC = () => {
   return (
     <footer className="w-full bg-[#111111] text-white pt-12 pb-8 border-t border-neutral-800 select-none">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        {/* TOP ROW: BRAND CARD (ELEVATED WHITE CONTAINER WITH INCREASED HEIGHT) + CATEGORIES & QUICK LINKS */}
+        {/* TOP ROW: BRAND CARD (ELEVATED WHITE CONTAINER WITH INCREASED HEIGHT & EXTRA LARGE LOGO) + CATEGORIES & QUICK LINKS */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-stretch">
-          {/* BRAND PILL: Full white section with increased height, generous padding, and prominent branding */}
+          {/* BRAND PILL: Full white section with increased height, generous padding, and extra large logo */}
           <div className="md:col-span-5 flex flex-col items-start">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-7 sm:p-8 lg:p-9 shadow-sm border border-neutral-200/40 w-full max-w-md min-h-[230px] sm:min-h-[260px] lg:min-h-[280px] flex flex-col justify-between">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-7 sm:p-8 lg:p-10 shadow-sm border border-neutral-200/40 w-full max-w-lg min-h-[260px] sm:min-h-[290px] lg:min-h-[320px] flex flex-col justify-between">
               <Link
                 href="/"
-                className="inline-flex items-center gap-4 sm:gap-5 group mb-4 transition-transform hover:scale-[1.01]"
+                className="inline-flex items-center gap-4 sm:gap-6 group mb-4 transition-transform hover:scale-[1.01]"
               >
-                {/* Prominent Logo */}
-                <div className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0">
+                {/* Extra Large Logo */}
+                <div className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-28 lg:h-28 shrink-0">
                   <Image
                     src="/logo/logo.png"
                     alt="Blanket House Trading LLC Logo"
@@ -35,7 +35,7 @@ export const Footer: React.FC = () => {
                   <span className="text-xs sm:text-sm font-bold text-bht-red block font-arabic leading-tight">
                     بيت البطانيات للتجارة ذ.م.م
                   </span>
-                  <span className="text-xl sm:text-2xl font-black text-neutral-900 tracking-tight block leading-tight mt-1">
+                  <span className="text-xl sm:text-2xl lg:text-[26px] font-black text-neutral-900 tracking-tight block leading-tight mt-1">
                     Blanket House Trading LLC
                   </span>
                 </div>
