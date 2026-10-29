@@ -9,8 +9,8 @@ export const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   return (
-    <div className="w-full">
-      {/* Sticky Main Header (Primary Nav) */}
+    <>
+      {/* Sticky Main White Navbar (Primary Nav) - permanently sticky throughout scroll */}
       <header className="sticky top-0 z-40 w-full bg-white shadow-xs">
         <PrimaryNav onToggleMobileMenu={() => setIsMobileMenuOpen(true)} />
 
@@ -21,8 +21,8 @@ export const Navbar: React.FC = () => {
         />
       </header>
 
-      {/* Non-Sticky Secondary Navigation Bar (naturally scrolls away with page) */}
+      {/* Non-Sticky Secondary Navigation Bar (scrolls away naturally) */}
       <SecondaryNav />
-    </div>
+    </>
   );
 };
