@@ -19,12 +19,12 @@ export const RegionalPresence: React.FC = () => {
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 rounded-3xl overflow-hidden border border-bht-border bg-white shadow-xs">
-          {/* LEFT: Authentic Dubai Burj Khalifa Image (~45% / 5 Cols on desktop) */}
-          <div className="lg:col-span-5 relative w-full min-h-[220px] sm:min-h-[380px] lg:min-h-[580px] bg-slate-900 overflow-hidden">
+          {/* LEFT: Authentic Dubai Skyline & BHT Collections Showcase (~45% / 5 Cols on desktop) */}
+          <div className="lg:col-span-5 relative w-full min-h-[260px] sm:min-h-[380px] lg:min-h-[580px] bg-slate-900 overflow-hidden">
             <Image
               data-parallax
-              src="/travallingbag/dubai-portfolio-circle.jpg"
-              alt="Dubai Burj Khalifa Skyline - BHT Collections Regional Hub"
+              src="/regional-presence.jpg"
+              alt="BHT Collections Luxury Bedding, Luggage and Footwear in Dubai overlooking the Skyline - Regional Presence"
               fill
               className="object-cover object-center"
               sizes="(max-width: 1024px) 100vw, 45vw"
