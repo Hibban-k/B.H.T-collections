@@ -179,3 +179,51 @@ input:-webkit-autofill {
   -webkit-box-shadow: 0 0 0 30px white inset !important;
   -webkit-text-fill-color: var(--bht-charcoal) !important;
 }
+
+/* Storefront typography: editorial Playfair + functional Inter; Arabic uses Cairo. */
+.bht-storefront {
+  --bht-section-space: clamp(3.5rem, 6vw, 6rem);
+  --bht-heading-space: clamp(1.5rem, 3vw, 2.5rem);
+}
+.bht-storefront main :is(h1, h2) {
+  font-family: var(--font-serif);
+  font-weight: 500;
+  letter-spacing: -0.025em;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+.bht-storefront main h1 { font-size: clamp(2.125rem, 4.5vw, 4rem); text-transform: none; }
+.bht-storefront main h2 { font-size: clamp(1.875rem, 3.2vw, 2.75rem); }
+.bht-storefront main :is(h3, h4) {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+}
+.bht-storefront main :is(button, input, select, textarea),
+.bht-storefront main .font-mono { font-family: var(--font-sans); }
+.bht-storefront main :is(.font-black, .font-extrabold):not(h1, h2) { font-weight: 600; }
+.bht-storefront main p { text-wrap: pretty; }
+.bht-storefront .bht-copy { font-size: clamp(0.9375rem, 1.1vw, 1rem); line-height: 1.85; }
+.bht-storefront .bht-section { padding-block: var(--bht-section-space); }
+.bht-storefront .bht-section h2 + p { margin-top: 1rem; }
+.bht-storefront .bht-eyebrow { font-family: var(--font-sans); font-size: 0.6875rem; font-weight: 500; letter-spacing: 0.16em; }
+.bht-storefront main .bht-ui-title { font-family: var(--font-sans); font-size: 1.25rem; font-weight: 600; letter-spacing: -0.015em; }
+.bht-page-intro { background: #f7f6f3; color: #171717; padding-top: clamp(3.5rem,6vw,6rem); padding-bottom: clamp(3.5rem,6vw,6rem); }
+.bht-page-intro--cards { padding-bottom: clamp(9rem,15vw,13rem); }
+[dir="rtl"] .bht-storefront main :is(h1,h2,h3,h4,button,input,select,textarea,.font-mono,.bht-eyebrow) { font-family: var(--font-arabic); letter-spacing: 0; }
+[dir="rtl"] .bht-storefront main :is(h1,h2) { line-height: 1.45; font-weight: 600; }
+@media (max-width: 639px) {
+  .bht-storefront main :is(input,select,textarea) { font-size: 1rem; }
+}
+.bht-storefront .bht-photo-card { color: white; }
+.bht-storefront .bht-photo-card p { color: rgba(255,255,255,.88); line-height: 1.7; }
+.bht-storefront .bht-photo-card span { color: rgba(255,255,255,.78); }
+.bht-storefront .bht-photo-shade { background: linear-gradient(to top,rgba(0,0,0,.92),rgba(0,0,0,.35) 65%,transparent); }
+@media (prefers-reduced-motion: no-preference) {
+  .regional-contact-enter { animation: regional-contact-in 260ms ease-out both; }
+}
+@keyframes regional-contact-in {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}

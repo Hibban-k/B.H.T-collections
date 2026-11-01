@@ -108,7 +108,7 @@ export const BrandClientGrid: React.FC = () => {
   }, [selectedCategory, brands]);
 
   return (
-    <section className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-[#F8F9FA]">
+    <section className="bht-section relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-[#F8F9FA]">
       <div
         className="absolute inset-0 pointer-events-none opacity-40"
         style={{

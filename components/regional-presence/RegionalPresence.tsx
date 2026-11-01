@@ -14,7 +14,7 @@ export const RegionalPresence: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-white py-16 md:py-24 border-t border-[#F0F0F0]"
+      className="bht-section w-full bg-white py-16 md:py-24 border-t border-[#F0F0F0]"
       aria-label="Our Regional Presence"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">

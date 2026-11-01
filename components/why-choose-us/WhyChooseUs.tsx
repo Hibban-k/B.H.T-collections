@@ -27,7 +27,7 @@ export const WhyChooseUs: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-white py-14 sm:py-18 md:py-20 border-t border-[#F0F0F0]"
+      className="bht-section w-full bg-white py-14 sm:py-18 md:py-20 border-t border-[#F0F0F0]"
       aria-label="Core Business Strengths"
     >
       <div className="max-w-[1320px] mx-auto px-4 sm:px-6 lg:px-8">

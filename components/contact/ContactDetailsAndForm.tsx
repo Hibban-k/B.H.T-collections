@@ -6,7 +6,6 @@ import {
   Phone,
   Mail,
   Clock,
-  Send,
   Lock,
   CheckCircle2,
   ArrowRight,
@@ -48,9 +47,9 @@ export const ContactDetailsAndForm: React.FC = () => {
   return (
     <section
       id="contact-form-section"
-      className="w-full bg-white py-12 sm:py-16 lg:py-20 border-b border-[#F0F0F0] scroll-mt-20"
+      className="bht-section w-full bg-white py-12 sm:py-16 lg:py-20 border-b border-[#F0F0F0] scroll-mt-20"
     >
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
           {/* ========================================================= */}
           {/* LEFT COLUMN: OUR CONTACT DETAILS                          */}
@@ -82,7 +81,7 @@ export const ContactDetailsAndForm: React.FC = () => {
                   <p className="text-sm font-semibold text-neutral-900 leading-snug">
                     BHT Collections
                   </p>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-normal mt-0.5">
+                  <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
                       ? "دبي، الإمارات العربية المتحدة"
                       : "Dubai, United Arab Emirates (UAE)"}
@@ -106,7 +105,7 @@ export const ContactDetailsAndForm: React.FC = () => {
                   >
                     +971 4 123 4567
                   </a>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-normal mt-0.5">
+                  <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
                       ? "الإثنين - السبت: 10 ص - 6 م بتوقيت الإمارات"
                       : "Mon - Sat: 10 AM - 6 PM UAE Time"}
@@ -138,7 +137,7 @@ export const ContactDetailsAndForm: React.FC = () => {
                   >
                     +971 50 123 4567
                   </a>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-normal mt-0.5">
+                  <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
                       ? "تواصل معنا مباشرة عبر واتساب"
                       : "Chat with us on WhatsApp"}
@@ -161,7 +160,7 @@ export const ContactDetailsAndForm: React.FC = () => {
                   >
                     info@bhtcollections.ae
                   </a>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-normal mt-0.5">
+                  <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
                       ? "سنرد عليك في أقرب وقت ممكن"
                       : "We'll respond as soon as possible"}
@@ -183,7 +182,7 @@ export const ContactDetailsAndForm: React.FC = () => {
                       ? "الإثنين - السبت: 10 ص - 6 م بتوقيت الإمارات"
                       : "Mon - Sat: 10 AM - 6 PM UAE Time"}
                   </p>
-                  <p className="text-xs sm:text-sm text-neutral-500 leading-normal mt-0.5">
+                  <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar" ? "(مغلق يوم الأحد)" : "(Closed on Sunday)"}
                   </p>
                 </div>
@@ -210,7 +209,7 @@ export const ContactDetailsAndForm: React.FC = () => {
             </h2>
 
             {/* Subtitle */}
-            <p className="text-xs sm:text-sm text-neutral-500 mb-8 font-normal">
+            <p className="text-sm text-neutral-500 mb-8 font-normal">
               {language === "ar"
                 ? "املأ النموذج أدناه وسيقوم فريقنا بالرد عليك في أقرب وقت."
                 : "Fill out the form below and our team will get back to you shortly."}

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { PageHeroIntro } from "@/components/hero/PageHeroIntro";
 import { useLanguage } from "@/context/LanguageContext";
 import { useReducedMotion } from "@/components/common/useReducedMotion";
 
@@ -121,7 +122,7 @@ export const AboutHeroSection: React.FC = () => {
       <div
         key={card.id}
         style={!isMobile ? { transform: getDesktopTransform(card.isUp) } : undefined}
-        className={`group block relative w-full h-[240px] sm:h-[280px] lg:h-[420px] ${
+        className={`bht-photo-card group flex items-end relative w-full min-h-[320px] sm:min-h-[360px] lg:min-h-[420px] ${
           isMobile ? "rounded-2xl" : "rounded-[28px]"
         } overflow-hidden border-2 border-white shadow-xl shadow-black/15 will-change-transform transition-transform duration-300 ease-out hover:shadow-2xl hover:scale-[1.02]`}
       >
@@ -136,22 +137,22 @@ export const AboutHeroSection: React.FC = () => {
         />
 
         {/* Deep Vignette Gradient for High Contrast */}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/92 via-black/50 to-transparent pointer-events-none" />
+        <div className="bht-photo-shade absolute inset-0 bg-gradient-to-t from-black/92 via-black/50 to-transparent pointer-events-none" />
 
         {/* Content Overlay: 4 Principles Passed from Father to the Future */}
-        <div className="absolute bottom-0 inset-x-0 p-3.5 sm:p-5 text-start z-10">
+        <div className="relative pt-32 px-4 pb-5 sm:px-5 sm:pt-44 text-start z-10">
           {/* Principle Name / Amber Eyebrow */}
-          <span className="block text-[11px] sm:text-xs font-bold uppercase tracking-wider text-[#FFC837] mb-1 truncate drop-shadow-xs">
+          <span className="block text-[11px] sm:text-xs font-medium uppercase tracking-wider text-white/75 mb-1 drop-shadow-xs">
             {tag}
           </span>
 
           {/* Sub-Headline */}
-          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug drop-shadow-md mb-1.5 line-clamp-2 sm:line-clamp-1">
+          <h3 className="text-white font-bold text-xs sm:text-sm lg:text-base leading-snug drop-shadow-md mb-1.5 ">
             {title}
           </h3>
 
           {/* Detailed Narrative from Father to Future */}
-          <p className="text-[11px] sm:text-xs text-white/85 leading-relaxed font-normal line-clamp-2 group-hover:line-clamp-none transition-all duration-300 drop-shadow-xs">
+          <p className="text-[11px] sm:text-xs text-white/85 leading-relaxed font-normal  transition-all duration-300 drop-shadow-xs">
             {desc}
           </p>
         </div>
@@ -162,59 +163,14 @@ export const AboutHeroSection: React.FC = () => {
   return (
     <section className="w-full bg-white select-none overflow-hidden" aria-label="About Us Hero">
       {/* ============================================================ */}
-      {/* 1. VIBRANT RED HERO BANNER (TOP)                            */}
+      {/* 1. LIGHT EDITORIAL HERO BANNER (TOP)                            */}
       {/* ============================================================ */}
-      <div className="relative w-full bg-[#E52B25] text-white pt-12 sm:pt-18 lg:pt-24 pb-36 sm:pb-44 lg:pb-52 overflow-visible">
-        {/* Subtle decorative background watermarks */}
-        <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_top,_var(--tw-gradient-stops))] from-white/30 via-transparent to-transparent pointer-events-none" />
-
-        <div className="relative max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          {/* Main Title with Playful Sparkle Star Accent */}
-          <div className="relative inline-block mb-3 sm:mb-4">
-            <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white drop-shadow-xs">
-              {language === "ar" ? "من نحن" : "About us"}
-            </h1>
-
-            {/* Sparkle star icon matching reference */}
-            <div
-              className="absolute -top-2 sm:-top-3 -end-7 sm:-end-9 pointer-events-none text-white/90"
-              aria-hidden="true"
-            >
-              <svg
-                className="w-6 h-6 sm:w-8 sm:h-8"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z" />
-                <circle cx="19" cy="5" r="1.2" fill="currentColor" stroke="none" />
-                <circle cx="5" cy="19" r="1.2" fill="currentColor" stroke="none" />
-              </svg>
-            </div>
-          </div>
-
-          {/* Subtitle brand statement */}
-          <p className="text-white/95 text-xs sm:text-sm md:text-base font-normal leading-relaxed max-w-2xl sm:max-w-3xl mx-auto px-2">
-            {language === "ar"
+      <PageHeroIntro overlappingCards
+        title={language === "ar" ? "من نحن" : "About us"}
+        description={language === "ar"
               ? "انطلاقاً من إرث عريق يمتد لعقود في دبي، تقدم شركة بيت البطانيات للتجارة ذ.م.م تشكيلات راقية من مفروشات السرير الفاخرة، وحقائب السفر المتينة، والأحذية المريحة لكافة أرجاء الإمارات والخليج."
               : "Founded on decades of heritage in Dubai, Blanket House Trading LLC (BHT Collections) delivers curated luxury bedding, premium travel luggage, and everyday comfort footwear across the UAE and GCC."}
-          </p>
-        </div>
-
-        {/* Bottom subtle organic curved wave transitioning into white */}
-        <div className="absolute bottom-0 inset-x-0 w-full overflow-hidden leading-none pointer-events-none">
-          <svg
-            viewBox="0 0 1440 60"
-            preserveAspectRatio="none"
-            className="relative block w-full h-[28px] sm:h-[40px] lg:h-[55px] text-white fill-current"
-          >
-            <path d="M0,0 C480,45 960,45 1440,0 L1440,60 L0,60 Z" />
-          </svg>
-        </div>
-      </div>
+      />
 
       {/* ============================================================ */}
       {/* 2. OVERLAPPING CARDS: 4 PRINCIPLES PASSED FROM FATHER        */}

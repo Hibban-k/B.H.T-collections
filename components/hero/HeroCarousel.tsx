@@ -61,7 +61,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
 
   return (
     <section
-      className="relative w-full h-[480px] xs:h-[520px] sm:h-[600px] md:h-[660px] lg:h-[calc(100vh-128px)] lg:min-h-[660px] overflow-hidden select-none bg-black"
+      className="relative w-full h-[480px] xs:h-[520px] sm:h-[600px] md:h-[660px] lg:h-[calc(100vh-128px)] lg:min-h-[660px] overflow-clip select-none bg-black"
       aria-label="Editorial Featured Collections Carousel"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -114,7 +114,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   {/* Eyebrow */}
                   <div className="inline-flex items-center gap-2.5">
                     <span className="w-8 h-[2.5px] bg-bht-red" />
-                    <span className="text-xs sm:text-sm font-extrabold uppercase tracking-widest text-bht-red bg-black/40 backdrop-blur-xs px-2.5 py-1 rounded">
+                    <span className="bht-eyebrow uppercase text-white/80">
                       {language === "ar" ? slide.eyebrowAr : slide.eyebrowEn}
                     </span>
                   </div>
@@ -125,7 +125,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   </h1>
 
                   {/* Description */}
-                  <p className="text-xs xs:text-sm sm:text-base md:text-lg text-gray-200 font-normal leading-relaxed drop-shadow-sm max-w-lg line-clamp-2 sm:line-clamp-none">
+                  <p className="bht-copy text-gray-200 font-normal leading-relaxed drop-shadow-sm max-w-lg line-clamp-2 sm:line-clamp-none">
                     {language === "ar" ? slide.descriptionAr : slide.descriptionEn}
                   </p>
 

@@ -91,7 +91,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             </div>
 
             {/* Product Title */}
-            <h2 className="text-lg sm:text-xl font-extrabold text-bht-charcoal leading-snug mb-3">
+            <h2 className="bht-ui-title text-lg sm:text-xl font-extrabold text-bht-charcoal leading-snug mb-3">
               {language === "ar" ? product.nameAr : product.nameEn}
             </h2>
 

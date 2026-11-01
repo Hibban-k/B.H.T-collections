@@ -151,7 +151,7 @@ export const FeaturedProducts: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-[#FAFAFA] py-12 md:py-20 border-t border-[#EDEDED]"
+      className="bht-section w-full bg-[#FAFAFA] py-12 md:py-20 border-t border-[#EDEDED]"
       aria-label="Products Showcase"
     >
       <div className="max-w-[1760px] mx-auto px-4 sm:px-6 lg:px-8">

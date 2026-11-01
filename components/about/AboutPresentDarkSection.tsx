@@ -11,12 +11,12 @@ export const AboutPresentDarkSection: React.FC = () => {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="w-full bg-[#111111] text-white py-16 sm:py-24 overflow-hidden relative border-b border-neutral-900">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+    <section className="bht-section w-full bg-[#111111] text-white py-16 sm:py-24 overflow-hidden relative border-b border-neutral-900">
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
+        <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* LEFT: Angled 3D Modern Flagship Showcase on Elevated Surface */}
           <div className="lg:col-span-6 flex items-center justify-center">
-            <div className="relative w-full max-w-[560px] aspect-[16/11] rounded-2xl sm:rounded-3xl overflow-hidden border border-neutral-800 shadow-2xl group bg-neutral-900">
+            <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-lg overflow-hidden border border-neutral-800 group bg-neutral-900">
               <Image
                 src="/contact/dubai-flagship.jpg"
                 alt="BHT Collections Dubai Flagship Experience"
@@ -37,7 +37,7 @@ export const AboutPresentDarkSection: React.FC = () => {
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Brand Logo / Wordmark */}
             <div className="mb-4">
-              <span className="text-xl sm:text-2xl font-black tracking-widest uppercase text-white font-mono inline-block border-b-2 border-bht-red pb-1">
+              <span className="bht-eyebrow uppercase text-neutral-400 inline-block">
                 BHT COLLECTIONS
               </span>
             </div>
@@ -62,7 +62,7 @@ export const AboutPresentDarkSection: React.FC = () => {
             </div>
 
             {/* Narrative Paragraph */}
-            <p className="text-xs sm:text-sm md:text-base text-neutral-300 leading-relaxed max-w-lg mb-8 font-normal">
+            <p className="bht-copy text-neutral-300 leading-relaxed max-w-lg mb-8 font-normal">
               {language === "ar"
                 ? "تعتبر بي إتش تي كوليكشنز الوجهة المفضلة في دولة الإمارات لأسلوب الحياة الراقي، حيث يثق بنا آلاف العملاء والفنادق الكبرى. رسالتنا اليوم هي منحك الراحة المتكاملة، المتانة العالية، والتصميم العصري الأنيق عبر تشكيلاتنا المبتكرة من المفروشات الفاخرة وحقائب السفر والأحذية المريحة."
                 : "BHT Collections is the Emirates' premier destination for everyday luxury. Trusted by more than 100,000 customers, our modern collections give you complete control of comfort, resilience, and style across fine bedding, travel luggage, and footwear."}

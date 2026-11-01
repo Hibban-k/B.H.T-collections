@@ -46,7 +46,7 @@ export const RelatedCollections: React.FC<RelatedCollectionsProps> = ({
   const related = categories.filter((c) => c.id !== currentCategory);
 
   return (
-    <section className="w-full bg-[#FAFAFA] py-12 border-t border-[#EBEBEB]">
+    <section className="bht-section w-full bg-[#FAFAFA] py-12 border-t border-[#EBEBEB]">
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between mb-6">
           <div>

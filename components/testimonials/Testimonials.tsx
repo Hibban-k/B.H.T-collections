@@ -53,7 +53,7 @@ export const Testimonials: React.FC = () => {
 
   return (
     <section
-      className="w-full bg-white py-14 md:py-20 border-t border-[#F0F0F0]"
+      className="bht-section w-full bg-white py-14 md:py-20 border-t border-[#F0F0F0]"
       aria-label="Customer Trust & Google Reviews"
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">

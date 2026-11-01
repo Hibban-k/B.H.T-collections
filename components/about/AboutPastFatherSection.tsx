@@ -11,9 +11,9 @@ export const AboutPastFatherSection: React.FC = () => {
   const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
 
   return (
-    <section className="w-full bg-white py-16 sm:py-24 overflow-hidden border-b border-[#F0F0F0]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+    <section className="bht-section w-full bg-white py-16 sm:py-24 overflow-hidden border-b border-[#F0F0F0]">
+      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
+        <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
           {/* LEFT: History & Trust-Building Narrative */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Heritage Monogram Badge */}
@@ -46,7 +46,7 @@ export const AboutPastFatherSection: React.FC = () => {
             </div>
 
             {/* Narrative Paragraph */}
-            <p className="text-xs sm:text-sm md:text-base text-neutral-600 leading-relaxed max-w-lg mb-6 font-normal">
+            <p className="bht-copy text-neutral-600 leading-relaxed max-w-lg mb-6 font-normal">
               {language === "ar"
                 ? "بدأت القصة قبل عقود في أسواق دبي التاريخية على يد الوالد المؤسس، الذي آمن بأن التجارة الحقيقية ليست مجرد بيع بضاعة، بل هي بناء ثقة مقدسة تدوم لأجيال. كان يتفقد خيوط كل بطانية وينتقي أجود الأقمشة بنفسه، لتصل الدفء والراحة إلى كل بيت في الإمارات."
                 : "Decades ago in the historic trading souqs of Dubai, our journey began with our founding father. He believed that genuine trade is built on sacred handshake trust and honorable service. Inspecting every woven textile himself, he dedicated his life to bringing authentic warmth and comfort to every family."}
@@ -93,7 +93,7 @@ export const AboutPastFatherSection: React.FC = () => {
 
           {/* RIGHT: Framed Archival Vintage Father Image */}
           <div className="lg:col-span-6 flex items-center justify-center">
-            <div className="relative w-full max-w-[500px] aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-4 border-white bg-neutral-900 group">
+            <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-lg overflow-hidden bg-neutral-900 group">
               <Image
                 src="/about/founder-father-heritage.jpg"
                 alt="Founding Father in Historic Dubai Textile Shop"
