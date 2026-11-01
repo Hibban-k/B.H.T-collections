@@ -11,7 +11,7 @@ export const Navbar: React.FC = () => {
   return (
     <>
       {/* Sticky Main White Navbar (Primary Nav) - permanently sticky throughout scroll */}
-      <header className="sticky top-0 z-40 w-full bg-white shadow-xs">
+      <header className="sticky top-0 z-50 w-full bg-white shadow-xs">
         <PrimaryNav onToggleMobileMenu={() => setIsMobileMenuOpen(true)} />
 
         {/* Mobile Navigation Drawer */}

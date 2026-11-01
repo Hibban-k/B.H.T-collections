@@ -26,7 +26,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
 
   return (
     <div className="w-full bg-white border-b border-[#F0F0F0]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 lg:h-28 flex items-center justify-between gap-3 sm:gap-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-22 lg:h-26 flex items-center justify-between gap-3 sm:gap-8">
         {/* LEFT: Brand Logo & Bilingual Company Name */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 sm:shrink-0">
           <Link
