@@ -26,28 +26,28 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
 
   return (
     <div className="w-full bg-white border-b border-[#F0F0F0]">
-      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-8">
+      <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 h-20 sm:h-24 lg:h-28 flex items-center justify-between gap-3 sm:gap-8">
         {/* LEFT: Brand Logo & Bilingual Company Name */}
         <div className="flex items-center gap-2 sm:gap-3 min-w-0 sm:shrink-0">
           <Link
             href="/"
             className="flex items-center gap-2 sm:gap-3 min-w-0 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-bht-red rounded-lg"
           >
-            <div className="relative w-14 h-14 sm:w-20 sm:h-20 shrink-0 transition-transform group-hover:scale-102">
+            <div className="relative w-16 h-16 sm:w-22 sm:h-22 lg:w-26 lg:h-26 shrink-0 transition-transform group-hover:scale-105">
               <Image
                 src="/logo/logo.png"
                 alt="Blanket House Trading LLC Logo"
                 fill
                 priority
                 className="object-contain"
-                sizes="(max-width: 640px) 56px, 80px"
+                sizes="(max-width: 640px) 64px, (max-width: 1024px) 88px, 104px"
               />
             </div>
             <div className="flex flex-col text-start min-w-0">
-              <span className="text-xs sm:text-sm lg:text-[16px] font-bold text-bht-red leading-tight font-arabic truncate max-w-[140px] xs:max-w-[190px] sm:max-w-none">
+              <span className="text-xs sm:text-base lg:text-[17px] font-bold text-bht-red leading-tight font-arabic truncate max-w-[150px] xs:max-w-[210px] sm:max-w-none">
                 بيت البطانيات للتجارة ذ.م.م
               </span>
-              <span className="text-sm sm:text-lg lg:text-[19px] font-black tracking-tight text-bht-charcoal leading-tight truncate max-w-[140px] xs:max-w-[190px] sm:max-w-none">
+              <span className="text-sm sm:text-xl lg:text-[22px] font-black tracking-tight text-bht-charcoal leading-tight truncate max-w-[150px] xs:max-w-[210px] sm:max-w-none">
                 Blanket House Trading LLC
               </span>
             </div>

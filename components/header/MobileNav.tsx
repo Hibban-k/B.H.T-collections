@@ -54,7 +54,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
         {/* Drawer Header */}
         <div className="flex items-center justify-between p-4 border-b border-[#F0F0F0]">
           <div className="flex items-center gap-2.5">
-            <div className="relative w-11 h-11 shrink-0">
+            <div className="relative w-16 h-16 sm:w-18 sm:h-18 shrink-0">
               <Image
                 src="/logo/logo.png"
                 alt="Blanket House Trading LLC Logo"

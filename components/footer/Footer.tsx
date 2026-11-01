@@ -16,12 +16,12 @@ export const Footer: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-10 pb-10 border-b border-neutral-800/80 items-stretch">
           {/* BRAND CARD: Compact business card proportion */}
           <div className="md:col-span-5 lg:col-span-5 flex flex-col items-start w-full">
-            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm border border-neutral-200/70 w-full max-w-[430px] relative overflow-hidden flex flex-col justify-between">
+            <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm border border-neutral-200/70 w-full max-w-[460px] relative overflow-hidden flex flex-col justify-between">
               
               {/* TOP ROW: Contact & Representative on Left, Official Logo on Right */}
-              <div className="flex items-start justify-between gap-3">
+              <div className="flex items-stretch justify-between gap-3 sm:gap-4">
                 {/* Person & Contact Details */}
-                <div className="flex flex-col text-start">
+                <div className="flex flex-col text-start shrink-0">
                   <span className="text-xs sm:text-sm font-bold text-bht-red leading-tight">
                     Syed Mohamed Umais
                   </span>
@@ -66,14 +66,14 @@ export const Footer: React.FC = () => {
                 {/* Official Butterfly Logo on Top Right */}
                 <Link
                   href="/"
-                  className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 transition-transform hover:scale-105"
+                  className="relative flex-1 self-stretch min-w-[140px] sm:min-w-[170px] min-h-[140px] sm:min-h-[160px] transition-transform hover:scale-102 flex items-center justify-end"
                   title="Blanket House Trading LLC"
                 >
                   <Image
                     src="/logo/logo.png"
                     alt="Blanket House Trading LLC Logo"
                     fill
-                    className="object-contain"
+                    className="object-contain object-right rtl:object-left"
                   />
                 </Link>
               </div>
