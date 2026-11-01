@@ -63,9 +63,9 @@ export const ContactStoreLocation: React.FC = () => {
     <section
       id="store-location"
       aria-labelledby="locations-title"
-      className="bht-section bg-[#faf9f7] scroll-mt-24 border-b border-neutral-100"
+      className="bht-section w-full bg-[#faf9f7] py-12 sm:py-16 md:py-20 scroll-mt-24 border-b border-neutral-100 overflow-x-hidden"
     >
-      <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
+      <div className="max-w-[1280px] w-full mx-auto px-4 sm:px-8 lg:px-10 min-w-0">
         <div className="mb-10 sm:mb-12">
           <p className="bht-eyebrow uppercase text-neutral-500 mb-4">
             {ar ? "تواصل معنا" : "Find us"}
@@ -80,9 +80,9 @@ export const ContactStoreLocation: React.FC = () => {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start w-full min-w-0">
           {/* MOBILE VIEW SELECTOR (Custom, fully contained within screen) */}
-          <div className="lg:hidden w-full relative" ref={dropdownRef}>
+          <div className="lg:hidden w-full min-w-0 max-w-full relative" ref={dropdownRef}>
             <label
               id="mobile-region-label"
               className="block mb-2 text-xs font-semibold uppercase tracking-wider text-neutral-500"
@@ -150,7 +150,7 @@ export const ContactStoreLocation: React.FC = () => {
             )}
 
             {/* Quick 1-Tap Pills for Instant Mobile Region Switching */}
-            <div className="flex gap-2 overflow-x-auto pt-3 pb-1 scrollbar-none">
+            <div className="flex gap-2 overflow-x-auto pt-3 pb-1 scrollbar-none w-full min-w-0 max-w-full">
               {REGIONAL_CONTACTS.map((region) => (
                 <button
                   key={region.id}
@@ -210,7 +210,7 @@ export const ContactStoreLocation: React.FC = () => {
             role="tabpanel"
             aria-labelledby={`region-tab-${selected.id}`}
             tabIndex={0}
-            className="lg:col-span-7 lg:order-1 min-w-0"
+            className="w-full min-w-0 lg:col-span-7 lg:order-1"
           >
             <div key={selected.id} className="regional-contact-enter">
               <div className="relative aspect-[16/10] rounded-lg overflow-hidden bg-[#eeece6]">
@@ -323,7 +323,7 @@ export const ContactStoreLocation: React.FC = () => {
                   )}
                 </dl>
 
-                <div className="flex flex-wrap gap-6 mt-8 pt-6 border-t border-neutral-200">
+                <div className="flex flex-wrap gap-4 sm:gap-6 mt-8 pt-6 border-t border-neutral-200">
                   {selected.mapUrl && (
                     <a
                       href={selected.mapUrl}

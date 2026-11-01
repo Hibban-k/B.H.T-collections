@@ -9,11 +9,11 @@ import { ContactStoreLocation } from "./ContactStoreLocation";
 
 export const ContactPageView: React.FC = () => {
   return (
-    <div className="flex flex-col min-h-screen bg-white">
+    <div className="flex flex-col min-h-screen bg-white w-full overflow-x-hidden">
       {/* 1. Header & Navigation (Consistent across all pages) */}
       <Navbar />
 
-      <main className="flex-1">
+      <main className="flex-1 w-full overflow-x-hidden">
         {/* 2. Hero Section: Editorial Headline + Dubai Flagship Storefront & Skyline */}
         <ContactHero />
 
