@@ -17,7 +17,7 @@ export const Footer: React.FC = () => {
           {/* BRAND CARD: Compact business card proportion */}
           <div className="md:col-span-5 lg:col-span-5 flex flex-col items-start w-full">
             <div className="bg-white rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-sm border border-neutral-200/70 w-full max-w-[430px] relative overflow-hidden flex flex-col justify-between">
-
+              
               {/* TOP ROW: Contact & Representative on Left, Official Logo on Right */}
               <div className="flex items-start justify-between gap-3">
                 {/* Person & Contact Details */}
@@ -66,7 +66,7 @@ export const Footer: React.FC = () => {
                 {/* Official Butterfly Logo on Top Right */}
                 <Link
                   href="/"
-                  className="relative w-20 h-20 sm:w-24 sm:h-24 lg:w-34 lg:h-34 shrink-0 transition-transform hover:scale-105"
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 shrink-0 transition-transform hover:scale-105"
                   title="Blanket House Trading LLC"
                 >
                   <Image
@@ -101,57 +101,60 @@ export const Footer: React.FC = () => {
             </div>
           </div>
 
-          {/* MAIN CATEGORIES */}
-          <div className="md:col-span-4 lg:col-span-4 space-y-3.5 pt-2">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
-              {language === "ar" ? "التشكيلات الرئيسية" : "Main Categories"}
-            </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
-              <li>
-                <Link href="/collections/bedding" className="hover:text-white transition-colors">
-                  {language === "ar" ? "المفروشات الفاخرة واللحف" : "Luxury Bedding & Quilts"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/travel-bags" className="hover:text-white transition-colors">
-                  {language === "ar" ? "حقائب السفر ومستلزمات الرحلات" : "Travel Bags & Luggage"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/collections/footwear" className="hover:text-white transition-colors">
-                  {language === "ar" ? "أحذية الراحة اليومية" : "Comfort Everyday Footwear"}
-                </Link>
-              </li>
-            </ul>
-          </div>
+          {/* SIDE-BY-SIDE LINKS IN MOBILE VIEW (grid-cols-2), BALANCED ON DESKTOP */}
+          <div className="md:col-span-7 lg:col-span-7 grid grid-cols-2 gap-6 sm:gap-8 items-start pt-2">
+            {/* MAIN CATEGORIES */}
+            <div className="space-y-3.5">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
+                {language === "ar" ? "التشكيلات الرئيسية" : "Main Categories"}
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
+                <li>
+                  <Link href="/collections/bedding" className="hover:text-white transition-colors">
+                    {language === "ar" ? "المفروشات الفاخرة واللحف" : "Luxury Bedding & Quilts"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/collections/travel-bags" className="hover:text-white transition-colors">
+                    {language === "ar" ? "حقائب السفر ومستلزمات الرحلات" : "Travel Bags & Luggage"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/collections/footwear" className="hover:text-white transition-colors">
+                    {language === "ar" ? "أحذية الراحة اليومية" : "Comfort Everyday Footwear"}
+                  </Link>
+                </li>
+              </ul>
+            </div>
 
-          {/* QUICK LINKS */}
-          <div className="md:col-span-3 lg:col-span-3 space-y-3.5 pt-2">
-            <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
-              {language === "ar" ? "روابط سريعة" : "Quick Links"}
-            </h4>
-            <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
-              <li>
-                <Link href="/collections" className="hover:text-white transition-colors">
-                  {language === "ar" ? "كافة التشكيلات" : "All Collections"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/brands" className="hover:text-white transition-colors">
-                  {language === "ar" ? "العلامات التجارية" : "Our Brands"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-white transition-colors">
-                  {language === "ar" ? "من نحن" : "About Us"}
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-white transition-colors">
-                  {language === "ar" ? "تواصل معنا" : "Contact Us"}
-                </Link>
-              </li>
-            </ul>
+            {/* QUICK LINKS */}
+            <div className="space-y-3.5">
+              <h4 className="text-xs font-bold uppercase tracking-widest text-neutral-300">
+                {language === "ar" ? "روابط سريعة" : "Quick Links"}
+              </h4>
+              <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
+                <li>
+                  <Link href="/collections" className="hover:text-white transition-colors">
+                    {language === "ar" ? "كافة التشكيلات" : "All Collections"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/brands" className="hover:text-white transition-colors">
+                    {language === "ar" ? "العلامات التجارية" : "Our Brands"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/about" className="hover:text-white transition-colors">
+                    {language === "ar" ? "من نحن" : "About Us"}
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/contact" className="hover:text-white transition-colors">
+                    {language === "ar" ? "تواصل معنا" : "Contact Us"}
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
