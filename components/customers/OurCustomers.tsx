@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -43,6 +43,15 @@ const CUSTOMERS: CustomerItem[] = [
 
 export const OurCustomers: React.FC = () => {
   const { language } = useLanguage();
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-slide every 1 second in mobile view
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % CUSTOMERS.length);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   return (
     <section
@@ -77,10 +86,65 @@ export const OurCustomers: React.FC = () => {
           </div>
         </div>
 
-        {/* Minimal Plain Logos (No Card Container, Pure Logo Display) */}
+        {/* MOBILE SLIDER: At a time, 1 logo shows, sliding every second */}
+        <div className="block md:hidden w-full">
+          <div className="relative w-full overflow-hidden py-3" dir="ltr">
+            <div
+              className="flex transition-transform duration-400 ease-in-out"
+              style={{
+                transform: `translateX(-${currentSlide * 100}%)`,
+              }}
+            >
+              {CUSTOMERS.map((customer) => (
+                <div
+                  key={customer.id}
+                  className="w-full shrink-0 flex items-center justify-center px-4"
+                >
+                  <div
+                    className={`relative w-full flex items-center justify-center ${
+                      customer.id === "talal-group"
+                        ? "max-w-[150px] h-20"
+                        : "max-w-[210px] h-14"
+                    }`}
+                  >
+                    <Image
+                      src={customer.src}
+                      alt={customer.name}
+                      fill
+                      className={`object-contain object-center ${
+                        customer.imgClass || ""
+                      }`}
+                      sizes="80vw"
+                      priority={customer.id === CUSTOMERS[0].id}
+                    />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Slide Indicator Dots */}
+          <div className="flex items-center justify-center gap-1.5 pt-3">
+            {CUSTOMERS.map((customer, idx) => (
+              <button
+                key={customer.id}
+                type="button"
+                onClick={() => setCurrentSlide(idx)}
+                aria-label={`Slide ${idx + 1}: ${customer.name}`}
+                className={`transition-all duration-300 rounded-full h-1.5 ${
+                  currentSlide === idx
+                    ? "w-6 bg-bht-red"
+                    : "w-1.5 bg-neutral-300 hover:bg-neutral-400"
+                }`}
+              />
+            ))}
+          </div>
+        </div>
+
+        {/* DESKTOP & TABLET: Minimal Plain Logos Grid */}
         <div
           data-reveal-group="stagger"
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 sm:gap-12 lg:gap-16 items-center justify-items-center"
+          className="hidden md:grid md:grid-cols-4 gap-8 sm:gap-12 lg:gap-16 items-center justify-items-center"
         >
           {CUSTOMERS.map((customer) => (
             <div
@@ -99,7 +163,7 @@ export const OurCustomers: React.FC = () => {
                   className={`object-contain object-center opacity-85 group-hover:opacity-100 transition-all duration-300 ${
                     customer.imgClass || ""
                   }`}
-                  sizes="(max-width: 640px) 45vw, (max-width: 1024px) 25vw, 20vw"
+                  sizes="25vw"
                 />
               </div>
             </div>
