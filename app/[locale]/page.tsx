@@ -1,7 +1,8 @@
 import { Navbar } from "@/components/header/Navbar";
 import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
 import { HeroCarousel } from "@/components/hero/HeroCarousel";
-import { ShopByCategory, buildShowcaseCategories } from "@/components/category-showcase/ShopByCategory";
+import { ShopByCategory } from "@/components/category-showcase/ShopByCategory";
+import { buildShowcaseCategories } from "@/components/category-showcase/showcaseUtils";
 import { FeaturedProducts } from "@/components/featured-products/FeaturedProducts";
 import { WhyChooseUs } from "@/components/why-choose-us/WhyChooseUs";
 import { OurCustomers } from "@/components/customers/OurCustomers";
