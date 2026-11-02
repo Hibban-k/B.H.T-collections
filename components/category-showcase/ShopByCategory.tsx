@@ -118,13 +118,13 @@ const CategorySlidingCard: React.FC<{
                   : "opacity-0 scale-95 translate-y-2 pointer-events-none"
               }`}
             >
-              <div className="relative w-20 xs:w-28 sm:w-40 md:w-52 lg:w-60 h-10 xs:h-14 sm:h-18 md:h-24 lg:h-28 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] flex items-center justify-center">
+              <div className="relative w-24 xs:w-32 sm:w-48 md:w-60 lg:w-72 h-12 xs:h-16 sm:h-22 md:h-28 lg:h-34 transition-transform duration-300 group-hover:scale-108 drop-shadow-[0_4px_14px_rgba(0,0,0,0.45)] flex items-center justify-center">
                 <Image
                   src={logoUrl}
                   alt={`${brand.name} Logo`}
                   fill
                   className="object-contain"
-                  sizes="(max-width: 640px) 120px, (max-width: 1024px) 200px, 260px"
+                  sizes="(max-width: 640px) 150px, (max-width: 1024px) 240px, 300px"
                 />
               </div>
             </div>
