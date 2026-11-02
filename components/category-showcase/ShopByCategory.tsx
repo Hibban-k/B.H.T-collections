@@ -25,21 +25,8 @@ export interface CategoryWithSlidingBrands {
   brands: BrandSlide[];
 }
 
-// Crisp white logo fallbacks for brand logos over dark banner backgrounds
-const WHITE_BRAND_LOGOS: Record<string, string> = {
-  royalon: "/brandlogo/brand-7-white.png",
-  "damas-gold": "/brandlogo/brand-6-white.png",
-  hana: "/brandlogo/brand-5-white.png",
-  "infinity-paris": "/brandlogo/brand-4-white.png",
-  "travel-go": "/brandlogo/brand-3-white.png",
-  travelgo: "/brandlogo/brand-3-white.png",
-  "magic-walk": "/brandlogo/brand-1-white.png",
-  magicwalk: "/brandlogo/brand-1-white.png",
-  adda: "/brandlogo/brand-2-white.png",
-};
-
-// Initial default configuration matching database content
-const DEFAULT_CATEGORIES: CategoryWithSlidingBrands[] = [
+// Fallback categories used ONLY if database is empty/unreachable
+export const DEFAULT_CATEGORIES: CategoryWithSlidingBrands[] = [
   {
     id: "bedding",
     slug: "bedding",
@@ -116,6 +103,72 @@ const DEFAULT_CATEGORIES: CategoryWithSlidingBrands[] = [
     ],
   },
 ];
+
+// Helper to construct categories with brands directly from DB (used for SSR)
+export function buildShowcaseCategories(
+  dbCategories: any[],
+  dbBrands: any[]
+): CategoryWithSlidingBrands[] {
+  if (!dbCategories || dbCategories.length === 0) {
+    return DEFAULT_CATEGORIES;
+  }
+
+  const topCategories = dbCategories.filter((cat) => !cat.parentId && !cat.parentSlug);
+  const activeBrands = (dbBrands || []).filter((b) => b.isActive !== false);
+
+  const mapped = topCategories.map((cat) => {
+    const normCatSlug = (cat.slug || "").toLowerCase();
+    const catNameLower = (cat.name || "").toLowerCase();
+
+    const matchedBrands = activeBrands.filter((b) => {
+      const bSlug = (b.categorySlug || "").toLowerCase();
+      const bCat = (b.category || "").toLowerCase();
+      const bCatId = b.categoryId ? String(b.categoryId) : "";
+      const catId = cat._id ? String(cat._id) : "";
+
+      return (
+        (catId && bCatId === catId) ||
+        bSlug === normCatSlug ||
+        bCat === catNameLower ||
+        (normCatSlug === "travel-bags" && (bSlug === "travelling" || bCat === "travel bags" || bSlug === "travel-bags")) ||
+        (normCatSlug === "bedding" && (bSlug === "bedding" || bCat === "bedding" || bSlug === "blankets")) ||
+        (normCatSlug === "footwear" && (bSlug === "footwear" || bCat === "footwear"))
+      );
+    });
+
+    const fallbackMatch = DEFAULT_CATEGORIES.find(
+      (def) => def.slug === normCatSlug
+    );
+
+    const brandSlides: BrandSlide[] =
+      matchedBrands.length > 0
+        ? matchedBrands.map((b) => ({
+            name: b.name,
+            slug: b.slug || b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+            logo: b.logo || "",
+            banner: b.image || fallbackMatch?.brands[0]?.banner || "/collections/bht-collection-banner.png",
+          }))
+        : fallbackMatch?.brands || [];
+
+    const subtitleEn =
+      brandSlides.length > 0
+        ? brandSlides.map((b) => b.name).join(" • ")
+        : fallbackMatch?.subtitleEn || "Exclusive Collections";
+
+    return {
+      id: cat._id ? String(cat._id) : cat.slug,
+      slug: normCatSlug,
+      nameEn: cat.name.toUpperCase(),
+      nameAr: fallbackMatch?.nameAr || cat.name,
+      href: `/collections/${normCatSlug}`,
+      subtitleEn,
+      subtitleAr: fallbackMatch?.subtitleAr || subtitleEn,
+      brands: brandSlides,
+    };
+  });
+
+  return mapped.length > 0 ? mapped : DEFAULT_CATEGORIES;
+}
 
 // Single Category Card Component with Sliding DB Brands
 const CategorySlidingCard: React.FC<{
@@ -203,12 +256,13 @@ const CategorySlidingCard: React.FC<{
         </div>
       )}
 
-      {/* 4. CENTER: FLOATING BRAND LOGO SLIDING WITH ACTIVE BRAND */}
+      {/* 4. CENTER: FLOATING BRAND LOGO DIRECT FROM DATABASE (FULL COLOR, TRANSPARENT BG) */}
       <div className="absolute inset-x-0 top-3 sm:top-0 sm:inset-0 z-10 flex flex-col items-center justify-start sm:justify-center p-2 sm:p-4 md:p-6 text-center pointer-events-none">
         {brands.map((brand, idx) => {
           const isActive = idx === currentSlide;
-          const whiteLogo = WHITE_BRAND_LOGOS[brand.slug] || WHITE_BRAND_LOGOS[brand.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")];
-          const logoUrl = whiteLogo || brand.logo || "/brandlogo/brand-7-white.png";
+          const logoUrl = brand.logo;
+
+          if (!logoUrl) return null;
 
           return (
             <div
@@ -219,13 +273,13 @@ const CategorySlidingCard: React.FC<{
                   : "opacity-0 scale-95 translate-y-2 pointer-events-none"
               }`}
             >
-              <div className="relative w-18 xs:w-24 sm:w-36 md:w-48 lg:w-56 h-9 xs:h-12 sm:h-16 md:h-22 lg:h-26 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] flex items-center justify-center">
+              <div className="relative w-20 xs:w-28 sm:w-40 md:w-52 lg:w-60 h-10 xs:h-14 sm:h-18 md:h-24 lg:h-28 transition-transform duration-300 group-hover:scale-110 drop-shadow-[0_4px_16px_rgba(0,0,0,0.85)] flex items-center justify-center">
                 <Image
                   src={logoUrl}
                   alt={`${brand.name} Logo`}
                   fill
-                  className="object-contain filter brightness-105 contrast-115 drop-shadow-md"
-                  sizes="(max-width: 640px) 100px, (max-width: 1024px) 180px, 240px"
+                  className="object-contain"
+                  sizes="(max-width: 640px) 120px, (max-width: 1024px) 200px, 260px"
                 />
               </div>
             </div>
@@ -255,13 +309,21 @@ const CategorySlidingCard: React.FC<{
   );
 };
 
-export const ShopByCategory: React.FC = () => {
+export interface ShopByCategoryProps {
+  initialCategories?: CategoryWithSlidingBrands[];
+}
+
+export const ShopByCategory: React.FC<ShopByCategoryProps> = ({ initialCategories }) => {
   const { language, isRTL } = useLanguage();
-  const [categories, setCategories] = useState<CategoryWithSlidingBrands[]>(DEFAULT_CATEGORIES);
+  const [categories, setCategories] = useState<CategoryWithSlidingBrands[]>(
+    initialCategories && initialCategories.length > 0 ? initialCategories : DEFAULT_CATEGORIES
+  );
 
+  // If initialCategories was not provided (fallback), fetch client-side
   useEffect(() => {
-    let isMounted = true;
+    if (initialCategories && initialCategories.length > 0) return;
 
+    let isMounted = true;
     const loadDbBrandsAndCategories = async () => {
       try {
         const [categoriesRes, brandsRes] = await Promise.all([
@@ -277,55 +339,8 @@ export const ShopByCategory: React.FC = () => {
           const dbBrands: any[] = brandData.brands || [];
 
           if (dbCategories.length > 0 && dbBrands.length > 0 && isMounted) {
-            const mappedCategories: CategoryWithSlidingBrands[] = dbCategories
-              .filter((cat) => !cat.parentId) // Only top-level
-              .map((cat) => {
-                const normCatSlug = cat.slug?.toLowerCase();
-                const matchedBrands = dbBrands.filter((b) => {
-                  const bSlug = (b.categorySlug || "").toLowerCase();
-                  const bCat = (b.category || "").toLowerCase();
-                  return (
-                    bSlug === normCatSlug ||
-                    bCat === cat.name?.toLowerCase() ||
-                    (normCatSlug === "travel-bags" && (bSlug === "travelling" || bCat === "travel bags"))
-                  );
-                });
-
-                // Fallback to default category config if no brands matched
-                const fallbackMatch = DEFAULT_CATEGORIES.find(
-                  (def) => def.slug === normCatSlug
-                );
-
-                const brandSlides: BrandSlide[] =
-                  matchedBrands.length > 0
-                    ? matchedBrands.map((b) => ({
-                        name: b.name,
-                        slug: b.slug || b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
-                        logo: b.logo || fallbackMatch?.brands[0]?.logo || "",
-                        banner: b.image || fallbackMatch?.brands[0]?.banner || "",
-                      }))
-                    : fallbackMatch?.brands || [];
-
-                const subtitleEn =
-                  brandSlides.length > 0
-                    ? brandSlides.map((b) => b.name).join(" • ")
-                    : fallbackMatch?.subtitleEn || "Exclusive Collections";
-
-                return {
-                  id: cat._id || cat.slug,
-                  slug: normCatSlug,
-                  nameEn: cat.name.toUpperCase(),
-                  nameAr: fallbackMatch?.nameAr || cat.name,
-                  href: `/collections/${normCatSlug}`,
-                  subtitleEn,
-                  subtitleAr: fallbackMatch?.subtitleAr || subtitleEn,
-                  brands: brandSlides,
-                };
-              });
-
-            if (mappedCategories.length > 0) {
-              setCategories(mappedCategories);
-            }
+            const mapped = buildShowcaseCategories(dbCategories, dbBrands);
+            setCategories(mapped);
           }
         }
       } catch (err) {
@@ -338,7 +353,7 @@ export const ShopByCategory: React.FC = () => {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [initialCategories]);
 
   return (
     <section

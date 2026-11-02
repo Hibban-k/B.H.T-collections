@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { BrandService } from "@/lib/services/brand.service";
 import { withAuth } from "@/lib/api/helpers";
 
@@ -14,5 +15,11 @@ export const POST = withAuth("brands:write", async (req: Request) => {
   }
 
   const created = await BrandService.createBrand(body);
+
+  try {
+    revalidatePath("/");
+    revalidatePath("/[locale]", "page");
+  } catch {}
+
   return NextResponse.json({ success: true, brand: created }, { status: 201 });
 });

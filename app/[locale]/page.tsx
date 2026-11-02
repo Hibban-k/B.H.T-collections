@@ -1,7 +1,7 @@
 import { Navbar } from "@/components/header/Navbar";
 import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
 import { HeroCarousel } from "@/components/hero/HeroCarousel";
-import { ShopByCategory } from "@/components/category-showcase/ShopByCategory";
+import { ShopByCategory, buildShowcaseCategories } from "@/components/category-showcase/ShopByCategory";
 import { FeaturedProducts } from "@/components/featured-products/FeaturedProducts";
 import { WhyChooseUs } from "@/components/why-choose-us/WhyChooseUs";
 import { OurCustomers } from "@/components/customers/OurCustomers";
@@ -9,15 +9,23 @@ import { Testimonials } from "@/components/testimonials/Testimonials";
 import { RegionalPresence } from "@/components/regional-presence/RegionalPresence";
 import { Footer } from "@/components/footer/Footer";
 import { CategoryService } from "@/lib/services/category.service";
+import { BrandService } from "@/lib/services/brand.service";
 import { HERO_SLIDES, HeroSlide } from "@/data/heroData";
 
+// Cache for 60s on server, instantaneous 0ms responses, on-demand revalidation on CMS edit
+export const revalidate = 60;
+
 export default async function HomePage() {
-  // Fetch database categories on the server for 0ms load time SSR hero carousel
+  // Fetch database categories and brands on the server for 0ms load time SSR
   let categories: any[] = [];
+  let brands: any[] = [];
   try {
-    categories = await CategoryService.getCategories();
+    [categories, brands] = await Promise.all([
+      CategoryService.getCategories(),
+      BrandService.getBrands(),
+    ]);
   } catch (error) {
-    console.error("HomePage: Failed to load categories for hero carousel", error);
+    console.error("HomePage: Failed to load categories and brands for SSR", error);
   }
 
   // Pre-bake database category background images into the hero slides
@@ -46,6 +54,9 @@ export default async function HomePage() {
     return slide;
   });
 
+  // Pre-build category showcase directly from DB brands & banners with 0ms delay
+  const showcaseCategories = buildShowcaseCategories(categories, brands);
+
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* 1. Header & Navigation: Row 1, Mega Menu & Row 2 Secondary Nav */}
@@ -58,8 +69,8 @@ export default async function HomePage() {
         {/* 2. Announcement Ticker (Directly above hero, transparent/no background) */}
         <AnnouncementTicker />
 
-        {/* 4. Shop by Category Showcase (3 Pure White Containers with DB Sliding Brand Logos & Banners) */}
-        <ShopByCategory />
+        {/* 4. Shop by Category Showcase (Server-rendered from DB brands & banners with 0ms load time) */}
+        <ShopByCategory initialCategories={showcaseCategories} />
 
         {/* 5. Featured Products Section (Real DB Products with Category Tabs & Quick View) */}
         <FeaturedProducts />
