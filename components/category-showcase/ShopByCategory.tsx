@@ -9,12 +9,11 @@ import { useReducedMotion } from "@/components/common/useReducedMotion";
 import {
   type BrandSlide,
   type CategoryWithSlidingBrands,
-  DEFAULT_CATEGORIES,
   buildShowcaseCategories,
 } from "./showcaseUtils";
 
 export type { BrandSlide, CategoryWithSlidingBrands };
-export { DEFAULT_CATEGORIES, buildShowcaseCategories };
+export { buildShowcaseCategories };
 
 // Single Category Card Component with Sliding DB Brands
 const CategorySlidingCard: React.FC<{
@@ -162,7 +161,7 @@ export interface ShopByCategoryProps {
 export const ShopByCategory: React.FC<ShopByCategoryProps> = ({ initialCategories }) => {
   const { language, isRTL } = useLanguage();
   const [categories, setCategories] = useState<CategoryWithSlidingBrands[]>(
-    initialCategories && initialCategories.length > 0 ? initialCategories : DEFAULT_CATEGORIES
+    initialCategories || []
   );
 
   // If initialCategories was not provided (fallback), fetch client-side
@@ -200,6 +199,11 @@ export const ShopByCategory: React.FC<ShopByCategoryProps> = ({ initialCategorie
       isMounted = false;
     };
   }, [initialCategories]);
+
+  // Strict DB Only: If no categories exist in DB, show nothing
+  if (!categories || categories.length === 0) {
+    return null;
+  }
 
   return (
     <section

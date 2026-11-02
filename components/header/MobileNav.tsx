@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import {
@@ -12,8 +12,9 @@ import {
   Bed,
   Luggage,
   Footprints,
+  LayoutGrid,
 } from "lucide-react";
-import { MEGA_MENU_CATEGORIES, SECONDARY_NAV_ITEMS } from "@/data/navigationData";
+import { SECONDARY_NAV_ITEMS } from "@/data/navigationData";
 import { useLanguage } from "@/context/LanguageContext";
 import { LanguageSwitcher } from "./LanguageSwitcher";
 
@@ -22,11 +23,105 @@ interface MobileNavProps {
   onClose: () => void;
 }
 
+interface MobileCategoryItem {
+  id: string;
+  slug: string;
+  nameEn: string;
+  nameAr: string;
+  href: string;
+  circleClass: string;
+  icon: "bed" | "luggage" | "footprints" | "grid";
+  subcategories: {
+    id: string;
+    slug: string;
+    nameEn: string;
+    nameAr: string;
+    href: string;
+  }[];
+  viewAllTextEn: string;
+  viewAllTextAr: string;
+}
+
 export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
   const { language, isRTL } = useLanguage();
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [categories, setCategories] = useState<MobileCategoryItem[]>([]);
   const ArrowIcon = isRTL ? ChevronLeft : ChevronRight;
+
+  useEffect(() => {
+    let isMounted = true;
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/store/categories");
+        if (res.ok) {
+          const data = await res.json();
+          const allCats: any[] = data.categories || [];
+
+          const topCats = allCats.filter((c) => !c.parentId && !c.parentSlug);
+          const mapped: MobileCategoryItem[] = topCats.map((cat) => {
+            const catId = String(cat._id);
+            const normSlug = (cat.slug || "").toLowerCase();
+
+            const subs = allCats
+              .filter((c) => {
+                const pId = c.parentId ? String(c.parentId) : "";
+                const pSlug = (c.parentSlug || "").toLowerCase();
+                return (pId && pId === catId) || (pSlug && pSlug === normSlug);
+              })
+              .map((s) => ({
+                id: s._id || s.slug,
+                slug: s.slug,
+                nameEn: s.name,
+                nameAr: s.name,
+                href: `/collections/${s.slug}`,
+              }));
+
+            let icon: "bed" | "luggage" | "footprints" | "grid" = "grid";
+            let circleClass = "bg-neutral-800 text-white";
+
+            if (normSlug.includes("bed") || normSlug.includes("blanket")) {
+              icon = "bed";
+              circleClass = "bg-bht-red text-white";
+            } else if (normSlug.includes("travel") || normSlug.includes("bag") || normSlug.includes("trolly")) {
+              icon = "luggage";
+              circleClass = "bg-bht-blue text-white";
+            } else if (normSlug.includes("foot") || normSlug.includes("shoe")) {
+              icon = "footprints";
+              circleClass = "bg-bht-green text-white";
+            }
+
+            return {
+              id: catId,
+              slug: normSlug,
+              nameEn: cat.name,
+              nameAr: cat.name,
+              href: `/collections/${normSlug}`,
+              circleClass,
+              icon,
+              subcategories: subs,
+              viewAllTextEn: `View All ${cat.name}`,
+              viewAllTextAr: `عرض كل ${cat.name}`,
+            };
+          });
+
+          if (isMounted) {
+            setCategories(mapped);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load mobile nav categories:", e);
+      }
+    };
+
+    if (isOpen) {
+      loadCategories();
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, [isOpen]);
 
   if (!isOpen) return null;
 
@@ -39,6 +134,19 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
     if (searchQuery.trim()) {
       onClose();
       window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
+    }
+  };
+
+  const renderIcon = (type: "bed" | "luggage" | "footprints" | "grid") => {
+    switch (type) {
+      case "bed":
+        return <Bed className="w-4 h-4" />;
+      case "luggage":
+        return <Luggage className="w-4 h-4" />;
+      case "footprints":
+        return <Footprints className="w-4 h-4" />;
+      default:
+        return <LayoutGrid className="w-4 h-4" />;
     }
   };
 
@@ -97,88 +205,85 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
           </form>
         </div>
 
-        {/* Product Categories (Accordions) */}
-        <div className="p-4 space-y-2 border-b border-[#F0F0F0]">
-          <span className="text-[11px] font-bold text-[#888888] uppercase tracking-wider block mb-2">
-            {language === "ar" ? "أقسام المنتجات" : "Product Categories"}
-          </span>
+        {/* Product Categories (Accordions from Real DB) */}
+        {categories.length > 0 && (
+          <div className="p-4 space-y-2 border-b border-[#F0F0F0]">
+            <span className="text-[11px] font-bold text-[#888888] uppercase tracking-wider block mb-2">
+              {language === "ar" ? "أقسام المنتجات" : "Product Categories"}
+            </span>
 
-          {MEGA_MENU_CATEGORIES.map((category) => {
-            const isExpanded = expandedCategory === category.id;
-            const isBedding = category.id === "bedding";
-            const isTravelling = category.id === "travelling";
-            const isFootwear = category.id === "footwear";
+            {categories.map((category) => {
+              const isExpanded = expandedCategory === category.id;
 
-            const circleClass = isBedding
-              ? "bg-bht-red text-white"
-              : isTravelling
-              ? "bg-bht-blue text-white"
-              : "bg-bht-green text-white";
-
-            return (
-              <div
-                key={category.id}
-                className="border border-[#EFEFEF] rounded-xl overflow-hidden"
-              >
-                <button
-                  type="button"
-                  onClick={() => toggleCategory(category.id)}
-                  className="w-full flex items-center justify-between p-3 bg-white hover:bg-bht-offwhite transition-colors"
+              return (
+                <div
+                  key={category.id}
+                  className="border border-[#EFEFEF] rounded-xl overflow-hidden"
                 >
-                  <div className="flex items-center gap-2.5">
-                    <div
-                      className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs ${circleClass}`}
-                    >
-                      {isBedding && <Bed className="w-4 h-4" />}
-                      {isTravelling && <Luggage className="w-4 h-4" />}
-                      {isFootwear && <Footprints className="w-4 h-4" />}
+                  <button
+                    type="button"
+                    onClick={() => toggleCategory(category.id)}
+                    className="w-full flex items-center justify-between p-3 bg-white hover:bg-bht-offwhite transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div
+                        className={`w-7 h-7 rounded-full flex items-center justify-center shrink-0 text-xs ${category.circleClass}`}
+                      >
+                        {renderIcon(category.icon)}
+                      </div>
+                      <span className="text-sm font-bold text-bht-charcoal capitalize">
+                        {language === "ar" ? category.nameAr : category.nameEn}
+                      </span>
                     </div>
-                    <span className="text-sm font-bold text-bht-charcoal">
-                      {language === "ar" ? category.nameAr : category.nameEn}
-                    </span>
-                  </div>
-                  <ChevronDown
-                    className={`w-4 h-4 text-[#888888] transition-transform duration-200 ${
-                      isExpanded ? "rotate-180" : ""
-                    }`}
-                  />
-                </button>
+                    <ChevronDown
+                      className={`w-4 h-4 text-[#888888] transition-transform duration-200 ${
+                        isExpanded ? "rotate-180" : ""
+                      }`}
+                    />
+                  </button>
 
-                {isExpanded && (
-                  <div className="bg-[#FAFAFA] px-4 py-3 border-t border-[#EFEFEF] space-y-2">
-                    {category.subcategories.map((sub) => (
-                      <Link
-                        key={sub.id}
-                        href={sub.href}
-                        onClick={onClose}
-                        className="flex items-center justify-between py-1 text-xs text-[#555555] hover:text-bht-charcoal font-medium"
-                      >
-                        <span>
-                          {language === "ar" ? sub.nameAr : sub.nameEn}
-                        </span>
-                        <ArrowIcon className="w-3 h-3 text-[#AAAAAA]" />
-                      </Link>
-                    ))}
-                    <div className="pt-2 border-t border-[#EEEEEE]">
-                      <Link
-                        href={category.href}
-                        onClick={onClose}
-                        className="flex items-center gap-1 text-xs font-bold text-bht-red"
-                      >
-                        <span>
-                          {language === "ar"
-                            ? category.viewAllTextAr
-                            : category.viewAllTextEn}
-                        </span>
-                        <ArrowIcon className="w-3.5 h-3.5" />
-                      </Link>
+                  {isExpanded && (
+                    <div className="bg-[#FAFAFA] px-4 py-3 border-t border-[#EFEFEF] space-y-2">
+                      {category.subcategories.length > 0 ? (
+                        category.subcategories.map((sub) => (
+                          <Link
+                            key={sub.id}
+                            href={sub.href}
+                            onClick={onClose}
+                            className="flex items-center justify-between py-1 text-xs text-[#555555] hover:text-bht-charcoal font-medium capitalize"
+                          >
+                            <span>
+                              {language === "ar" ? sub.nameAr : sub.nameEn}
+                            </span>
+                            <ArrowIcon className="w-3 h-3 text-[#AAAAAA]" />
+                          </Link>
+                        ))
+                      ) : (
+                        <p className="text-xs text-neutral-400 italic py-1">
+                          {language === "ar" ? "لا توجد أقسام فرعية" : "No subcategories"}
+                        </p>
+                      )}
+                      <div className="pt-2 border-t border-[#EEEEEE]">
+                        <Link
+                          href={category.href}
+                          onClick={onClose}
+                          className="flex items-center gap-1 text-xs font-bold text-bht-red capitalize"
+                        >
+                          <span>
+                            {language === "ar"
+                              ? category.viewAllTextAr
+                              : category.viewAllTextEn}
+                          </span>
+                          <ArrowIcon className="w-3.5 h-3.5" />
+                        </Link>
+                      </div>
                     </div>
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
 
         {/* Secondary Navigation Links */}
         <div className="p-4 space-y-1 border-b border-[#F0F0F0]">

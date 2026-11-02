@@ -1,30 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ChevronRight, ChevronLeft, Bed, Luggage, Footprints } from "lucide-react";
+import {
+  Bed,
+  Luggage,
+  Footprints,
+  LayoutGrid,
+  ChevronRight,
+  ChevronLeft,
+} from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 interface CollectionDropdownProps {
   isOpen: boolean;
   onClose: () => void;
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onMouseEnter: () => void;
+  onMouseLeave: () => void;
 }
 
 interface DropdownCategory {
   id: string;
+  slug: string;
   nameEn: string;
   nameAr: string;
   href: string;
   iconBg: string;
   linkColor: string;
-  icon: "bed" | "luggage" | "footprints";
+  icon: "bed" | "luggage" | "footprints" | "grid";
   lifestyleImage: string;
   imageAlt: string;
   subcategories: {
     id: string;
+    slug: string;
     nameEn: string;
     nameAr: string;
     href: string;
@@ -32,70 +41,6 @@ interface DropdownCategory {
   viewAllTextEn: string;
   viewAllTextAr: string;
 }
-
-const DROPDOWN_CATEGORIES: DropdownCategory[] = [
-  {
-    id: "bedding",
-    nameEn: "Bedding",
-    nameAr: "المفروشات",
-    href: "/collections/bedding",
-    iconBg: "bg-[#E52B25]",
-    linkColor: "text-[#E52B25]",
-    icon: "bed",
-    lifestyleImage: "/navigation/nav-bedding.jpg",
-    imageAlt: "Luxury Bedding Collection",
-    subcategories: [
-      { id: "bed-sheets", nameEn: "Bed Sheets", nameAr: "ملاءات السرير", href: "/collections/bed-sheets" },
-      { id: "duvet-covers", nameEn: "Duvet Covers", nameAr: "أغطية اللحاف", href: "/collections/duvet-covers" },
-      { id: "pillows", nameEn: "Pillows", nameAr: "الوسائد", href: "/collections/pillows" },
-      { id: "comforters", nameEn: "Comforters", nameAr: "الألحفة الفاخرة", href: "/collections/comforters" },
-      { id: "blankets", nameEn: "Blankets", nameAr: "البطانيات", href: "/collections/blankets" },
-      { id: "towels", nameEn: "Towels", nameAr: "المناشف", href: "/collections/towels" },
-    ],
-    viewAllTextEn: "View All Bedding",
-    viewAllTextAr: "عرض كل المفروشات",
-  },
-  {
-    id: "travel-bags",
-    nameEn: "Travel Bags",
-    nameAr: "حقائب السفر",
-    href: "/collections/travel-bags",
-    iconBg: "bg-[#258CCB]",
-    linkColor: "text-[#258CCB]",
-    icon: "luggage",
-    lifestyleImage: "/navigation/nav-travel.jpg",
-    imageAlt: "Travel Bags & Luggage Collection",
-    subcategories: [
-      { id: "trolleys", nameEn: "Trolleys & Suitcases", nameAr: "حقائب السفر والترولي", href: "/collections/trolleys" },
-      { id: "travel-bags", nameEn: "Travel Bags", nameAr: "حقائب الرحلات", href: "/collections/travel-bags" },
-      { id: "backpacks", nameEn: "Backpacks", nameAr: "حقائب الظهر", href: "/collections/backpacks" },
-      { id: "accessories", nameEn: "Travel Accessories", nameAr: "إكسسوارات السفر", href: "/collections/travel-accessories" },
-      { id: "luggage-sets", nameEn: "Luggage Sets", nameAr: "أطقم الحقائب الكاملة", href: "/collections/luggage-sets" },
-    ],
-    viewAllTextEn: "View All Travel Bags",
-    viewAllTextAr: "عرض كل حقائب السفر",
-  },
-  {
-    id: "footwear",
-    nameEn: "Footwear",
-    nameAr: "الأحذية",
-    href: "/collections/footwear",
-    iconBg: "bg-[#26964B]",
-    linkColor: "text-[#26964B]",
-    icon: "footprints",
-    lifestyleImage: "/navigation/nav-footwear.jpg",
-    imageAlt: "Footwear Collection",
-    subcategories: [
-      { id: "mens", nameEn: "Men's Footwear", nameAr: "أحذية رجالية", href: "/collections/mens-footwear" },
-      { id: "womens", nameEn: "Women's Footwear", nameAr: "أحذية نسائية", href: "/collections/womens-footwear" },
-      { id: "kids", nameEn: "Kids' Footwear", nameAr: "أحذية أطفال", href: "/collections/kids-footwear" },
-      { id: "sports", nameEn: "Sports Shoes", nameAr: "أحذية رياضية", href: "/collections/sports-shoes" },
-      { id: "casual", nameEn: "Casual Shoes", nameAr: "أحذية كاجوال", href: "/collections/casual-shoes" },
-    ],
-    viewAllTextEn: "View All Footwear",
-    viewAllTextAr: "عرض كل الأحذية",
-  },
-];
 
 export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
   isOpen,
@@ -105,8 +50,87 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
 }) => {
   const { language, isRTL } = useLanguage();
   const ArrowIcon = isRTL ? ChevronLeft : ChevronRight;
+  const [categories, setCategories] = useState<DropdownCategory[]>([]);
 
-  const renderIcon = (type: "bed" | "luggage" | "footprints") => {
+  useEffect(() => {
+    let isMounted = true;
+    const loadCategories = async () => {
+      try {
+        const res = await fetch("/api/store/categories");
+        if (res.ok) {
+          const data = await res.json();
+          const allCats: any[] = data.categories || [];
+
+          const topCats = allCats.filter((c) => !c.parentId && !c.parentSlug);
+          const mapped: DropdownCategory[] = topCats.map((cat) => {
+            const catId = String(cat._id);
+            const normSlug = (cat.slug || "").toLowerCase();
+
+            const subs = allCats
+              .filter((c) => {
+                const pId = c.parentId ? String(c.parentId) : "";
+                const pSlug = (c.parentSlug || "").toLowerCase();
+                return (pId && pId === catId) || (pSlug && pSlug === normSlug);
+              })
+              .map((s) => ({
+                id: s._id || s.slug,
+                slug: s.slug,
+                nameEn: s.name,
+                nameAr: s.name,
+                href: `/collections/${s.slug}`,
+              }));
+
+            let icon: "bed" | "luggage" | "footprints" | "grid" = "grid";
+            let iconBg = "bg-neutral-800";
+            let linkColor = "text-neutral-800";
+
+            if (normSlug.includes("bed") || normSlug.includes("blanket")) {
+              icon = "bed";
+              iconBg = "bg-[#E52B25]";
+              linkColor = "text-[#E52B25]";
+            } else if (normSlug.includes("travel") || normSlug.includes("bag") || normSlug.includes("trolly")) {
+              icon = "luggage";
+              iconBg = "bg-[#258CCB]";
+              linkColor = "text-[#258CCB]";
+            } else if (normSlug.includes("foot") || normSlug.includes("shoe")) {
+              icon = "footprints";
+              iconBg = "bg-[#26964B]";
+              linkColor = "text-[#26964B]";
+            }
+
+            return {
+              id: catId,
+              slug: normSlug,
+              nameEn: cat.name,
+              nameAr: cat.name,
+              href: `/collections/${normSlug}`,
+              iconBg,
+              linkColor,
+              icon,
+              lifestyleImage: cat.image || "/collections/bht-collection-banner.png",
+              imageAlt: `${cat.name} Collection`,
+              subcategories: subs,
+              viewAllTextEn: `View All ${cat.name}`,
+              viewAllTextAr: `عرض كل ${cat.name}`,
+            };
+          });
+
+          if (isMounted) {
+            setCategories(mapped);
+          }
+        }
+      } catch (e) {
+        console.error("Failed to load dropdown categories:", e);
+      }
+    };
+
+    loadCategories();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const renderIcon = (type: "bed" | "luggage" | "footprints" | "grid") => {
     switch (type) {
       case "bed":
         return <Bed className="w-5 h-5 stroke-[2.2]" />;
@@ -114,8 +138,14 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
         return <Luggage className="w-5 h-5 stroke-[2.2]" />;
       case "footprints":
         return <Footprints className="w-5 h-5 stroke-[2.2]" />;
+      default:
+        return <LayoutGrid className="w-5 h-5 stroke-[2.2]" />;
     }
   };
+
+  if (categories.length === 0) {
+    return null;
+  }
 
   return (
     <div
@@ -131,8 +161,8 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="w-[1240px] max-w-[96vw] bg-white rounded-3xl border border-neutral-200/90 shadow-[0_20px_50px_rgba(0,0,0,0.12)] p-6 sm:p-7 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x rtl:md:divide-x-reverse divide-neutral-200">
-          {DROPDOWN_CATEGORIES.map((category) => (
+        <div className={`grid grid-cols-1 md:grid-cols-${Math.min(categories.length, 3)} divide-y md:divide-y-0 md:divide-x rtl:md:divide-x-reverse divide-neutral-200`}>
+          {categories.map((category) => (
             <div
               key={category.id}
               className="px-4 lg:px-7 py-3 md:py-1 flex flex-col justify-between"
@@ -148,7 +178,7 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
                   <Link
                     href={category.href}
                     onClick={onClose}
-                    className="text-xl font-bold text-neutral-900 hover:text-neutral-700 transition-colors tracking-tight"
+                    className="text-xl font-bold text-neutral-900 hover:text-neutral-700 transition-colors tracking-tight capitalize"
                   >
                     {language === "ar" ? category.nameAr : category.nameEn}
                   </Link>
@@ -158,20 +188,26 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-center min-h-[190px]">
                   {/* Subcategories Link List */}
                   <ul className="space-y-2">
-                    {category.subcategories.map((sub) => (
-                      <li key={sub.id}>
-                        <Link
-                          href={sub.href}
-                          onClick={onClose}
-                          className="group/link flex items-center justify-between text-[13.5px] font-medium text-neutral-600 hover:text-neutral-950 transition-colors py-0.5"
-                        >
-                          <span>
-                            {language === "ar" ? sub.nameAr : sub.nameEn}
-                          </span>
-                          <ArrowIcon className="w-3.5 h-3.5 text-neutral-400 group-hover/link:text-neutral-900 group-hover/link:translate-x-0.5 rtl:group-hover/link:-translate-x-0.5 transition-all" />
-                        </Link>
+                    {category.subcategories.length > 0 ? (
+                      category.subcategories.map((sub) => (
+                        <li key={sub.id}>
+                          <Link
+                            href={sub.href}
+                            onClick={onClose}
+                            className="group/link flex items-center justify-between text-[13.5px] font-medium text-neutral-600 hover:text-neutral-950 transition-colors py-0.5 capitalize"
+                          >
+                            <span>
+                              {language === "ar" ? sub.nameAr : sub.nameEn}
+                            </span>
+                            <ArrowIcon className="w-3.5 h-3.5 text-neutral-400 group-hover/link:text-neutral-900 group-hover/link:translate-x-0.5 rtl:group-hover/link:-translate-x-0.5 transition-all" />
+                          </Link>
+                        </li>
+                      ))
+                    ) : (
+                      <li className="text-xs text-neutral-400 italic">
+                        {language === "ar" ? "لا توجد أقسام فرعية" : "No subcategories"}
                       </li>
-                    ))}
+                    )}
                   </ul>
 
                   {/* Lifestyle Image Card */}
@@ -197,7 +233,7 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
                 <Link
                   href={category.href}
                   onClick={onClose}
-                  className={`inline-flex items-center gap-1.5 text-sm font-bold ${category.linkColor} hover:opacity-85 transition-opacity group/viewall`}
+                  className={`inline-flex items-center gap-1.5 text-sm font-bold ${category.linkColor} hover:opacity-85 transition-opacity group/viewall capitalize`}
                 >
                   <span>
                     {language === "ar"

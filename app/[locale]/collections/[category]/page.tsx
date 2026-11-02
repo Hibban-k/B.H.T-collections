@@ -1,7 +1,11 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CollectionPageView } from "@/components/collection/CollectionPageView";
-import { COLLECTION_CATEGORIES_META } from "@/data/productsData";
+import { CategoryService } from "@/lib/services/category.service";
+import { ProductService } from "@/lib/services/product.service";
+import { BrandService } from "@/lib/services/brand.service";
+
+export const revalidate = 60; // 60s ISR cache
 
 interface PageProps {
   params: Promise<{
@@ -12,98 +16,75 @@ interface PageProps {
   }>;
 }
 
-// Subcategory to parent category map for universal route resolution
-const SLUG_TO_CATEGORY_MAP: Record<
-  string,
-  { category: "bedding" | "travel-bags" | "footwear"; subcategory: string }
-> = {
-  // Main Categories
-  bedding: { category: "bedding", subcategory: "all" },
-  "travel-bags": { category: "travel-bags", subcategory: "all" },
-  travelling: { category: "travel-bags", subcategory: "all" },
-  footwear: { category: "footwear", subcategory: "all" },
-
-  // Bedding subcategories
-  blankets: { category: "bedding", subcategory: "blankets" },
-  "bed-sheets": { category: "bedding", subcategory: "bedsheets" },
-  bedsheets: { category: "bedding", subcategory: "bedsheets" },
-  comforters: { category: "bedding", subcategory: "comforters" },
-  "duvet-covers": { category: "bedding", subcategory: "duvet-covers" },
-  pillows: { category: "bedding", subcategory: "pillows" },
-  towels: { category: "bedding", subcategory: "all" },
-
-  // Travel bags subcategories
-  trolleys: { category: "travel-bags", subcategory: "trolleys" },
-  "travel-bags-sub": { category: "travel-bags", subcategory: "travel-bags" },
-  backpacks: { category: "travel-bags", subcategory: "backpacks" },
-  "luggage-sets": { category: "travel-bags", subcategory: "luggage-sets" },
-  accessories: { category: "travel-bags", subcategory: "accessories" },
-  "travel-accessories": { category: "travel-bags", subcategory: "accessories" },
-
-  // Footwear subcategories
-  mens: { category: "footwear", subcategory: "mens" },
-  "mens-footwear": { category: "footwear", subcategory: "mens" },
-  womens: { category: "footwear", subcategory: "womens" },
-  "womens-footwear": { category: "footwear", subcategory: "womens" },
-  kids: { category: "footwear", subcategory: "kids" },
-  "kids-footwear": { category: "footwear", subcategory: "kids" },
-  sports: { category: "footwear", subcategory: "sports" },
-  "sports-shoes": { category: "footwear", subcategory: "sports" },
-  casual: { category: "footwear", subcategory: "casual" },
-  "casual-shoes": { category: "footwear", subcategory: "casual" },
-};
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params;
   const slug = category.toLowerCase();
-  const mapping = SLUG_TO_CATEGORY_MAP[slug];
+  const dbCat = await CategoryService.getCategoryBySlug(slug).catch(() => null);
 
-  if (!mapping) {
-    return {
-      title: "Collections | BHT Collections",
-    };
-  }
+  const title = dbCat
+    ? `${dbCat.name.toUpperCase()} Collection | BHT Collections — Blanket House Trading LLC`
+    : `${slug.toUpperCase()} Collection | BHT Collections — Blanket House Trading LLC`;
 
-  const meta = COLLECTION_CATEGORIES_META[mapping.category];
   return {
-    title: `${meta.nameEn} Collection | BHT Collections — Blanket House Trading LLC`,
-    description: meta.descriptionEn,
+    title,
+    description: dbCat?.description || `Explore our certified ${slug} collection in UAE and GCC.`,
   };
 }
 
-export function generateStaticParams() {
-  return [
-    { category: "bedding" },
-    { category: "travel-bags" },
-    { category: "travelling" },
-    { category: "footwear" },
-    { category: "blankets" },
-    { category: "bed-sheets" },
-    { category: "comforters" },
-    { category: "trolleys" },
-    { category: "backpacks" },
-    { category: "mens-footwear" },
-    { category: "sports-shoes" },
-    { category: "casual-shoes" },
-  ];
+export async function generateStaticParams() {
+  try {
+    const categories = await CategoryService.getCategories();
+    return categories
+      .filter((c) => c.status !== "disabled")
+      .map((c) => ({ category: c.slug }));
+  } catch {
+    return [
+      { category: "bedding" },
+      { category: "travel-bags" },
+      { category: "footwear" },
+    ];
+  }
 }
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { category } = await params;
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
   const slug = category.toLowerCase();
-  const mapping = SLUG_TO_CATEGORY_MAP[slug];
 
-  if (!mapping) {
-    notFound();
+  // Fetch DB data
+  const [categories, products, brands] = await Promise.all([
+    CategoryService.getCategories().catch(() => []),
+    ProductService.getProducts({ status: "published" }).catch(() => []),
+    BrandService.getBrands().catch(() => []),
+  ]);
+
+  // Determine if slug is a top-level category or a subcategory
+  const matchedCat = categories.find((c) => c.slug.toLowerCase() === slug);
+  let mainCategorySlug = slug;
+  let activeSub = resolvedSearchParams?.sub || "all";
+
+  if (matchedCat) {
+    if (matchedCat.parentId || matchedCat.parentSlug) {
+      // It's a subcategory!
+      const parent = categories.find(
+        (c) =>
+          (matchedCat.parentId && String(c._id) === String(matchedCat.parentId)) ||
+          (matchedCat.parentSlug && c.slug.toLowerCase() === matchedCat.parentSlug.toLowerCase())
+      );
+      if (parent) {
+        mainCategorySlug = parent.slug;
+        activeSub = matchedCat.slug;
+      }
+    }
   }
-
-  const activeSub = resolvedSearchParams?.sub || mapping.subcategory || "all";
 
   return (
     <CollectionPageView
-      initialCategory={mapping.category}
+      initialCategory={mainCategorySlug}
       initialSubcategory={activeSub}
+      dbCategories={JSON.parse(JSON.stringify(categories))}
+      dbProducts={JSON.parse(JSON.stringify(products))}
+      dbBrands={JSON.parse(JSON.stringify(brands))}
     />
   );
 }
