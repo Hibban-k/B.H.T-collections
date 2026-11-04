@@ -449,6 +449,19 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
     };
   }, [activeCategoryObj, brands, subcategoryPillItems]);
 
+  // Active category or subcategory description from DB
+  const activeDescription = useMemo(() => {
+    if (activeSubcategory && activeSubcategory !== "all") {
+      const matchedSub = activeSubcategories.find(
+        (s) => s.slug.toLowerCase() === activeSubcategory.toLowerCase()
+      );
+      if (matchedSub && matchedSub.description && matchedSub.description.trim()) {
+        return matchedSub.description;
+      }
+    }
+    return activeCategoryObj?.description || activeCategoryObj?.longDescription || "";
+  }, [activeSubcategory, activeSubcategories, activeCategoryObj]);
+
   const categoryTabs: DynamicCategoryTab[] = useMemo(() => {
     return topCategories.map((c) => ({
       id: c._id,
@@ -487,11 +500,8 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         />
       )}
 
-      {/* 6. Editorial Collection Introduction */}
-      <CollectionIntro
-        categoryMeta={categoryMeta}
-        productCount={uiCategoryProducts.length}
-      />
+      {/* 6. Dynamic Category Description from DB */}
+      <CollectionIntro description={activeDescription} />
 
       {/* 7. Product Toolbar */}
       <ProductToolbar
