@@ -15,8 +15,8 @@ export const ContactHero: React.FC = () => {
         title={language === "ar" ? "تواصل معنا" : "Contact us"}
         description={
           language === "ar"
-            ? "تواصل مع شركة بيت البطانيات للتجارة ذ.م.م في دبي. تفضل بزيارة صالة عرضنا في ديرة، أو ناقش طلبات التوزيع والجملة، أو تحدث مباشرة مع فريق خدمة العملاء."
-            : "Connect with Blanket House Trading LLC in Dubai. Visit our flagship showroom in Deira, discuss corporate & wholesale partnerships, or speak directly with our concierge team."
+            ? "تواصل مع شركة بيت البطانيات للتجارة ذ.م.م في دبي ومكاتبنا الإقليمية عبر دول الخليج. تفضل بزيارة صالات العرض، أو ناقش طلبات التوزيع والجملة، أو تحدث مباشرة مع فريق خدمة العملاء."
+            : "Connect with Blanket House Trading LLC in Dubai and our regional offices across the GCC. Visit our showrooms, discuss corporate & wholesale partnerships, or speak directly with our team."
         }
       />
 
@@ -32,7 +32,7 @@ export const ContactHero: React.FC = () => {
               {language === "ar" ? "الهاتف والواتساب" : "Call & WhatsApp"}
             </h4>
             <p className="text-[11px] text-neutral-500 leading-snug dir-ltr">
-              +971 4 226 8838
+              +971 4 2266 095 / +971 55 887 9237
             </p>
           </div>
 
@@ -42,10 +42,10 @@ export const ContactHero: React.FC = () => {
               <MapPin className="w-5 h-5 stroke-[1.8] text-bht-red" />
             </div>
             <h4 className="text-xs font-bold text-neutral-900 tracking-tight leading-tight">
-              {language === "ar" ? "معرض دبي الرئيسي" : "Dubai Flagship"}
+              {language === "ar" ? "المقر الرئيسي في دبي" : "Dubai Head Office"}
             </h4>
             <p className="text-[11px] text-neutral-500 leading-snug">
-              {language === "ar" ? "منطقة ديرة، دبي، الإمارات" : "Al Ras, Deira, Dubai, UAE"}
+              {language === "ar" ? "ميدان بني ياس، ديرة، دبي، الإمارات" : "Baniyas Square, Deira, Dubai, UAE"}
             </p>
           </div>
 
@@ -58,7 +58,7 @@ export const ContactHero: React.FC = () => {
               {language === "ar" ? "ساعات العمل" : "Opening Hours"}
             </h4>
             <p className="text-[11px] text-neutral-500 leading-snug">
-              {language === "ar" ? "السبت – الخميس: 9ص – 9م" : "Sat – Thu: 9:00 AM – 9:00 PM"}
+              {language === "ar" ? "السبت – الخميس: 9:00 ص – 1:30 م و 4:30 م – 9:00 م" : "Sat – Thu: 9:00 AM – 1:30 PM & 4:30 PM – 9:00 PM"}
             </p>
           </div>
 
@@ -71,7 +71,7 @@ export const ContactHero: React.FC = () => {
               {language === "ar" ? "البريد الإلكتروني" : "Direct Email"}
             </h4>
             <p className="text-[11px] text-neutral-500 leading-snug">
-              info@blankethouse.ae
+              bhtrdg@eim.ae
             </p>
           </div>
         </div>

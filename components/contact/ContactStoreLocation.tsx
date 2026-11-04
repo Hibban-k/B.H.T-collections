@@ -12,6 +12,8 @@ import {
   MessageCircle,
   ChevronDown,
   Check,
+  User,
+  Building2,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { CircularFlag } from "@/components/regional-presence/CircularFlag";
@@ -31,7 +33,7 @@ export const ContactStoreLocation: React.FC = () => {
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
   const address = ar ? selected.addressAr || selected.addressEn : selected.addressEn;
   const hours = ar ? selected.hoursAr || selected.hoursEn : selected.hoursEn;
-  const hasContact = selected.phone || selected.email || address;
+  const hasContact = selected.phone || selected.email || address || selected.mobile;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -99,24 +101,24 @@ export const ContactStoreLocation: React.FC = () => {
               className="w-full flex items-center justify-between gap-3 rounded-xl border border-neutral-300 bg-white px-4 py-3 text-start shadow-2xs hover:border-neutral-400 focus:outline-hidden focus:ring-2 focus:ring-bht-red"
             >
               <div className="flex items-center gap-3 min-w-0">
-                <CircularFlag country={selected.flag} size={24} />
-                <span className="text-sm sm:text-base font-semibold text-neutral-900 truncate">
+                <CircularFlag country={selected.flag} size={22} />
+                <span className="font-semibold text-neutral-900 text-sm truncate">
                   {name}
                 </span>
               </div>
               <ChevronDown
-                className={`w-4 h-4 text-neutral-400 transition-transform duration-200 shrink-0 ${
-                  isDropdownOpen ? "rotate-180 text-bht-red" : ""
+                className={`w-4 h-4 text-neutral-400 shrink-0 transition-transform duration-200 ${
+                  isDropdownOpen ? "rotate-180" : ""
                 }`}
               />
             </button>
 
-            {/* Custom Dropdown Menu (Guaranteed to stay within mobile container boundaries) */}
+            {/* Dropdown Menu Modal/Popover */}
             {isDropdownOpen && (
               <div
                 role="listbox"
                 aria-labelledby="mobile-region-label"
-                className="absolute top-full inset-x-0 w-full mt-1.5 z-40 bg-white rounded-xl border border-neutral-200 shadow-xl overflow-hidden py-1 max-h-60 overflow-y-auto"
+                className="absolute z-30 start-0 end-0 mt-1 max-h-64 overflow-y-auto rounded-xl border border-neutral-200 bg-white py-1 shadow-lg"
               >
                 {REGIONAL_CONTACTS.map((region) => {
                   const isSelected = selected.id === region.id;
@@ -130,9 +132,9 @@ export const ContactStoreLocation: React.FC = () => {
                         setSelectedId(region.id);
                         setIsDropdownOpen(false);
                       }}
-                      className={`flex w-full items-center justify-between px-4 py-3 text-start transition-colors ${
+                      className={`w-full flex items-center justify-between gap-3 px-4 py-3 text-start transition-colors ${
                         isSelected
-                          ? "bg-neutral-50 text-bht-red font-bold"
+                          ? "bg-neutral-50 text-bht-red font-semibold"
                           : "text-neutral-700 hover:bg-neutral-50"
                       }`}
                     >
@@ -189,7 +191,7 @@ export const ContactStoreLocation: React.FC = () => {
                 onKeyDown={(event) => navigate(event, index)}
                 className={`flex w-full items-center gap-4 px-4 py-5 border-b last:border-b-0 border-neutral-200 text-start transition-colors ${
                   selected.id === region.id
-                    ? "bg-white text-bht-red"
+                    ? "bg-white text-bht-red font-semibold"
                     : "text-neutral-600 hover:bg-white"
                 }`}
               >
@@ -233,7 +235,15 @@ export const ContactStoreLocation: React.FC = () => {
               </div>
 
               <div className="pt-7 sm:pt-8">
-                <h3 className="text-2xl sm:text-3xl mb-5">{name}</h3>
+                <div className="mb-4">
+                  {selected.companyNameEn && (
+                    <p className="text-xs sm:text-sm font-bold text-bht-red uppercase tracking-wider mb-1">
+                      {ar ? selected.companyNameAr || selected.companyNameEn : selected.companyNameEn}
+                    </p>
+                  )}
+                  <h3 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">{name}</h3>
+                </div>
+
                 {selected.usesDubaiTeam && (
                   <p className="bht-copy text-neutral-600 mb-6">
                     {ar
@@ -252,23 +262,34 @@ export const ContactStoreLocation: React.FC = () => {
                 <dl className="grid sm:grid-cols-2 gap-x-7 gap-y-5 text-sm text-neutral-700">
                   {address && (
                     <div className="sm:col-span-2">
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2">
-                        <MapPin className="w-4 h-4" />
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <MapPin className="w-4 h-4 text-bht-red shrink-0" />
                         {ar ? "العنوان" : "Address"}
                       </dt>
-                      <dd className="leading-7">{address}</dd>
+                      <dd className="leading-7 font-medium text-neutral-900">{address}</dd>
                     </div>
                   )}
+
+                  {selected.contactPerson && (
+                    <div>
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <User className="w-4 h-4 text-bht-red shrink-0" />
+                        {ar ? "المسؤول / جهة الاتصال" : "Contact Person"}
+                      </dt>
+                      <dd className="font-semibold text-neutral-900">{selected.contactPerson}</dd>
+                    </div>
+                  )}
+
                   {selected.phone && (
                     <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2">
-                        <Phone className="w-4 h-4" />
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <Phone className="w-4 h-4 text-bht-red shrink-0" />
                         {ar ? "الهاتف" : "Telephone"}
                       </dt>
                       <dd>
                         <a
                           dir="ltr"
-                          className="inline-block hover:text-bht-red"
+                          className="inline-block font-semibold text-neutral-900 hover:text-bht-red transition-colors"
                           href={`tel:${selected.phone.replace(/\s/g, "")}`}
                         >
                           {selected.phone}
@@ -276,16 +297,35 @@ export const ContactStoreLocation: React.FC = () => {
                       </dd>
                     </div>
                   )}
+
+                  {selected.mobile && selected.mobile !== selected.phone && (
+                    <div>
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <Phone className="w-4 h-4 text-bht-red shrink-0" />
+                        {ar ? "المتحرك / الجوال" : "Mobile"}
+                      </dt>
+                      <dd>
+                        <a
+                          dir="ltr"
+                          className="inline-block font-semibold text-neutral-900 hover:text-bht-red transition-colors"
+                          href={`tel:${selected.mobile.replace(/\s/g, "")}`}
+                        >
+                          {selected.mobile}
+                        </a>
+                      </dd>
+                    </div>
+                  )}
+
                   {selected.whatsapp && (
                     <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2">
-                        <MessageCircle className="w-4 h-4" />
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
                         {ar ? "واتساب" : "WhatsApp"}
                       </dt>
                       <dd>
                         <a
                           dir="ltr"
-                          className="inline-block hover:text-bht-red"
+                          className="inline-block font-semibold text-neutral-900 hover:text-emerald-600 transition-colors"
                           href={`https://wa.me/${selected.whatsapp.replace(/\D/g, "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
@@ -295,16 +335,17 @@ export const ContactStoreLocation: React.FC = () => {
                       </dd>
                     </div>
                   )}
+
                   {selected.email && (
                     <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2">
-                        <Mail className="w-4 h-4" />
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <Mail className="w-4 h-4 text-bht-red shrink-0" />
                         {ar ? "البريد الإلكتروني" : "Email"}
                       </dt>
                       <dd>
                         <a
                           dir="ltr"
-                          className="break-all hover:text-bht-red"
+                          className="break-all font-semibold text-neutral-900 hover:text-bht-red transition-colors"
                           href={`mailto:${selected.email}`}
                         >
                           {selected.email}
@@ -312,13 +353,24 @@ export const ContactStoreLocation: React.FC = () => {
                       </dd>
                     </div>
                   )}
+
+                  {selected.crNumber && (
+                    <div>
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <Building2 className="w-4 h-4 text-bht-red shrink-0" />
+                        {ar ? "رقم السجل التجاري" : "Commercial Registration"}
+                      </dt>
+                      <dd className="font-semibold text-neutral-900">{selected.crNumber}</dd>
+                    </div>
+                  )}
+
                   {hours && (
                     <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2">
-                        <Clock className="w-4 h-4" />
+                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                        <Clock className="w-4 h-4 text-bht-red shrink-0" />
                         {ar ? "ساعات العمل" : "Opening hours"}
                       </dt>
-                      <dd className="leading-7">{hours}</dd>
+                      <dd className="leading-7 font-medium text-neutral-900">{hours}</dd>
                     </div>
                   )}
                 </dl>

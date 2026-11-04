@@ -79,12 +79,12 @@ export const ContactDetailsAndForm: React.FC = () => {
                     {language === "ar" ? "المقر الرئيسي" : "HEAD OFFICE"}
                   </span>
                   <p className="text-sm font-semibold text-neutral-900 leading-snug">
-                    BHT Collections
+                    BLANKET HOUSE TRADING L.L.C.
                   </p>
                   <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
-                      ? "دبي، الإمارات العربية المتحدة"
-                      : "Dubai, United Arab Emirates (UAE)"}
+                      ? "مكتب رقم 204، مبنى وصل رقم R146، ميدان بني ياس، ديرة، دبي، الإمارات"
+                      : "Office No. 204, Bldg No. R146 WASL, Baniyas Square, Deira, Dubai, UAE"}
                   </p>
                 </div>
               </div>
@@ -99,16 +99,16 @@ export const ContactDetailsAndForm: React.FC = () => {
                     {language === "ar" ? "الهاتف" : "PHONE"}
                   </span>
                   <a
-                    href="tel:+97141234567"
+                    href="tel:+97142266095"
                     dir="ltr"
                     className="text-sm font-semibold text-neutral-900 hover:text-bht-red transition-colors inline-block"
                   >
-                    +971 4 123 4567
+                    +971 4 2266 095
                   </a>
                   <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
-                      ? "الإثنين - السبت: 10 ص - 6 م بتوقيت الإمارات"
-                      : "Mon - Sat: 10 AM - 6 PM UAE Time"}
+                      ? "السبت – الخميس: 9:00 ص – 1:30 م و 4:30 م – 9:00 م"
+                      : "Sat – Thu: 9:00 AM – 1:30 PM & 4:30 PM – 9:00 PM"}
                   </p>
                 </div>
               </div>
@@ -126,21 +126,21 @@ export const ContactDetailsAndForm: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-[11px] font-bold tracking-[0.16em] uppercase text-neutral-400 block mb-1">
-                    {language === "ar" ? "واتساب" : "WHATSAPP"}
+                    {language === "ar" ? "واتساب وجوال" : "WHATSAPP & MOBILE"}
                   </span>
                   <a
-                    href="https://wa.me/971501234567"
+                    href="https://wa.me/971558879237"
                     target="_blank"
                     rel="noopener noreferrer"
                     dir="ltr"
                     className="text-sm font-semibold text-neutral-900 hover:text-emerald-600 transition-colors inline-block"
                   >
-                    +971 50 123 4567
+                    +971 55 887 9237
                   </a>
                   <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
                       ? "تواصل معنا مباشرة عبر واتساب"
-                      : "Chat with us on WhatsApp"}
+                      : "Chat directly with our team on WhatsApp"}
                   </p>
                 </div>
               </div>
@@ -155,10 +155,10 @@ export const ContactDetailsAndForm: React.FC = () => {
                     {language === "ar" ? "البريد الإلكتروني" : "EMAIL"}
                   </span>
                   <a
-                    href="mailto:info@bhtcollections.ae"
+                    href="mailto:bhtrdg@eim.ae"
                     className="text-sm font-semibold text-neutral-900 hover:text-bht-red transition-colors inline-block"
                   >
-                    info@bhtcollections.ae
+                    bhtrdg@eim.ae
                   </a>
                   <p className="text-sm text-neutral-500 leading-normal mt-0.5">
                     {language === "ar"
@@ -179,11 +179,11 @@ export const ContactDetailsAndForm: React.FC = () => {
                   </span>
                   <p className="text-sm font-semibold text-neutral-900 leading-snug">
                     {language === "ar"
-                      ? "الإثنين - السبت: 10 ص - 6 م بتوقيت الإمارات"
-                      : "Mon - Sat: 10 AM - 6 PM UAE Time"}
+                      ? "السبت – الخميس: 9:00 ص – 1:30 م و 4:30 م – 9:00 م"
+                      : "Sat – Thu: 9:00 AM – 1:30 PM & 4:30 PM – 9:00 PM"}
                   </p>
                   <p className="text-sm text-neutral-500 leading-normal mt-0.5">
-                    {language === "ar" ? "(مغلق يوم الأحد)" : "(Closed on Sunday)"}
+                    {language === "ar" ? "(مغلق يوم الجمعة)" : "(Closed on Friday)"}
                   </p>
                 </div>
               </div>
