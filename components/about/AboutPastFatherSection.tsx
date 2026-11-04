@@ -14,7 +14,7 @@ export const AboutPastFatherSection: React.FC = () => {
     <section className="bht-section w-full bg-white py-16 sm:py-24 overflow-hidden border-b border-[#F0F0F0]">
       <div className="max-w-[1280px] mx-auto px-5 sm:px-8 lg:px-10">
         <div data-reveal-group="split" className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
-          {/* LEFT: History & Trust-Building Narrative */}
+          {/* LEFT: History & Narrative */}
           <div className="lg:col-span-6 flex flex-col justify-center">
             {/* Heritage Monogram Badge */}
             <div className="flex items-center gap-2 mb-4">
@@ -29,8 +29,8 @@ export const AboutPastFatherSection: React.FC = () => {
             {/* Headline */}
             <h2 className="text-2xl sm:text-4xl lg:text-5xl font-serif text-bht-charcoal font-normal tracking-tight leading-[1.18] mb-3 max-w-xl">
               {language === "ar"
-                ? "حكاية البدايات: مسيرة الوالد المؤسس وتراث الأصالة."
-                : "The Father's Story: Where It All Began in Dubai."}
+                ? "عن بيت البطانيات: حكاية البدايات وتراث الجودة في دبي."
+                : "About Blanket House: Where It All Began in Dubai."}
             </h2>
 
             {/* Heritage Stars */}
@@ -41,16 +41,23 @@ export const AboutPastFatherSection: React.FC = () => {
                 ))}
               </div>
               <span className="text-xs text-neutral-500 font-semibold">
-                {language === "ar" ? "تراث عائلي أصيل • عقود من الثقة" : "Multi-Decade Heritage • Family Trust"}
+                {language === "ar" ? "تأسست في دبي عام 2009 • التزام بالجودة" : "Established in Dubai (2009) • Proven Quality"}
               </span>
             </div>
 
-            {/* Narrative Paragraph */}
-            <p className="bht-copy text-neutral-600 leading-relaxed max-w-lg mb-6 font-normal">
-              {language === "ar"
-                ? "بدأت القصة قبل عقود في أسواق دبي التاريخية على يد الوالد المؤسس، الذي آمن بأن التجارة الحقيقية ليست مجرد بيع بضاعة، بل هي بناء ثقة مقدسة تدوم لأجيال. كان يتفقد خيوط كل بطانية وينتقي أجود الأقمشة بنفسه، لتصل الدفء والراحة إلى كل بيت في الإمارات."
-                : "Decades ago in the historic trading souqs of Dubai, our journey began with our founding father. He believed that genuine trade is built on sacred handshake trust and honorable service. Inspecting every woven textile himself, he dedicated his life to bringing authentic warmth and comfort to every family."}
-            </p>
+            {/* Narrative Paragraphs */}
+            <div className="space-y-4 text-neutral-600 leading-relaxed text-sm sm:text-base font-normal max-w-xl mb-6">
+              <p>
+                {language === "ar"
+                  ? "تأسست شركة بيت البطانيات للتجارة ذ.م.م عام 2009 في مدينة دبي النابضة بالحياة على يد خبير متمرس يتمتع بأكثر من 15 عاماً من الخبرة العملية في قطاع البطانيات والمفروشات. قبل إطلاق مشروعنا، أمضى مؤسسنا أكثر من عقد في العمل مع كبرى المصانع والموردين في كوريا الجنوبية، متقناً فن انتقاء أجود المواد الخام وبناء شراكات دولية وثيقة. شكلت هذه المعرفة العميقة وشبكة العلاقات الموثوقة الأساس المتين لشركة مكرسة للتميز في الجودة والقيمة."
+                  : "Established in 2009 in the vibrant city of Dubai, BLANKET HOUSE TRADING L.L.C. was founded by a seasoned industry expert with over 15 years of hands-on experience in the blanket sector. Prior to launching our venture, our founder spent more than a decade working with leading Korean suppliers, mastering the art of sourcing premium materials and building strong international partnerships. This deep-rooted knowledge and trusted network laid the foundation for a business dedicated to excellence in quality and value."}
+              </p>
+              <p>
+                {language === "ar"
+                  ? "منذ البداية، وضعنا نصب أعيننا إعادة تعريف سوق البطانيات في الإمارات وخارجها. رؤيتنا الراسخة هي تقديم أرقى أنواع البطانيات بأفضل الأسعار التنافسية الممكنة — دون المساومة إطلاقاً على جودة المواد الخام. نؤمن بأن القيمة الحقيقية تأتي من استخدام أقمشة رفيعة المستوى وحرفية عالية، دون تقليل التكاليف على حساب الجودة."
+                  : "From the very beginning, we set out to redefine the blanket market in the UAE and beyond. Our unwavering vision is to deliver the finest quality blankets at the most competitive prices possible—without ever compromising on raw materials. We believe true value comes from using high-grade fabrics and craftsmanship, never cutting corners to reduce costs."}
+              </p>
+            </div>
 
             {/* Trust-Building Quality & Verification Card */}
             <div className="mb-8 p-5 sm:p-6 rounded-2xl bg-gradient-to-br from-[#FAF9F6] to-white border border-[#E8E5DF] shadow-sm relative overflow-hidden">
@@ -91,12 +98,12 @@ export const AboutPastFatherSection: React.FC = () => {
             </div>
           </div>
 
-          {/* RIGHT: Framed Archival Vintage Father Image */}
+          {/* RIGHT: Framed Archival Vintage Image */}
           <div className="lg:col-span-6 flex items-center justify-center">
             <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-lg overflow-hidden bg-neutral-900 group">
               <Image
                 src="/about/founder-father-heritage.jpg"
-                alt="Founding Father in Historic Dubai Textile Shop"
+                alt="Founding of Blanket House Trading LLC Dubai"
                 fill
                 className="object-cover object-center filter sepia-[0.15] transition-transform duration-700 group-hover:scale-102"
                 sizes="(max-width: 1024px) 100vw, 48vw"
@@ -110,8 +117,8 @@ export const AboutPastFatherSection: React.FC = () => {
                 </span>
                 <p className="text-xs sm:text-sm font-serif font-bold text-white">
                   {language === "ar"
-                    ? "الوالد المؤسس في متجر البطانيات الأول — دبي"
-                    : "The Founding Father in the First Blanket House Shop — Dubai"}
+                    ? "بدايات بيت البطانيات للتجارة ذ.م.م — دبي (2009)"
+                    : "The Founding Journey of Blanket House Trading LLC — Dubai (2009)"}
                 </p>
               </div>
             </div>

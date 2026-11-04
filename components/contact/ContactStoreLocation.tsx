@@ -6,14 +6,12 @@ import {
   MapPin,
   Phone,
   Mail,
-  Clock,
-  ArrowRight,
-  ArrowLeft,
   MessageCircle,
   ChevronDown,
   Check,
   User,
-  Building2,
+  ArrowRight,
+  ArrowLeft,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { CircularFlag } from "@/components/regional-presence/CircularFlag";
@@ -32,8 +30,6 @@ export const ContactStoreLocation: React.FC = () => {
   const name = ar ? selected.nameAr : selected.nameEn;
   const Arrow = isRTL ? ArrowLeft : ArrowRight;
   const address = ar ? selected.addressAr || selected.addressEn : selected.addressEn;
-  const hours = ar ? selected.hoursAr || selected.hoursEn : selected.hoursEn;
-  const hasContact = selected.phone || selected.email || address || selected.mobile;
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -83,7 +79,7 @@ export const ContactStoreLocation: React.FC = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start w-full min-w-0">
-          {/* MOBILE VIEW SELECTOR (Custom, fully contained within screen) */}
+          {/* MOBILE VIEW SELECTOR */}
           <div className="lg:hidden w-full min-w-0 max-w-full relative" ref={dropdownRef}>
             <label
               id="mobile-region-label"
@@ -234,172 +230,102 @@ export const ContactStoreLocation: React.FC = () => {
                 )}
               </div>
 
+              {/* DETAILS BLOCK MATCHING THE USER'S PROVIDED LAYOUT */}
               <div className="pt-7 sm:pt-8">
-                <div className="mb-4">
-                  {selected.companyNameEn && (
-                    <p className="text-xs sm:text-sm font-bold text-bht-red uppercase tracking-wider mb-1">
-                      {ar ? selected.companyNameAr || selected.companyNameEn : selected.companyNameEn}
-                    </p>
-                  )}
-                  <h3 className="text-2xl sm:text-3xl font-black text-neutral-900 tracking-tight">{name}</h3>
-                </div>
-
-                {selected.usesDubaiTeam && (
-                  <p className="bht-copy text-neutral-600 mb-6">
-                    {ar
-                      ? "فريق المبيعات في دبي — جهة التواصل لهذه المنطقة. الصورة والعنوان المعروضان هنا لموقع دبي."
-                      : "Dubai sales team — your contact for this region. The image and address shown here are for our Dubai location."}
-                  </p>
-                )}
-                {!hasContact && (
-                  <p className="bht-copy text-neutral-600 mb-6">
-                    {ar
-                      ? "تواصل مع فريقنا للحصول على معلومات التواصل والخدمة في هذه المنطقة."
-                      : "Contact our team for local contact and service information in this region."}
+                {/* 1. Red Company Name Eyebrow */}
+                {selected.companyNameEn && (
+                  <p className="text-xs sm:text-sm font-bold text-bht-red uppercase tracking-wider mb-1.5">
+                    {ar ? selected.companyNameAr || selected.companyNameEn : selected.companyNameEn}
                   </p>
                 )}
 
-                <dl className="grid sm:grid-cols-2 gap-x-7 gap-y-5 text-sm text-neutral-700">
+                {/* 2. Main Region/Country Name */}
+                <h3 className="text-2xl sm:text-3xl font-bold text-neutral-900 tracking-tight mb-5">
+                  {name}
+                </h3>
+
+                <div className="space-y-6 pb-6 border-b border-neutral-200">
+                  {/* 3. Address */}
                   {address && (
-                    <div className="sm:col-span-2">
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
+                    <div>
+                      <div className="flex items-center gap-2 text-neutral-500 text-xs mb-1.5 font-medium">
                         <MapPin className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "العنوان" : "Address"}
-                      </dt>
-                      <dd className="leading-7 font-medium text-neutral-900">{address}</dd>
+                        <span>{ar ? "العنوان" : "Address"}</span>
+                      </div>
+                      <p className="text-sm font-medium text-neutral-900 leading-relaxed">
+                        {address}
+                      </p>
                     </div>
                   )}
 
-                  {selected.contactPerson && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <User className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "المسؤول / جهة الاتصال" : "Contact Person"}
-                      </dt>
-                      <dd className="font-semibold text-neutral-900">{selected.contactPerson}</dd>
-                    </div>
-                  )}
+                  {/* 4. 2-Column Contact Info Grid */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-5 text-sm">
+                    {/* Row 1 - Left: Contact Person */}
+                    {selected.contactPerson && (
+                      <div>
+                        <div className="flex items-center gap-2 text-neutral-500 text-xs mb-1 font-medium">
+                          <User className="w-4 h-4 text-bht-red shrink-0" />
+                          <span>{ar ? "المسؤول / جهة الاتصال" : "Contact Person"}</span>
+                        </div>
+                        <p className="font-bold text-neutral-900">
+                          {selected.contactPerson}
+                        </p>
+                      </div>
+                    )}
 
-                  {selected.phone && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <Phone className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "الهاتف" : "Telephone"}
-                      </dt>
-                      <dd>
+                    {/* Row 1 - Right: Telephone */}
+                    {selected.phone && (
+                      <div>
+                        <div className="flex items-center gap-2 text-neutral-500 text-xs mb-1 font-medium">
+                          <Phone className="w-4 h-4 text-bht-red shrink-0" />
+                          <span>{ar ? "الهاتف" : "Telephone"}</span>
+                        </div>
                         <a
                           dir="ltr"
-                          className="inline-block font-semibold text-neutral-900 hover:text-bht-red transition-colors"
+                          className="font-bold text-neutral-900 hover:text-bht-red transition-colors inline-block"
                           href={`tel:${selected.phone.replace(/\s/g, "")}`}
                         >
                           {selected.phone}
                         </a>
-                      </dd>
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {selected.mobile && selected.mobile !== selected.phone && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <Phone className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "المتحرك / الجوال" : "Mobile"}
-                      </dt>
-                      <dd>
+                    {/* Row 2 - Left: WhatsApp */}
+                    {selected.whatsapp && (
+                      <div>
+                        <div className="flex items-center gap-2 text-neutral-500 text-xs mb-1 font-medium">
+                          <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <span>{ar ? "واتساب" : "WhatsApp"}</span>
+                        </div>
                         <a
                           dir="ltr"
-                          className="inline-block font-semibold text-neutral-900 hover:text-bht-red transition-colors"
-                          href={`tel:${selected.mobile.replace(/\s/g, "")}`}
-                        >
-                          {selected.mobile}
-                        </a>
-                      </dd>
-                    </div>
-                  )}
-
-                  {selected.whatsapp && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <MessageCircle className="w-4 h-4 text-emerald-600 shrink-0" />
-                        {ar ? "واتساب" : "WhatsApp"}
-                      </dt>
-                      <dd>
-                        <a
-                          dir="ltr"
-                          className="inline-block font-semibold text-neutral-900 hover:text-emerald-600 transition-colors"
+                          className="font-bold text-neutral-900 hover:text-emerald-600 transition-colors inline-block"
                           href={`https://wa.me/${selected.whatsapp.replace(/\D/g, "")}`}
                           target="_blank"
                           rel="noopener noreferrer"
                         >
                           {selected.whatsapp}
                         </a>
-                      </dd>
-                    </div>
-                  )}
+                      </div>
+                    )}
 
-                  {selected.email && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <Mail className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "البريد الإلكتروني" : "Email"}
-                      </dt>
-                      <dd>
+                    {/* Row 2 - Right: Email */}
+                    {selected.email && (
+                      <div>
+                        <div className="flex items-center gap-2 text-neutral-500 text-xs mb-1 font-medium">
+                          <Mail className="w-4 h-4 text-bht-red shrink-0" />
+                          <span>{ar ? "البريد الإلكتروني" : "Email"}</span>
+                        </div>
                         <a
                           dir="ltr"
-                          className="break-all font-semibold text-neutral-900 hover:text-bht-red transition-colors"
+                          className="break-all font-bold text-neutral-900 hover:text-bht-red transition-colors inline-block"
                           href={`mailto:${selected.email}`}
                         >
                           {selected.email}
                         </a>
-                      </dd>
-                    </div>
-                  )}
-
-                  {selected.crNumber && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <Building2 className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "رقم السجل التجاري" : "Commercial Registration"}
-                      </dt>
-                      <dd className="font-semibold text-neutral-900">{selected.crNumber}</dd>
-                    </div>
-                  )}
-
-                  {hours && (
-                    <div>
-                      <dt className="flex items-center gap-2 text-neutral-500 text-xs mb-2 font-medium">
-                        <Clock className="w-4 h-4 text-bht-red shrink-0" />
-                        {ar ? "ساعات العمل" : "Opening hours"}
-                      </dt>
-                      <dd className="leading-7 font-medium text-neutral-900">{hours}</dd>
-                    </div>
-                  )}
-                </dl>
-
-                <div className="flex flex-wrap gap-4 sm:gap-6 mt-8 pt-6 border-t border-neutral-200">
-                  {selected.mapUrl && (
-                    <a
-                      href={selected.mapUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex gap-2 items-center text-sm font-medium hover:text-bht-red"
-                    >
-                      {selected.usesDubaiTeam
-                        ? ar
-                          ? "الاتجاهات إلى موقع دبي"
-                          : "Directions to Dubai location"
-                        : ar
-                        ? "الاتجاهات"
-                        : "Get directions"}
-                      <Arrow className="w-4 h-4" />
-                    </a>
-                  )}
-                  <a
-                    href="#contact-form-section"
-                    className="inline-flex gap-2 items-center text-sm font-medium hover:text-bht-red"
-                  >
-                    {ar ? "إرسال استفسار" : "Send an inquiry"}
-                    <Arrow className="w-4 h-4" />
-                  </a>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
