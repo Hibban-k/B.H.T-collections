@@ -1,10 +1,20 @@
 "use client";
 
 import React from "react";
+import { usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const FloatingWhatsApp: React.FC = () => {
+  const pathname = usePathname();
   const { language, isRTL } = useLanguage();
+
+  // Do not render inside collection and its child pages
+  if (
+    pathname &&
+    (pathname.includes("/collections") || pathname.includes("/collection"))
+  ) {
+    return null;
+  }
 
   const phoneNumber = "971558879237";
   const formattedNumber = "+971 55 887 9237";
