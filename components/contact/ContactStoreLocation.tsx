@@ -146,25 +146,6 @@ export const ContactStoreLocation: React.FC = () => {
                 })}
               </div>
             )}
-
-            {/* Quick 1-Tap Pills for Instant Mobile Region Switching */}
-            <div className="flex gap-2 overflow-x-auto pt-3 pb-1 scrollbar-none w-full min-w-0 max-w-full">
-              {REGIONAL_CONTACTS.map((region) => (
-                <button
-                  key={region.id}
-                  type="button"
-                  onClick={() => setSelectedId(region.id)}
-                  className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-medium transition-all ${
-                    selected.id === region.id
-                      ? "bg-neutral-900 text-white border-neutral-900 shadow-2xs"
-                      : "bg-white text-neutral-600 border-neutral-200 hover:border-neutral-300"
-                  }`}
-                >
-                  <CircularFlag country={region.flag} size={16} />
-                  <span>{ar ? region.nameAr : region.nameEn}</span>
-                </button>
-              ))}
-            </div>
           </div>
 
           {/* DESKTOP TAB LIST */}
