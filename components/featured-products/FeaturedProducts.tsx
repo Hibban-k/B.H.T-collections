@@ -3,10 +3,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowLeft, Eye, Star, CheckCircle2 } from "lucide-react";
+import { ArrowRight, ArrowLeft, Eye, Star, CheckCircle2, PackageX } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { QuickViewModal } from "@/components/collection/QuickViewModal";
-import { ALL_PRODUCTS, Product } from "@/data/productsData";
+import { Product } from "@/data/productsData";
 
 interface DbProduct {
   _id: string;
@@ -130,24 +130,12 @@ export const FeaturedProducts: React.FC = () => {
     };
   }, []);
 
-  // Combined product pool: DB products prioritized, backed by curated catalog
-  const allProductsPool = useMemo(() => {
-    if (dbProducts.length > 0) {
-      const existingIds = new Set(dbProducts.map((p) => p.nameEn.toLowerCase()));
-      const fillers = ALL_PRODUCTS.filter(
-        (p) => !existingIds.has(p.nameEn.toLowerCase())
-      );
-      return [...dbProducts, ...fillers];
-    }
-    return ALL_PRODUCTS;
-  }, [dbProducts]);
-
-  // Display strictly 4 products for the currently active category tab
+  // Pure database products: strictly 0 mock/dummy data fallback
   const displayedProducts = useMemo(() => {
-    return allProductsPool
+    return dbProducts
       .filter((p) => p.category === activeTab)
       .slice(0, 4);
-  }, [allProductsPool, activeTab]);
+  }, [dbProducts, activeTab]);
 
   return (
     <section
@@ -201,18 +189,20 @@ export const FeaturedProducts: React.FC = () => {
               })}
             </div>
 
-            <Link
-              href={`/collections/${activeTab}`}
-              className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group"
-            >
-              <span>{language === "ar" ? "عرض الكل" : "View All"}</span>
-              <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
-            </Link>
+            {displayedProducts.length > 0 && (
+              <Link
+                href={`/collections/${activeTab}`}
+                className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group"
+              >
+                <span>{language === "ar" ? "عرض الكل" : "View All"}</span>
+                <ArrowIcon className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 rtl:group-hover:-translate-x-0.5" />
+              </Link>
+            )}
           </div>
         </div>
 
         {/* PRODUCTS GRID */}
-        {loading && displayedProducts.length === 0 ? (
+        {loading && dbProducts.length === 0 ? (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6">
             {[1, 2, 3, 4].map((i) => (
               <div
@@ -227,6 +217,22 @@ export const FeaturedProducts: React.FC = () => {
                 </div>
               </div>
             ))}
+          </div>
+        ) : displayedProducts.length === 0 ? (
+          <div className="py-16 px-6 text-center bg-white rounded-2xl border border-dashed border-neutral-300 flex flex-col items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-neutral-100 text-neutral-400 flex items-center justify-center mb-3">
+              <PackageX className="w-6 h-6 stroke-[1.8]" />
+            </div>
+            <p className="text-base sm:text-lg font-bold text-neutral-800 mb-1">
+              {language === "ar"
+                ? "لا توجد منتجات متوفرة حالياً في هذا القسم"
+                : "No products available in this category yet"}
+            </p>
+            <p className="text-xs sm:text-sm text-neutral-500 max-w-md mx-auto">
+              {language === "ar"
+                ? "سيتم عرض المنتجات هنا فور إضافتها من خلال لوحة التحكم الخاصة بالإدارة."
+                : "Products for this collection will appear here automatically once added in your admin dashboard."}
+            </p>
           </div>
         ) : (
           <div data-reveal-group="stagger" className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-5 lg:gap-6">
@@ -351,15 +357,17 @@ export const FeaturedProducts: React.FC = () => {
         )}
 
         {/* MOBILE VIEW ALL BUTTON */}
-        <div className="mt-8 text-center lg:hidden">
-          <Link
-            href={`/collections/${activeTab}`}
-            className="inline-flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 rounded-xl bg-bht-charcoal text-white text-xs font-bold hover:bg-black transition-all shadow-sm"
-          >
-            <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
-            <ArrowIcon className="w-4 h-4" />
-          </Link>
-        </div>
+        {displayedProducts.length > 0 && (
+          <div className="mt-8 text-center lg:hidden">
+            <Link
+              href={`/collections/${activeTab}`}
+              className="inline-flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 rounded-xl bg-bht-charcoal text-white text-xs font-bold hover:bg-black transition-all shadow-sm"
+            >
+              <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>
+              <ArrowIcon className="w-4 h-4" />
+            </Link>
+          </div>
+        )}
       </div>
 
       {/* QUICK VIEW MODAL */}
