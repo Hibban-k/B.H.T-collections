@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const FloatingWhatsApp: React.FC = () => {
   const { language, isRTL } = useLanguage();
-  const [isHovered, setIsHovered] = useState(false);
 
   const phoneNumber = "971558879237";
   const formattedNumber = "+971 55 887 9237";
@@ -19,33 +18,10 @@ export const FloatingWhatsApp: React.FC = () => {
   return (
     <aside
       aria-label="WhatsApp Quick Contact"
-      className={`fixed bottom-6 z-50 flex items-center gap-3 select-none pointer-events-auto ${
-        isRTL ? "left-6 flex-row-reverse" : "right-6 flex-row"
+      className={`fixed bottom-6 z-50 flex items-center select-none pointer-events-auto ${
+        isRTL ? "left-6" : "right-6"
       }`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* EXPANDABLE CHAT PILL / TOOLTIP */}
-      <div
-        className={`hidden sm:flex items-center gap-2.5 bg-white text-bht-charcoal px-3.5 py-2 rounded-2xl shadow-xl border border-gray-200 transition-all duration-300 transform ${
-          isHovered
-            ? "opacity-100 translate-x-0 scale-100"
-            : "opacity-90 translate-y-0 scale-95"
-        }`}
-      >
-        <span className="relative flex h-2.5 w-2.5">
-          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
-        </span>
-        <div className="text-start">
-          <span className="text-xs font-black block leading-tight text-bht-charcoal">
-            {language === "ar" ? "تحدث معنا عبر واتساب" : "Chat on WhatsApp"}
-          </span>
-          <span className="text-[10px] text-gray-500 font-semibold block leading-tight dir-ltr">
-            {formattedNumber}
-          </span>
-        </div>
-      </div>
-
       {/* FLOATING ACTION BUTTON */}
       <a
         href={whatsappUrl}
