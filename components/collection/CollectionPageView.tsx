@@ -3,7 +3,6 @@
 import React, { useState, useMemo, useEffect } from "react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/header/Navbar";
-import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
 import { Footer } from "@/components/footer/Footer";
 import { CollectionHero } from "./CollectionHero";
 import { CategoryTabsNav, DynamicCategoryTab } from "./CategoryTabsNav";
@@ -461,10 +460,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       {/* 1. Header & Navigation */}
       <Navbar />
 
-      {/* 2. Announcement Ticker */}
-      <AnnouncementTicker />
-
-      {/* 3. Hero Banner */}
+      {/* 2. Hero Banner */}
       <CollectionHero
         categoryMeta={categoryMeta}
         activeCategoryName={activeCategoryObj?.name || activeCategory}
