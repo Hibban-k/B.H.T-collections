@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useMemo, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
@@ -12,7 +13,6 @@ import { ProductToolbar, SortOption } from "./ProductToolbar";
 import { ProductFilterSidebar, FilterState } from "./ProductFilterSidebar";
 import { ProductCard } from "./ProductCard";
 import { QuickViewModal } from "./QuickViewModal";
-import { RelatedCollections } from "./RelatedCollections";
 import { Product, CollectionCategoryMeta } from "@/data/productsData";
 import { PackageX, RotateCcw } from "lucide-react";
 
@@ -78,6 +78,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   dbBrands: propBrands,
 }) => {
   const { language } = useLanguage();
+  const router = useRouter();
 
   // 1. DATA STATE
   const [categories, setCategories] = useState<DBCategory[]>(propCategories || []);
@@ -290,7 +291,8 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
 
   // Handle category switch
   const handleCategorySwitch = (catSlug: string) => {
-    setActiveCategory(catSlug.toLowerCase());
+    const slug = catSlug.toLowerCase();
+    setActiveCategory(slug);
     setActiveSubcategory("all");
     setFilters({
       subcategory: "all",
@@ -299,6 +301,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       inStockOnly: false,
     });
     setVisibleCount(12);
+    router.push(`/collections/${slug}`, { scroll: false });
   };
 
   // Handle subcategory pill selection
@@ -572,10 +575,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         </div>
       </main>
 
-      {/* 9. Related Collections */}
-      <RelatedCollections currentCategory={activeCategory as any} />
-
-      {/* 10. Filter Sidebar Drawer */}
+      {/* Filter Sidebar Drawer */}
       <ProductFilterSidebar
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
