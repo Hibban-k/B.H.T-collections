@@ -503,19 +503,21 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       {/* 6. Dynamic Category Description from DB */}
       <CollectionIntro description={activeDescription} />
 
-      {/* 7. Product Toolbar */}
-      <ProductToolbar
-        productCount={displayedProducts.length}
-        totalCount={filteredProducts.length}
-        sortBy={sortBy}
-        onSortChange={setSortBy}
-        isFilterOpen={isFilterOpen}
-        onToggleFilter={() => setIsFilterOpen((prev) => !prev)}
-        gridColumns={gridColumns}
-        onGridColumnsChange={setGridColumns}
-        activeFilters={activeFilterChips}
-        onClearAllFilters={handleResetFilters}
-      />
+      {/* 7. Product Toolbar (Only shown when category has products) */}
+      {uiCategoryProducts.length > 0 && (
+        <ProductToolbar
+          productCount={displayedProducts.length}
+          totalCount={filteredProducts.length}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          isFilterOpen={isFilterOpen}
+          onToggleFilter={() => setIsFilterOpen((prev) => !prev)}
+          gridColumns={gridColumns}
+          onGridColumnsChange={setGridColumns}
+          activeFilters={activeFilterChips}
+          onClearAllFilters={handleResetFilters}
+        />
+      )}
 
       {/* 8. Main Product Grid Section */}
       <main className="w-full bg-[#FAF9F7]/40 py-8 sm:py-12 flex-1">
