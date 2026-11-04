@@ -18,7 +18,7 @@ export const AboutPresentDarkSection: React.FC = () => {
           <div className="lg:col-span-6 flex items-center justify-center">
             <div className="relative w-full max-w-[560px] aspect-[4/3] rounded-lg overflow-hidden border border-neutral-800 group bg-neutral-900">
               <Image
-                src="/contact/dubai-flagship.jpg"
+                src="/contact/dubai-shop.png"
                 alt="BHT Collections Dubai Flagship Experience"
                 fill
                 className="object-cover object-center transition-transform duration-700 group-hover:scale-103"
