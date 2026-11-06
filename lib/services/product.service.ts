@@ -33,6 +33,7 @@ export interface CreateProductInput {
   bestseller?: boolean;
   showOnHomepage?: boolean;
   showOnCollection?: boolean;
+  crossSellSlugs?: string[];
   additionalCategories?: string[];
   metaTitle?: string;
   metaDescription?: string;
@@ -165,6 +166,7 @@ export class ProductService {
       badge: input.badge || undefined,
       featured: Boolean(input.featured),
       bestseller: Boolean(input.bestseller),
+      crossSellSlugs: Array.isArray(input.crossSellSlugs) ? input.crossSellSlugs : [],
       additionalCategories: input.additionalCategories || [],
       metaTitle: input.metaTitle || "",
       metaDescription: input.metaDescription || "",
@@ -224,6 +226,8 @@ export class ProductService {
       const resolvedSubcat = resolveCategoryId(updates.subcategoryId);
       sanitized.subcategoryId = (resolvedSubcat as any) ?? null;
     }
+
+    if (Array.isArray(updates.crossSellSlugs)) sanitized.crossSellSlugs = updates.crossSellSlugs;
 
     return ProductRepository.update(id, sanitized);
   }

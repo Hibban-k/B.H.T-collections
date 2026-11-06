@@ -1,3 +1,4 @@
+import "@/lib/db/models/Brand";
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/db/mongodb";
 import { ProductModel, IProduct } from "@/lib/db/models/Product";
@@ -122,7 +123,7 @@ export class ProductRepository {
     await connectToDatabase();
     const query: any = { slug: slug.trim().toLowerCase() };
     if (excludeId) query._id = { $ne: excludeId };
-    const doc = await ProductModel.findOne(query).lean();
+    const doc = await ProductModel.findOne(query).populate("brand").lean();
     return doc ? serialize(doc) : null;
   }
 

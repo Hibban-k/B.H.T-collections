@@ -1,8 +1,9 @@
+import Link from "next/link";
 "use client";
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { X, Check, Star, ShieldCheck, Truck, MessageCircle } from "lucide-react";
+import { X, Check, Star, ShieldCheck, Truck, MessageCircle, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product } from "@/data/productsData";
 
@@ -188,6 +189,20 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
                 </span>
               </a>
             </div>
+
+            {/* View Full Details */}
+            {product.slug && (
+              <div className="pt-2 text-center">
+                <Link
+                  href={`/products/${product.slug}`}
+                  onClick={onClose}
+                  className="text-xs font-bold text-[#D4AF37] hover:underline inline-flex items-center gap-1"
+                >
+                  <span>{language === "ar" ? "عرض صفحة المنتج والمواصفات الكاملة" : "View Full Product Page & Specs"}</span>
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            )}
 
             {/* Trust Badges */}
             <div className="flex items-center justify-center gap-4 text-[10px] text-gray-500 font-semibold pt-1">

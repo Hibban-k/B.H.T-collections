@@ -77,6 +77,7 @@ export const FeaturedProducts: React.FC = () => {
 
               return {
                 id: p._id || p.slug,
+                slug: p.slug,
                 nameEn: p.name,
                 nameAr: p.name,
                 category: normalizedCategory,

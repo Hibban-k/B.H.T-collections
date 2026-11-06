@@ -1,5 +1,6 @@
 export interface Product {
   id: string;
+  slug?: string;
   nameEn: string;
   nameAr: string;
   category: "bedding" | "travel-bags" | "footwear";

@@ -54,6 +54,7 @@ interface ProductItem {
   featured: boolean;
   showOnHomepage?: boolean;
   showOnCollection?: boolean;
+  crossSellSlugs?: string[];
   additionalCategories?: string[];
   brand?: string;
   metaTitle?: string;
@@ -80,6 +81,7 @@ const defaultFormData = {
   description: "",
   shortDescription: "",
   featured: false,
+  crossSellSlugs: [] as string[],
   additionalCategories: [],
   brand: "",
   metaTitle: "",
@@ -103,6 +105,7 @@ export default function AdminProductsPage() {
   const [saving, setSaving] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
+  const [crossSellSearch, setCrossSellSearch] = useState("");
 
   // Upload states
   const [uploading, setUploading] = useState(false);
@@ -193,6 +196,7 @@ export default function AdminProductsPage() {
       description: product.description,
       shortDescription: product.shortDescription,
       featured: Boolean(product.featured),
+      crossSellSlugs: product.crossSellSlugs || [],
       additionalCategories: product.additionalCategories || [],
       brand: (product as any).brand?._id ? String((product as any).brand._id) : ((product as any).brand || ""),
       metaTitle: (product as any).metaTitle || "",
@@ -1682,6 +1686,154 @@ export default function AdminProductsPage() {
                 ) : (
                   <div className="p-4 bg-[#FAF8F5] border border-dashed border-[#E8DFC8] rounded-2xl text-center text-[#64748B]">
                     <p className="text-xs">No variants added. This product will use the single default price & stock above.</p>
+                  </div>
+                )}
+              </div>
+
+                            {/* =========================================================
+                  CROSS-SELL PRODUCTS SECTION (PAIRS WELL WITH)
+              ========================================================= */}
+              <div className="pt-4 border-t border-[#F2EBDC] space-y-3">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-bold uppercase tracking-wider text-[11px] text-[#0B131F] flex items-center gap-1.5">
+                      <span>Frequently Bought Together / Cross-Sell</span>
+                      <span className="text-[10px] font-semibold text-[#D4AF37] bg-[#D4AF37]/10 px-2 py-0.5 rounded-full">
+                        {formData.crossSellSlugs?.length || 0}/4 Selected
+                      </span>
+                    </h4>
+                    <p className="text-[10px] text-[#64748B]">
+                      Select up to 4 complementary items to recommend on this product&apos;s page (e.g. Bed Sheet + Korean Blanket).
+                    </p>
+                  </div>
+                </div>
+
+                {/* Selected Cross-Sells Preview */}
+                {formData.crossSellSlugs && formData.crossSellSlugs.length > 0 ? (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {formData.crossSellSlugs.map((slug: string) => {
+                      const matched = products.find((p) => p.slug === slug);
+                      return (
+                        <div
+                          key={slug}
+                          className="flex items-center justify-between gap-2 p-2 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl text-xs"
+                        >
+                          <div className="flex items-center gap-2 min-w-0">
+                            <div className="relative w-9 h-9 rounded-lg bg-white border border-[#E8DFC8] overflow-hidden shrink-0">
+                              <Image
+                                src={matched?.image || "/collections/korean-super-soft-blanket.png"}
+                                alt={matched?.name || slug}
+                                fill
+                                className="object-cover"
+                              />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="font-bold text-[#0B131F] truncate text-[11px]">
+                                {matched?.name || slug}
+                              </p>
+                              <p className="text-[10px] text-[#D4AF37] font-semibold">
+                                {matched ? `AED ${matched.salePrice || matched.price}` : slug}
+                              </p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setFormData({
+                                ...formData,
+                                crossSellSlugs: (formData.crossSellSlugs || []).filter((s: string) => s !== slug),
+                              });
+                            }}
+                            className="p-1 hover:bg-red-50 text-red-500 rounded-lg transition-colors shrink-0"
+                            title="Remove cross-sell item"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="p-3 bg-[#FAF8F5] border border-dashed border-[#E8DFC8] rounded-xl text-center text-[#64748B]">
+                    <p className="text-[11px]">No cross-sell products selected yet. Search below to add complementary items.</p>
+                  </div>
+                )}
+
+                {/* Search & Add Cross-Sell */}
+                {(!formData.crossSellSlugs || formData.crossSellSlugs.length < 4) && (
+                  <div className="space-y-1.5 pt-1">
+                    <div className="relative">
+                      <Search className="w-3.5 h-3.5 text-[#64748B] absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+                      <input
+                        type="text"
+                        placeholder="Search products to add as cross-sell..."
+                        value={crossSellSearch}
+                        onChange={(e) => setCrossSellSearch(e.target.value)}
+                        className="w-full pl-9 pr-3 py-2 bg-white border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] outline-none text-xs"
+                      />
+                    </div>
+
+                    {crossSellSearch.trim() && (
+                      <div className="max-h-48 overflow-y-auto border border-[#E8DFC8] rounded-xl bg-white divide-y divide-[#F2EBDC] shadow-lg">
+                        {products
+                          .filter((p) => {
+                            if (editingProduct && p._id === editingProduct._id) return false;
+                            if (formData.crossSellSlugs?.includes(p.slug)) return false;
+                            const query = crossSellSearch.toLowerCase();
+                            return (
+                              p.name.toLowerCase().includes(query) ||
+                              p.category.toLowerCase().includes(query) ||
+                              p.slug.toLowerCase().includes(query)
+                            );
+                          })
+                          .slice(0, 6)
+                          .map((p) => (
+                            <div
+                              key={p._id}
+                              onClick={() => {
+                                setFormData({
+                                  ...formData,
+                                  crossSellSlugs: [...(formData.crossSellSlugs || []), p.slug],
+                                });
+                                setCrossSellSearch("");
+                              }}
+                              className="p-2 flex items-center justify-between hover:bg-[#FAF8F5] cursor-pointer transition-colors"
+                            >
+                              <div className="flex items-center gap-2">
+                                <div className="relative w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#E8DFC8] overflow-hidden shrink-0">
+                                  <Image
+                                    src={p.image || "/collections/korean-super-soft-blanket.png"}
+                                    alt={p.name}
+                                    fill
+                                    className="object-cover"
+                                  />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-[#0B131F] line-clamp-1">{p.name}</p>
+                                  <p className="text-[10px] text-[#64748B]">{p.category} &bull; AED {p.salePrice || p.price}</p>
+                                </div>
+                              </div>
+                              <span className="text-[10px] font-bold text-[#D4AF37] hover:underline px-2 py-1 bg-[#D4AF37]/10 rounded-md">
+                                + Add
+                              </span>
+                            </div>
+                          ))}
+                        {products.filter((p) => {
+                          if (editingProduct && p._id === editingProduct._id) return false;
+                          if (formData.crossSellSlugs?.includes(p.slug)) return false;
+                          const query = crossSellSearch.toLowerCase();
+                          return (
+                            p.name.toLowerCase().includes(query) ||
+                            p.category.toLowerCase().includes(query) ||
+                            p.slug.toLowerCase().includes(query)
+                          );
+                        }).length === 0 && (
+                          <div className="p-3 text-center text-xs text-[#64748B]">
+                            No matching products found.
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

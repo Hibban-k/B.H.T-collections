@@ -228,6 +228,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
 
       return {
         id: p._id,
+        slug: p.slug,
         nameEn: p.name,
         nameAr: p.name,
         category: (p.categorySlug || p.category || "bedding").toLowerCase() as any,
