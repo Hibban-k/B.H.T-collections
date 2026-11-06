@@ -41,8 +41,8 @@ export interface IProduct extends Document {
   badge?: string;
   featured: boolean;
   bestseller: boolean;
-  showOnHomepage: boolean;
-  showOnCollection: boolean;
+  showOnHomepage?: boolean;
+  showOnCollection?: boolean;
   crossSellSlugs?: string[];
   additionalCategories?: string[];
   status: "published" | "draft" | "disabled";
@@ -110,8 +110,6 @@ const ProductSchema = new Schema<IProduct>(
     badge: { type: String, default: "" },
     featured: { type: Boolean, default: false },
     bestseller: { type: Boolean, default: false },
-    showOnHomepage: { type: Boolean, default: true },
-    showOnCollection: { type: Boolean, default: true },
     crossSellSlugs: { type: [String], default: [] },
     additionalCategories: { type: [String], default: [] },
     status: { type: String, enum: ["published", "draft", "disabled"], default: "published" },

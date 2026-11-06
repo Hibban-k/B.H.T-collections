@@ -15,9 +15,7 @@ export async function GET(req: Request) {
     let products = await ProductService.getProducts({
       status: "published",
       categorySlug: category,
-      showOnHomepage: homepage,
-      showOnCollection: collection,
-      featured,
+      featured: homepage ? true : featured,
       search,
     });
 

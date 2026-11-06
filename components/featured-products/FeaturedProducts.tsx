@@ -26,7 +26,6 @@ interface DbProduct {
   description?: string;
   shortDescription?: string;
   featured?: boolean;
-  showOnHomepage?: boolean;
 }
 
 export const FeaturedProducts: React.FC = () => {
@@ -95,7 +94,7 @@ export const FeaturedProducts: React.FC = () => {
                   "/collections/korean-super-soft-blanket.png",
                 inStock: p.stock === undefined || p.stock > 0,
                 isNew: true,
-                isFeatured: Boolean(p.featured || p.showOnHomepage),
+                isFeatured: Boolean(p.featured),
                 rating: p.rating || 5.0,
                 reviewsCount: p.reviewCount || 1,
                 descriptionEn: p.description || p.shortDescription || "",

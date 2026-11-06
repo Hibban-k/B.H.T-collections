@@ -52,8 +52,8 @@ interface ProductItem {
   description: string;
   shortDescription: string;
   featured: boolean;
-  showOnHomepage: boolean;
-  showOnCollection: boolean;
+  showOnHomepage?: boolean;
+  showOnCollection?: boolean;
   additionalCategories?: string[];
   brand?: string;
   metaTitle?: string;
@@ -80,8 +80,6 @@ const defaultFormData = {
   description: "",
   shortDescription: "",
   featured: false,
-  showOnHomepage: true,
-  showOnCollection: true,
   additionalCategories: [],
   brand: "",
   metaTitle: "",
@@ -194,9 +192,7 @@ export default function AdminProductsPage() {
       variants: product.variants || [],
       description: product.description,
       shortDescription: product.shortDescription,
-      featured: product.featured,
-      showOnHomepage: product.showOnHomepage,
-      showOnCollection: product.showOnCollection,
+      featured: Boolean(product.featured),
       additionalCategories: product.additionalCategories || [],
       brand: (product as any).brand?._id ? String((product as any).brand._id) : ((product as any).brand || ""),
       metaTitle: (product as any).metaTitle || "",
@@ -381,7 +377,7 @@ export default function AdminProductsPage() {
     }
 
     // Home screen featured limit: max 4 products per main category
-    if (formData.showOnHomepage || formData.featured) {
+    if (formData.featured) {
       const getCategoryGroup = (cat?: string, catSlug?: string) => {
         const s = `${cat || ""} ${catSlug || ""}`.toLowerCase();
         if (s.includes("travel") || s.includes("bag") || s.includes("trolley") || s.includes("trolly") || s.includes("luggage")) {
@@ -398,7 +394,7 @@ export default function AdminProductsPage() {
         if (editingProduct && p._id === editingProduct._id) return false;
         return (
           getCategoryGroup(p.category, p.categorySlug) === targetGroup &&
-          (p.showOnHomepage || p.featured)
+          p.featured
         );
       }).length;
 
@@ -612,7 +608,7 @@ export default function AdminProductsPage() {
                   <th className="px-4 py-3.5 font-bold">Category</th>
                   <th className="px-4 py-3.5 font-bold">Price</th>
                   <th className="px-4 py-3.5 font-bold">Stock</th>
-                  <th className="px-4 py-3.5 font-bold">Homepage</th>
+                  <th className="px-4 py-3.5 font-bold">Featured</th>
                   <th className="px-4 py-3.5 font-bold">Status</th>
                   <th className="px-5 py-3.5 font-bold text-right">Actions</th>
                 </tr>
@@ -694,13 +690,13 @@ export default function AdminProductsPage() {
                     <td className="px-4 py-3.5">
                       <span
                         className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-semibold ${
-                          product.showOnHomepage
+                          product.featured
                             ? "bg-amber-50 text-amber-700 border border-amber-200"
                             : "bg-gray-100 text-gray-500"
                         }`}
                       >
-                        {product.showOnHomepage ? <Sparkles className="w-2.5 h-2.5" /> : null}
-                        {product.showOnHomepage ? "Featured" : "Hidden"}
+                        {product.featured ? <Sparkles className="w-2.5 h-2.5" /> : null}
+                        {product.featured ? "Featured" : "Regular"}
                       </span>
                     </td>
 
@@ -1349,7 +1345,7 @@ export default function AdminProductsPage() {
                       if (editingProduct && p._id === editingProduct._id) return false;
                       return (
                         getCategoryGroup(p.category, p.categorySlug) === targetGroup &&
-                        (p.showOnHomepage || p.featured)
+                        p.featured
                       );
                     }).length;
                     const isLimitReached = featuredCount >= 4;
@@ -1362,41 +1358,26 @@ export default function AdminProductsPage() {
                             : "bg-emerald-50 text-emerald-700 border border-emerald-200"
                         }`}
                       >
-                        {featuredCount}/4 Home Featured in category
+                        {featuredCount}/4 Featured on Homepage
                       </span>
                     );
                   })()}
                 </div>
 
-                <div className="grid sm:grid-cols-3 gap-3">
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.showOnHomepage}
-                      onChange={(e) => setFormData({ ...formData, showOnHomepage: e.target.checked })}
-                      className="rounded text-[#D4AF37] focus:ring-[#D4AF37] w-4 h-4"
-                    />
-                    <span className="font-semibold text-xs text-[#0B131F]">Show on Homepage</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={formData.showOnCollection}
-                      onChange={(e) => setFormData({ ...formData, showOnCollection: e.target.checked })}
-                      className="rounded text-[#D4AF37] focus:ring-[#D4AF37] w-4 h-4"
-                    />
-                    <span className="font-semibold text-xs text-[#0B131F]">Show on Collections</span>
-                  </label>
-
-                  <label className="flex items-center gap-2 cursor-pointer">
+                <div className="p-3 bg-[#FAF8F5] rounded-xl border border-[#E8DFC8]/60">
+                  <label className="flex items-start gap-2.5 cursor-pointer">
                     <input
                       type="checkbox"
                       checked={formData.featured}
                       onChange={(e) => setFormData({ ...formData, featured: e.target.checked })}
-                      className="rounded text-[#D4AF37] focus:ring-[#D4AF37] w-4 h-4"
+                      className="rounded text-[#D4AF37] focus:ring-[#D4AF37] w-4 h-4 mt-0.5"
                     />
-                    <span className="font-semibold text-xs text-[#0B131F]">Mark as Featured</span>
+                    <div>
+                      <span className="font-semibold text-xs text-[#0B131F] block">Mark as Featured (Homepage)</span>
+                      <span className="text-[11px] text-[#64748B]">
+                        Display this product in the Featured Products showcase on the homepage (max 4 per category).
+                      </span>
+                    </div>
                   </label>
                 </div>
 

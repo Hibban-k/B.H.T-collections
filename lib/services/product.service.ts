@@ -118,7 +118,7 @@ export class ProductService {
       throw new Error(`Product with slug "${slug}" already exists.`);
     }
 
-    const shouldBeOnHomepage = Boolean(input.featured || input.showOnHomepage);
+    const shouldBeOnHomepage = Boolean(input.featured);
     if (shouldBeOnHomepage) {
       const catCheck = input.categorySlug || input.category || "bedding";
       const count = await ProductRepository.countFeaturedOrHomepage(catCheck);
@@ -165,12 +165,6 @@ export class ProductService {
       badge: input.badge || undefined,
       featured: Boolean(input.featured),
       bestseller: Boolean(input.bestseller),
-      showOnHomepage:
-        input.showOnHomepage !== undefined ? Boolean(input.showOnHomepage) : true,
-      showOnCollection:
-        input.showOnCollection !== undefined
-          ? Boolean(input.showOnCollection)
-          : true,
       additionalCategories: input.additionalCategories || [],
       metaTitle: input.metaTitle || "",
       metaDescription: input.metaDescription || "",
@@ -195,7 +189,7 @@ export class ProductService {
       }
     }
 
-    if (updates.featured === true || updates.showOnHomepage === true) {
+    if (updates.featured === true) {
       const existingProduct = await ProductRepository.findById(id);
       const catCheck = updates.categorySlug || updates.category || existingProduct?.categorySlug || existingProduct?.category || "bedding";
       const count = await ProductRepository.countFeaturedOrHomepage(catCheck, id);

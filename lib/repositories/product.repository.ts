@@ -50,8 +50,8 @@ export interface SerializedProduct {
   badge?: string;
   featured: boolean;
   bestseller: boolean;
-  showOnHomepage: boolean;
-  showOnCollection: boolean;
+  showOnHomepage?: boolean;
+  showOnCollection?: boolean;
   crossSellSlugs?: string[];
   additionalCategories?: string[];
   brand?: any;
@@ -74,8 +74,6 @@ function buildMongoFilter(options?: ProductFilter): Record<string, unknown> {
       { additionalCategories: options.categorySlug }
     ];
   }
-  if (options.showOnHomepage !== undefined) filter.showOnHomepage = options.showOnHomepage;
-  if (options.showOnCollection !== undefined) filter.showOnCollection = options.showOnCollection;
   if (options.featured !== undefined) filter.featured = options.featured;
   if (options.brand && options.brand.trim() !== "") {
     if (mongoose.isValidObjectId(options.brand.trim())) {
@@ -199,9 +197,7 @@ export class ProductRepository {
             { category: { $regex: regex } },
           ],
         },
-        {
-          $or: [{ showOnHomepage: true }, { featured: true }],
-        },
+        { featured: true },
       ],
     };
 
