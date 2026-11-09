@@ -72,7 +72,7 @@ export const AboutPastFatherSection: React.FC = () => {
           <div className="lg:col-span-6 flex items-center justify-center">
             <div className="relative w-full max-w-[560px] aspect-[4/5] rounded-2xl sm:rounded-3xl overflow-hidden bg-neutral-900 group">
               <Image
-                src="/about/founder-father-heritage.jpg"
+                src="/about/founder-father-portrait.jpg"
                 alt="Founding of Blanket House Trading LLC Dubai"
                 fill
                 className="object-cover object-top sm:object-center transition-transform duration-700 group-hover:scale-102"
