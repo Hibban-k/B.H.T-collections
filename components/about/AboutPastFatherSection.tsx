@@ -75,7 +75,7 @@ export const AboutPastFatherSection: React.FC = () => {
                 src="/about/founder-father-heritage.jpg"
                 alt="Founding of Blanket House Trading LLC Dubai"
                 fill
-                className="object-cover object-center filter sepia-[0.15] transition-transform duration-700 group-hover:scale-102"
+                className="object-cover object-top sm:object-center transition-transform duration-700 group-hover:scale-102"
                 sizes="(max-width: 1024px) 100vw, 48vw"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/10 pointer-events-none" />
