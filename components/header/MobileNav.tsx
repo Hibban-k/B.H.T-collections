@@ -179,29 +179,45 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
               </span>
             </div>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-1.5 text-bht-charcoal hover:bg-bht-offwhite rounded-full transition-colors"
-            aria-label="Close menu"
-          >
-            <X className="w-5 h-5 stroke-[2]" />
-          </button>
+          <div className="flex items-center gap-2">
+            <LanguageSwitcher />
+            <button
+              type="button"
+              onClick={onClose}
+              className="p-1.5 text-bht-charcoal hover:bg-bht-offwhite rounded-full transition-colors"
+              aria-label="Close menu"
+            >
+              <X className="w-5 h-5 stroke-[2]" />
+            </button>
+          </div>
         </div>
 
-        {/* Search Input */}
-        <div className="p-4 border-b border-[#F0F0F0]">
-          <form onSubmit={handleSearch} className="relative">
-            <Search className="w-4 h-4 text-[#888888] absolute start-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+        {/* Search Input inside Side Navigation */}
+        <div className="p-4 border-b border-[#F0F0F0] bg-white">
+          <form onSubmit={handleSearch} className="relative group">
+            <Search className="w-4 h-4 text-neutral-400 group-focus-within:text-bht-charcoal absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none transition-colors" />
             <input
               type="text"
+              aria-label={language === "ar" ? "البحث عن المنتجات" : "Search products"}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
-                language === "ar" ? "ابحث عن المنتجات..." : "Search products..."
+                language === "ar"
+                  ? "ابحث عن المنتجات، المفروشات، حقائب السفر، الأحذية..."
+                  : "Search products, bedding, travel luggage, footwear..."
               }
-              className="w-full bg-[#F5F6F7] text-xs text-bht-charcoal rounded-full ps-9 pe-3 py-2 border border-transparent focus:border-bht-charcoal/30 focus:bg-white focus:outline-hidden"
+              className="w-full bg-[#F5F6F7] hover:bg-[#EFEFEF] focus:bg-white text-xs text-bht-charcoal rounded-full ps-10 pe-9 py-2.5 border border-[#E2E4E8] focus:border-bht-charcoal focus:ring-2 focus:ring-black/5 focus:outline-none transition-all placeholder:text-neutral-400 shadow-2xs"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery("")}
+                className="absolute end-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-neutral-700 p-1 rounded-full transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </form>
         </div>
 

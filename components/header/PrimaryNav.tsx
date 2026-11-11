@@ -55,7 +55,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
         </div>
 
         {/* MIDDLE / CENTER: Prominent Luxury Search Bar */}
-        <div className="hidden sm:flex flex-1 max-w-xl lg:max-w-2xl mx-2 md:mx-6 items-center justify-center">
+        <div className="hidden md:flex flex-1 max-w-xl lg:max-w-2xl mx-2 md:mx-6 items-center justify-center">
           <form
             onSubmit={handleSearchSubmit}
             className="w-full relative group"
@@ -89,7 +89,9 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
         {/* RIGHT: High-End Language Switcher & Mobile Menu Toggle */}
         <div className="flex items-center gap-2 sm:gap-4 shrink-0">
           {/* Luxury Language Switcher */}
-          <LanguageSwitcher />
+          <div className="hidden md:block">
+            <LanguageSwitcher />
+          </div>
 
           {/* Mobile Menu Drawer Toggle */}
           <button
@@ -103,32 +105,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
         </div>
       </div>
 
-      {/* MOBILE ONLY SEARCH BAR (Visible below header on small mobile screens) */}
-      <div className="sm:hidden px-4 pb-3">
-        <form onSubmit={handleSearchSubmit} className="w-full relative">
-          <Search className="w-4 h-4 text-neutral-400 absolute start-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-          <input
-            type="text"
-            aria-label={language === "ar" ? "البحث عن المنتجات" : "Search products"}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={
-              language === "ar" ? "ابحث عن المنتجات..." : "Search products..."
-            }
-            className="w-full bg-[#F5F6F7] text-xs text-bht-charcoal rounded-full ps-10 pe-9 py-2 border border-[#E2E4E8] focus:border-bht-charcoal focus:outline-none placeholder:text-neutral-400"
-          />
-          {searchQuery && (
-            <button
-              type="button"
-              onClick={() => setSearchQuery("")}
-              className="absolute end-3 top-1/2 -translate-y-1/2 text-neutral-400 p-0.5"
-              aria-label="Clear search"
-            >
-              <X className="w-3 h-3" />
-            </button>
-          )}
-        </form>
-      </div>
+      
     </div>
   );
 };
