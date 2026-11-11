@@ -45,7 +45,7 @@ export const CategoryTabsNav: React.FC<CategoryTabsNavProps> = ({
       id: cat.slug,
       nameEn: cat.nameEn,
       nameAr: cat.nameAr || cat.nameEn,
-      href: `/collections/${cat.slug}`,
+      href: `/${cat.slug}`,
       icon,
       color,
     };

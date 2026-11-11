@@ -110,17 +110,17 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
                 <li>
-                  <Link href="/collections/bedding" className="hover:text-white transition-colors">
+                  <Link href="/bedding" className="hover:text-white transition-colors">
                     {language === "ar" ? "المفروشات الفاخرة واللحف" : "Luxury Bedding & Quilts"}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections/travel-bags" className="hover:text-white transition-colors">
+                  <Link href="/travel-bags" className="hover:text-white transition-colors">
                     {language === "ar" ? "حقائب السفر ومستلزمات الرحلات" : "Travel Bags & Luggage"}
                   </Link>
                 </li>
                 <li>
-                  <Link href="/collections/footwear" className="hover:text-white transition-colors">
+                  <Link href="/footwear" className="hover:text-white transition-colors">
                     {language === "ar" ? "أحذية الراحة اليومية" : "Comfort Everyday Footwear"}
                   </Link>
                 </li>
@@ -134,7 +134,7 @@ export const Footer: React.FC = () => {
               </h4>
               <ul className="space-y-2.5 text-xs sm:text-sm text-neutral-400">
                 <li>
-                  <Link href="/collections" className="hover:text-white transition-colors">
+                  <Link href="/bedding" className="hover:text-white transition-colors">
                     {language === "ar" ? "كافة التشكيلات" : "All Collections"}
                   </Link>
                 </li>

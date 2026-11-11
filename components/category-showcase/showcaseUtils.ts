@@ -49,6 +49,14 @@ export function buildShowcaseCategories(
       );
     });
 
+    // First added brand in DB shows first (keep chronological order)
+    matchedBrands.sort((a, b) => {
+      const timeA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+      const timeB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+      if (timeA !== timeB) return timeA - timeB;
+      return String(a._id || '').localeCompare(String(b._id || ''));
+    });
+
     const brandSlides: BrandSlide[] = matchedBrands.map((b) => ({
       name: b.name,
       slug: b.slug || b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
@@ -66,7 +74,7 @@ export function buildShowcaseCategories(
       slug: normCatSlug,
       nameEn: cat.name.toUpperCase(),
       nameAr: cat.name,
-      href: `/collections/${normCatSlug}`,
+      href: `/${normCatSlug}`,
       subtitleEn,
       subtitleAr: subtitleEn,
       brands: brandSlides,

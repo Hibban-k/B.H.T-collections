@@ -45,7 +45,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.8,
       },
       {
-        url: getAbsoluteUrl(`/${locale}/collections`),
+        url: getAbsoluteUrl(`/${locale}/bedding`),
         lastModified: new Date(),
         changeFrequency: "weekly",
         priority: 0.9,
@@ -60,7 +60,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
     Object.values(COLLECTION_CATEGORIES_META).forEach((cat) => {
       sitemapData.push({
-        url: getAbsoluteUrl(`/${locale}/collections/${cat.id}`),
+        url: getAbsoluteUrl(`/${locale}/${cat.id}`),
         lastModified: new Date(),
         changeFrequency: "weekly",
         priority: 0.8,

@@ -94,7 +94,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           </div>
 
           {/* Product Title */}
-          <Link href={`/products/${product.slug || product.id}`}>
+          <Link href={`/c=${product.category || "bedding"}/${product.slug || product.id}`}>
             <h3 className="text-xs sm:text-sm font-bold text-bht-charcoal hover:text-[#D4AF37] transition-colors line-clamp-2 leading-snug mb-2 cursor-pointer">
               {language === "ar" ? product.nameAr : product.nameEn}
             </h3>

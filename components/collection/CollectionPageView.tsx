@@ -307,24 +307,59 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       inStockOnly: false,
     });
     setVisibleCount(12);
-    router.push(`/collections/${slug}`, { scroll: false });
+    router.push(`/${slug}`, { scroll: false });
+  };
+
+  // Helper to sync URL search params without page reload
+  const syncUrlParams = (cat: string, newFilters: FilterState) => {
+    if (typeof window === "undefined") return;
+    const params = new URLSearchParams(window.location.search);
+    if (newFilters.subcategory && newFilters.subcategory !== "all") {
+      params.set("subcategory", newFilters.subcategory);
+    } else {
+      params.delete("subcategory");
+      params.delete("sub");
+    }
+    if (newFilters.variation) {
+      params.set("variation", newFilters.variation);
+    } else {
+      params.delete("variation");
+      params.delete("color");
+      params.delete("size");
+    }
+    if (newFilters.selectedBrands && newFilters.selectedBrands.length > 0) {
+      params.set("brand", newFilters.selectedBrands[0]);
+    } else {
+      params.delete("brand");
+    }
+    const qs = params.toString();
+    const newPath = qs ? `/${cat}?${qs}` : `/${cat}`;
+    window.history.replaceState(null, "", newPath);
   };
 
   // Handle subcategory pill selection
   const handleSubcategorySelect = (subId: string) => {
-    setActiveSubcategory(subId.toLowerCase());
-    setFilters((prev) => ({ ...prev, subcategory: subId.toLowerCase() }));
+    const clean = subId.toLowerCase();
+    setActiveSubcategory(clean);
+    setFilters((prev) => {
+      const next = { ...prev, subcategory: clean };
+      syncUrlParams(activeCategory, next);
+      return next;
+    });
   };
 
   // Reset filters
   const handleResetFilters = () => {
     setActiveSubcategory("all");
-    setFilters({
+    const next: FilterState = {
       subcategory: "all",
       selectedBrands: [],
       maxPrice: highestCategoryPrice,
       inStockOnly: false,
-    });
+      variation: "",
+    };
+    setFilters(next);
+    syncUrlParams(activeCategory, next);
     setSortBy("featured");
   };
 
@@ -335,6 +370,15 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         const pSub = product.subcategory.toLowerCase();
         const fSub = filters.subcategory.toLowerCase();
         if (pSub !== fSub && !pSub.includes(fSub) && !fSub.includes(pSub)) {
+          return false;
+        }
+      }
+      if (filters.variation) {
+        const v = filters.variation.toLowerCase();
+        const hasColor = product.colorVariants?.some((c) => c.toLowerCase().includes(v));
+        const hasSize = product.sizes?.some((s) => s.toLowerCase().includes(v));
+        const hasName = product.nameEn.toLowerCase().includes(v) || product.nameAr.toLowerCase().includes(v);
+        if (!hasColor && !hasSize && !hasName) {
           return false;
         }
       }
@@ -444,7 +488,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       slug,
       nameEn: name.toUpperCase(),
       nameAr: name,
-      href: `/collections/${slug}`,
+      href: `/${slug}`,
       bannerImage: banner,
       taglineEn: `Exclusive ${name} Collections`,
       taglineAr: `تشكيلات ${name} الحصرية`,
@@ -598,7 +642,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         isOpen={isFilterOpen}
         onClose={() => setIsFilterOpen(false)}
         filters={filters}
-        onFiltersChange={setFilters}
+        onFiltersChange={(newFilters) => { setFilters(newFilters); syncUrlParams(activeCategory, newFilters); }}
         availableBrands={availableBrands}
         availableSubcategories={subcategoryPillItems.filter((s) => s.id !== "all")}
         highestPrice={highestCategoryPrice}

@@ -219,12 +219,12 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 {isAr ? "الرئيسية" : "Home"}
               </Link>
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-400" />
-              <Link href="/collections" className="hover:text-[#b32025] transition-colors">
+              <Link href="/bedding" className="hover:text-[#b32025] transition-colors">
                 {isAr ? "المجموعات" : "Collections"}
               </Link>
               <ChevronRight className="w-3.5 h-3.5 shrink-0 text-gray-400" />
               <Link
-                href={`/collections/${product.categorySlug || "bedding"}`}
+                href={`/${product.categorySlug || "bedding"}`}
                 className="hover:text-[#b32025] transition-colors capitalize font-medium text-[#171717]"
               >
                 {product.category}
@@ -605,7 +605,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                             <p className="text-xs font-bold text-[#171717] truncate">{item.name}</p>
                             <p className="text-xs font-black text-[#b32025]">AED {itemPrice.toFixed(2)}</p>
                             <Link
-                              href={`/products/${item.slug}`}
+                              href={`/c=${item.categorySlug || product.categorySlug || "bedding"}/${item.slug}`}
                               onClick={(e) => e.stopPropagation()}
                               className="text-[10px] text-[#737373] hover:underline"
                             >
@@ -856,7 +856,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 </h2>
               </div>
               <Link
-                href={`/collections/${product.categorySlug || "bedding"}`}
+                href={`/${product.categorySlug || "bedding"}`}
                 className="text-xs font-bold text-[#b32025] hover:underline flex items-center gap-1"
               >
                 <span>{isAr ? "عرض المجموعة الكاملة" : "View Full Collection"}</span>
@@ -868,7 +868,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
               {relatedProducts.slice(0, 4).map((item) => (
                 <Link
                   key={item._id}
-                  href={`/products/${item.slug}`}
+                  href={`/c=${item.categorySlug || product.categorySlug || "bedding"}/${item.slug}`}
                   className="group bg-white rounded-2xl border border-[#e5e5e5] overflow-hidden hover:shadow-md transition-all flex flex-col justify-between"
                 >
                   <div className="relative aspect-square bg-[#f7f6f3] overflow-hidden">

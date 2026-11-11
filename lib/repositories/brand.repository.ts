@@ -32,9 +32,9 @@ export class BrandRepository {
     };
   }
 
-  static async findAll(): Promise<SerializedBrand[]> {
+  static async findAll(sortOptions: Record<string, 1 | -1> = { createdAt: 1, _id: 1 }): Promise<SerializedBrand[]> {
     await dbConnect();
-    const brands = await BrandModel.find().sort({ createdAt: -1 });
+    const brands = await BrandModel.find().sort(sortOptions);
     return brands.map(this.serialize);
   }
 

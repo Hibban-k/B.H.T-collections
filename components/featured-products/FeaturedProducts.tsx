@@ -191,7 +191,7 @@ export const FeaturedProducts: React.FC = () => {
 
             {displayedProducts.length > 0 && (
               <Link
-                href={`/collections/${activeTab}`}
+                href={`/${activeTab}`}
                 className="hidden lg:inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-white hover:bg-bht-charcoal text-bht-charcoal hover:text-white border border-[#E0E0E0] text-xs font-bold transition-all duration-200 shadow-2xs group"
               >
                 <span>{language === "ar" ? "عرض الكل" : "View All"}</span>
@@ -251,7 +251,7 @@ export const FeaturedProducts: React.FC = () => {
                   {/* 1. PRODUCT PHOTOGRAPHY FRAME */}
                   <div className="relative w-full aspect-square sm:aspect-[4/5] bg-[#F7F7F7] overflow-hidden">
                     <Link
-                      href={`/collections/${product.category}/${product.id}`}
+                      href={`/c=${product.category || "bedding"}/${product.slug || product.id}`}
                       className="absolute inset-0 block"
                     >
                       <Image
@@ -319,7 +319,7 @@ export const FeaturedProducts: React.FC = () => {
                       </div>
 
                       {/* Product Title */}
-                      <Link href={`/collections/${product.category}/${product.id}`}>
+                      <Link href={`/c=${product.category || "bedding"}/${product.slug || product.id}`}>
                         <h3 className="text-xs sm:text-sm font-bold text-bht-charcoal hover:text-bht-red transition-colors line-clamp-2 leading-snug mb-2">
                           {language === "ar" ? product.nameAr : product.nameEn}
                         </h3>
@@ -342,7 +342,7 @@ export const FeaturedProducts: React.FC = () => {
 
                       {/* Quick Details Link */}
                       <Link
-                        href={`/collections/${product.category}/${product.id}`}
+                        href={`/c=${product.category || "bedding"}/${product.slug || product.id}`}
                         className="text-[11px] font-bold text-bht-slate hover:text-bht-charcoal flex items-center gap-0.5 transition-colors"
                       >
                         <span>{language === "ar" ? "التفاصيل" : "Details"}</span>
@@ -360,7 +360,7 @@ export const FeaturedProducts: React.FC = () => {
         {displayedProducts.length > 0 && (
           <div className="mt-8 text-center lg:hidden">
             <Link
-              href={`/collections/${activeTab}`}
+              href={`/${activeTab}`}
               className="inline-flex items-center justify-center gap-2 w-full max-w-xs px-6 py-3 rounded-xl bg-bht-charcoal text-white text-xs font-bold hover:bg-black transition-all shadow-sm"
             >
               <span>{language === "ar" ? "عرض جميع المنتجات" : "View All Products"}</span>

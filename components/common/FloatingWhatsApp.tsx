@@ -11,7 +11,7 @@ export const FloatingWhatsApp: React.FC = () => {
   // Do not render inside collection and its child pages
   if (
     pathname &&
-    (pathname.includes("/collections") || pathname.includes("/collection") || pathname.includes("/products/"))
+    (pathname.includes("/collections") || pathname.includes("/collection") || pathname.includes("/products/") || pathname.includes("/c="))
   ) {
     return null;
   }

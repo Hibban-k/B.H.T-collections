@@ -18,6 +18,13 @@ export interface CreateBrandInput {
 }
 
 export class BrandService {
+  static async getBrandBySlug(slug: string): Promise<SerializedBrand | null> {
+    const clean = slug.trim().toLowerCase();
+    const bySlug = await BrandRepository.findBySlug(clean);
+    if (bySlug) return bySlug;
+    return BrandRepository.findByName(clean);
+  }
+
   static async getBrands(): Promise<SerializedBrand[]> {
     return BrandRepository.findAll();
   }
@@ -44,6 +51,13 @@ export class BrandService {
     const existingSlug = await BrandRepository.findBySlug(slug);
     if (existingSlug) {
       throw new Error(`Brand with slug "${slug}" already exists.`);
+    }
+
+    if (input.logo) {
+      const cleanLogo = input.logo.split("?")[0].trim().toLowerCase();
+      if (!cleanLogo.endsWith(".png") && !cleanLogo.startsWith("data:image/png")) {
+        throw new Error("Brand logo must strictly be in PNG format (.png).");
+      }
     }
 
     const brandData: Partial<IBrand> = {
@@ -76,6 +90,13 @@ export class BrandService {
       const existingSlug = await BrandRepository.findBySlug(updates.slug.trim().toLowerCase(), id);
       if (existingSlug) {
         throw new Error(`Brand with slug "${updates.slug.trim().toLowerCase()}" already exists.`);
+      }
+    }
+
+    if (updates.logo) {
+      const cleanLogo = updates.logo.split("?")[0].trim().toLowerCase();
+      if (!cleanLogo.endsWith(".png") && !cleanLogo.startsWith("data:image/png")) {
+        throw new Error("Brand logo must strictly be in PNG format (.png).");
       }
     }
 

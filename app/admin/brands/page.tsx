@@ -138,7 +138,14 @@ export default function BrandsPage() {
     file: File,
     target: "logo" | "image" | "pdfUrl"
   ) => {
-    if (target === "logo") setUploadingLogo(true);
+    if (target === "logo") {
+      const isPng = file.type === "image/png" || file.name.toLowerCase().endsWith(".png");
+      if (!isPng) {
+        setErrorMsg("Brand logo must strictly be in PNG format (.png). Other formats are not allowed.");
+        return;
+      }
+      setUploadingLogo(true);
+    }
     if (target === "image") setUploadingImage(true);
     if (target === "pdfUrl") setUploadingPdf(true);
     setErrorMsg("");
@@ -187,6 +194,16 @@ export default function BrandsPage() {
     }
 
     const trimmedSlug = (formData.slug || trimmedName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")).trim().toLowerCase();
+
+    // Brand logo format strict validation
+    if (formData.logo) {
+      const cleanLogo = cleanImageUrl(formData.logo).split("?")[0].trim().toLowerCase();
+      if (!cleanLogo.endsWith(".png") && !cleanLogo.startsWith("data:image/png")) {
+        setErrorMsg("Brand logo must strictly be in PNG format (.png).");
+        setSaving(false);
+        return;
+      }
+    }
 
     // Client-side uniqueness check
     const duplicate = brands.find((b) => {
@@ -533,11 +550,11 @@ export default function BrandsPage() {
 
               {/* Brand Logo Upload Section */}
               <div className="space-y-1.5">
-                <label className="block font-bold uppercase tracking-wider text-[11px]">Brand Logo</label>
+                <label className="block font-bold uppercase tracking-wider text-[11px]">Brand Logo <span className="text-amber-600 font-semibold">(Strictly PNG only)</span></label>
                 <input
                   ref={logoInputRef}
                   type="file"
-                  accept="image/*"
+                  accept=".png,image/png"
                   onChange={(e) => {
                     if (e.target.files && e.target.files[0]) {
                       handleFileUpload(e.target.files[0], "logo");
@@ -607,7 +624,7 @@ export default function BrandsPage() {
                         <UploadCloud className="w-4 h-4 text-[#D4AF37]" />
                         <span className="font-semibold text-xs text-[#0B131F]">Drag &amp; drop Brand Logo here</span>
                       </div>
-                      <span className="text-[10px] text-[#8A95A5]">or click to browse from device (JPG, PNG, WebP)</span>
+                      <span className="text-[10px] text-amber-700 font-semibold">or click to browse from device (Strictly PNG only)</span>
                     </div>
                   )}
                 </div>

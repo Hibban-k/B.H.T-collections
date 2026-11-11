@@ -74,7 +74,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                 slug: s.slug,
                 nameEn: s.name,
                 nameAr: s.name,
-                href: `/collections/${s.slug}`,
+                href: `/${normSlug}?subcategory=${s.slug}`,
               }));
 
             let icon: "bed" | "luggage" | "footprints" | "grid" = "grid";
@@ -96,7 +96,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
               slug: normSlug,
               nameEn: cat.name,
               nameAr: cat.name,
-              href: `/collections/${normSlug}`,
+              href: `/${normSlug}`,
               circleClass,
               icon,
               subcategories: subs,

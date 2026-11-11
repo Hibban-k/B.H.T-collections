@@ -58,7 +58,7 @@ export const Testimonials: React.FC = () => {
     >
       <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
         {/* Exactly 5 boxes in horizontal row on desktop with increased height */}
-        <div data-reveal-group="stagger" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 lg:gap-5 items-stretch">
+        <div data-reveal-group="stagger" className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4 lg:gap-5 items-stretch">
           {/* BOX 1: Black Introductory Trust Box */}
           <div className="bg-bht-charcoal text-white rounded-2xl p-7 lg:p-8 flex flex-col justify-between shadow-md min-h-[320px] sm:min-h-[350px] lg:min-h-[360px]">
             <div>
@@ -116,7 +116,7 @@ export const Testimonials: React.FC = () => {
           </div>
 
           {/* BOXES 2 - 5: White Testimonial Review Boxes (from Google Profile / Verified) */}
-          {reviewData.reviews.slice(0, 4).map((rev) => (
+          {reviewData.reviews.map((rev) => (
             <div
               key={rev.id}
               className="bg-white rounded-2xl border border-bht-border p-7 lg:p-8 flex flex-col justify-between hover:border-[#CCCCCC] hover:shadow-md transition-all duration-300 min-h-[320px] sm:min-h-[350px] lg:min-h-[360px]"

@@ -195,7 +195,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
             {product.slug && (
               <div className="pt-2 text-center">
                 <Link
-                  href={`/products/${product.slug}`}
+                  href={`/c=${product.category || "bedding"}/${product.slug}`}
                   onClick={onClose}
                   className="text-xs font-bold text-[#D4AF37] hover:underline inline-flex items-center gap-1"
                 >

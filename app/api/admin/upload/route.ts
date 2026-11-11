@@ -13,6 +13,13 @@ export const POST = withAuth("upload:write", async (req: Request) => {
     throw new Error("No file uploaded");
   }
 
+  if (folder === "brands/logos") {
+    const isPng = file.type === "image/png" || file.name.toLowerCase().endsWith(".png");
+    if (!isPng) {
+      throw new Error("Brand logo must strictly be in PNG format (.png)");
+    }
+  }
+
   const result = await UploadService.uploadFile(file, folder);
   return NextResponse.json({ success: true, ...result });
 });

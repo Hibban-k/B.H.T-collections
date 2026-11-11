@@ -36,10 +36,10 @@ function inferBrandCategory(slug: string, name: string): "bedding" | "travel" | 
 
 // Category fallback labels
 const CATEGORY_NAMES: Record<string, { en: string; ar: string; href: string }> = {
-  bedding: { en: "Luxury Bedding", ar: "المفروشات الفاخرة", href: "/collections/bedding" },
-  travel: { en: "Travel & Luggage", ar: "حقائب السفر والترولي", href: "/collections/travel-bags" },
-  footwear: { en: "Footwear & Comfort", ar: "الأحذية والراحة", href: "/collections/footwear" },
-  corporate: { en: "UAE Flagship House", ar: "العلامة الرئيسية للإمارات", href: "/collections" },
+  bedding: { en: "Luxury Bedding", ar: "المفروشات الفاخرة", href: "/bedding" },
+  travel: { en: "Travel & Luggage", ar: "حقائب السفر والترولي", href: "/travel-bags" },
+  footwear: { en: "Footwear & Comfort", ar: "الأحذية والراحة", href: "/footwear" },
+  corporate: { en: "UAE Flagship House", ar: "العلامة الرئيسية للإمارات", href: "/bedding" },
 };
 
 export const BrandClientGrid: React.FC = () => {
@@ -77,7 +77,7 @@ export const BrandClientGrid: React.FC = () => {
           logo: b.logo || "/logo/logo.png",
           descriptionEn: b.description || "",
           descriptionAr: b.description || "",
-          href: catInfo.href,
+          href: `/brand/${b.slug || b.name.toLowerCase().replace(/[^a-z0-9]+/g, "-")}`, 
         };
       });
 
