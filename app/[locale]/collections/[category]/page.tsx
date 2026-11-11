@@ -5,7 +5,7 @@ import { CategoryService } from "@/lib/services/category.service";
 import { ProductService } from "@/lib/services/product.service";
 import { BrandService } from "@/lib/services/brand.service";
 
-export const revalidate = 60; // 60s ISR cache
+export const dynamic = "force-dynamic";
 
 interface PageProps {
   params: Promise<{
@@ -31,20 +31,6 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const categories = await CategoryService.getCategories();
-    return categories
-      .filter((c) => c.status !== "disabled")
-      .map((c) => ({ category: c.slug }));
-  } catch {
-    return [
-      { category: "bedding" },
-      { category: "travel-bags" },
-      { category: "footwear" },
-    ];
-  }
-}
 
 export default async function CategoryPage({ params, searchParams }: PageProps) {
   const { category } = await params;

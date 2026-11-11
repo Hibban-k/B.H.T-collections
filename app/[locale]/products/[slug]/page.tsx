@@ -4,7 +4,7 @@ import { ProductDetailView } from "@/components/product/ProductDetailView";
 import { ProductService } from "@/lib/services/product.service";
 import { BrandService } from "@/lib/services/brand.service";
 
-export const revalidate = 60; // 60s ISR cache
+export const dynamic = "force-dynamic";
 
 interface ProductPageProps {
   params: Promise<{
@@ -43,14 +43,6 @@ export async function generateMetadata({ params }: ProductPageProps): Promise<Me
   };
 }
 
-export async function generateStaticParams() {
-  try {
-    const products = await ProductService.getProducts({ status: "published" });
-    return products.slice(0, 30).map((p) => ({ slug: p.slug }));
-  } catch {
-    return [];
-  }
-}
 
 export default async function SingleProductPage({ params }: ProductPageProps) {
   const { slug } = await params;

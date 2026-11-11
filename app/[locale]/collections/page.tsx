@@ -4,7 +4,7 @@ import { CategoryService } from "@/lib/services/category.service";
 import { ProductService } from "@/lib/services/product.service";
 import { BrandService } from "@/lib/services/brand.service";
 
-export const revalidate = 60; // Fast cached SSR
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "All Collections | BHT Collections — Blanket House Trading LLC",
