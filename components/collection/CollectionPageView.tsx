@@ -65,6 +65,8 @@ export interface DBBrand {
 interface CollectionPageViewProps {
   initialCategory?: string;
   initialSubcategory?: string;
+  initialVariation?: string;
+  initialBrand?: string;
   dbCategories?: DBCategory[];
   dbProducts?: DBProduct[];
   dbBrands?: DBBrand[];
@@ -73,6 +75,8 @@ interface CollectionPageViewProps {
 export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   initialCategory = "bedding",
   initialSubcategory = "all",
+  initialVariation = "",
+  initialBrand = "",
   dbCategories: propCategories,
   dbProducts: propProducts,
   dbBrands: propBrands,
@@ -263,9 +267,10 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
 
   const [filters, setFilters] = useState<FilterState>({
     subcategory: initialSubcategory.toLowerCase(),
-    selectedBrands: [],
+    selectedBrands: initialBrand ? [initialBrand] : [],
     maxPrice: highestCategoryPrice,
     inStockOnly: false,
+    variation: initialVariation || "",
   });
 
   // Available brands in this category from real products

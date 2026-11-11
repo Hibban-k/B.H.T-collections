@@ -9,6 +9,7 @@ export interface FilterState {
   selectedBrands: string[];
   maxPrice: number;
   inStockOnly: boolean;
+  variation?: string;
 }
 
 interface ProductFilterSidebarProps {
