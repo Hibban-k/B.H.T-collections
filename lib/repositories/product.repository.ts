@@ -77,8 +77,11 @@ function buildMongoFilter(options?: ProductFilter): Record<string, unknown> {
   }
   if (options.featured !== undefined) filter.featured = options.featured;
   if (options.brand && options.brand.trim() !== "") {
-    if (mongoose.isValidObjectId(options.brand.trim())) {
-      filter.brand = new mongoose.Types.ObjectId(options.brand.trim());
+    const brandTrim = options.brand.trim();
+    if (mongoose.isValidObjectId(brandTrim)) {
+      filter.brand = { $in: [new mongoose.Types.ObjectId(brandTrim), brandTrim] };
+    } else {
+      filter.brand = brandTrim;
     }
   }
   if (options.search) {

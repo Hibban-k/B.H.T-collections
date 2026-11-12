@@ -50,28 +50,36 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
     notFound();
   }
 
-  // Fetch products for this brand
+  const brandIdStr = String(brand._id);
+  const brandNameLower = (brand.name || "").trim().toLowerCase();
+  const brandSlugLower = (brand.slug || slug || "").trim().toLowerCase();
+
+  // 1. Fetch published products specifically linked to this brand's ObjectId
   let dbProducts = await ProductService.getProducts({
-    brand: String(brand._id),
+    brand: brandIdStr,
     status: "published",
   }).catch(() => []);
 
-  // Fallback search by brand name if none matched directly by ID
+  // 2. If no products matched by direct brand ObjectId, check if any published product has
+  // a brand field matching this brand's ID, name, or slug (e.g., if populated or stored as name)
   if (dbProducts.length === 0) {
-    dbProducts = await ProductService.getProducts({
-      brand: brand.name,
-      status: "published",
-    }).catch(() => []);
-  }
-
-  // Also match products where product.brand string or object equals brand name or ID
-  if (dbProducts.length === 0) {
-    const allProducts = await ProductService.getProducts({ status: "published" }).catch(() => []);
-    dbProducts = allProducts.filter((p) => {
+    const allPublished = await ProductService.getProducts({ status: "published" }).catch(() => []);
+    dbProducts = allPublished.filter((p) => {
       const b = (p as any).brand;
-      const bId = b?._id ? String(b._id) : String(b || "");
-      const bName = b?.name ? String(b.name).toLowerCase() : String(b || "").toLowerCase();
-      return bId === String(brand._id) || bName === brand.name.toLowerCase() || bName === brand.slug.toLowerCase();
+      if (!b) return false;
+
+      // Brand as populated object { _id, name, slug }
+      if (typeof b === "object" && b !== null) {
+        const bId = b._id ? String(b._id) : "";
+        const bName = b.name ? String(b.name).trim().toLowerCase() : "";
+        const bSlug = b.slug ? String(b.slug).trim().toLowerCase() : "";
+        return bId === brandIdStr || (bName && bName === brandNameLower) || (bSlug && bSlug === brandSlugLower);
+      }
+
+      // Brand as string or ObjectId hex
+      const bStr = String(b).trim();
+      const bLower = bStr.toLowerCase();
+      return bStr === brandIdStr || (bLower && (bLower === brandNameLower || bLower === brandSlugLower));
     });
   }
 

@@ -18,7 +18,6 @@ import {
   Building2,
   Package,
   Sparkles,
-  ExternalLink,
 } from "lucide-react";
 
 interface BrandData {
@@ -197,7 +196,9 @@ export const BrandShowcaseView: React.FC<BrandShowcaseViewProps> = ({ brand, pro
               <Package className="w-4 h-4 text-[#D4AF37]" />
               <span>{isAr ? `منتجات ${brand.name}` : `${brand.name} Catalog & Products`}</span>
               <span className="text-xs font-bold text-[#64748B] bg-[#FAF8F5] border border-[#E8DFC8] px-2 py-0.5 rounded-full">
-                {products.length} {isAr ? "منتج" : "items"}
+                {products.length > 0
+                  ? `${products.length} ${isAr ? "منتج" : "items"}`
+                  : (isAr ? "قريباً" : "Launching Soon")}
               </span>
             </h2>
 
@@ -221,28 +222,52 @@ export const BrandShowcaseView: React.FC<BrandShowcaseViewProps> = ({ brand, pro
               ))}
             </div>
           ) : (
-            <div className="p-12 sm:p-16 bg-white rounded-3xl border border-[#E8DFC8] text-center space-y-4 max-w-lg mx-auto shadow-xs">
-              <div className="w-16 h-16 rounded-full bg-[#FAF8F5] border border-[#E8DFC8] mx-auto flex items-center justify-center">
-                <Package className="w-7 h-7 text-[#D4AF37]" />
+            <div className="p-10 sm:p-16 bg-white rounded-3xl border border-[#E8DFC8] text-center space-y-5 max-w-xl mx-auto shadow-sm">
+              <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-b from-[#FAF8F5] to-[#F5EEDC] border border-[#E8DFC8] mx-auto flex items-center justify-center shadow-xs">
+                <Package className="w-9 h-9 text-[#D4AF37]" />
+                <span className="absolute -top-1 -right-1 flex h-4 w-4">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#D4AF37] opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-4 w-4 bg-[#D4AF37]"></span>
+                </span>
               </div>
-              <h3 className="text-base font-bold text-[#0B131F]">
-                {isAr ? "يتم تحديث تشكيلة هذه العلامة حالياً" : "Catalog Currently Being Updated"}
-              </h3>
-              <p className="text-xs text-[#64748B] leading-relaxed">
-                {isAr
-                  ? `منتجات علامة ${brand.name} متوفرة في مستودعاتنا المركزية بدبي. تواصل معنا مباشرة للاطلاع على قائمة الأسعار الفورية وتأكيد التوفر.`
-                  : `Products from ${brand.name} are in stock at our Dubai flagship warehouse. Contact our sales desk for instant inventory lists and bulk pricing.`}
-              </p>
-              <div className="pt-2">
+
+              <div className="space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#0B131F] text-xs font-semibold">
+                  <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+                  <span>{isAr ? "إطلاق مرتقب" : "Coming Soon"}</span>
+                </div>
+
+                <h3
+                  className="text-xl sm:text-2xl font-bold text-[#0B131F] tracking-tight"
+                  style={{ fontFamily: "var(--font-playfair-display)" }}
+                >
+                  {isAr ? "منتجات هذه العلامة ستتوفر قريباً" : "Products Will Launch Soon"}
+                </h3>
+
+                <p className="text-xs sm:text-sm text-[#64748B] leading-relaxed max-w-md mx-auto">
+                  {isAr
+                    ? `نعمل حالياً على تجهيز وإضافة التشكيلة الرسمية والكتالوج الكامل لمنتجات علامة ${brand.name}. يمكنكم التواصل المباشر معنا لتأكيد التوفر المسبق وقوائم أسعار الجملة والتصدير.`
+                    : `We are currently curating and preparing the official product collection for ${brand.name}. Products will launch soon. Contact our distribution team for advance wholesale bookings and catalog requests.`}
+                </p>
+              </div>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
                 <a
                   href={whatsappInquiryUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-xl text-xs font-bold shadow transition-all"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-[#25D366] hover:bg-[#20ba5a] text-white rounded-xl text-xs sm:text-sm font-bold shadow-sm transition-all"
                 >
-                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                  <span>{isAr ? "استفسار مباشر عن المخزون" : "Inquire Direct Inventory"}</span>
+                  <MessageCircle className="w-4 h-4 fill-white" />
+                  <span>{isAr ? "استفسار مسبق عن التوفر بالجملة" : "Inquire Advance Wholesale"}</span>
                 </a>
+
+                <Link
+                  href="/brands"
+                  className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#FAF8F5] hover:bg-[#F2EBDC] text-[#0B131F] border border-[#E8DFC8] rounded-xl text-xs sm:text-sm font-bold transition-all"
+                >
+                  <span>{isAr ? "استكشاف العلامات الأخرى" : "Explore Other Brands"}</span>
+                </Link>
               </div>
             </div>
           )}
