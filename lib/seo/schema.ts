@@ -43,25 +43,33 @@ export function generateItemListSchema(products: SerializedProduct[], categoryUr
     itemListElement: products.map((product, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: getAbsoluteUrl(`/collections/${product.categorySlug}/${product.slug}`),
+      url: getAbsoluteUrl(`/c=${product.categorySlug}/${product.slug}`),
       name: product.name,
     })),
   };
 }
 
 export function generateProductSchema(product: SerializedProduct) {
+  const cat = (product.categorySlug || product.category || "bedding").toLowerCase();
   return {
     "@context": "https://schema.org",
     "@type": "Product",
     name: product.name,
-    image: [getAbsoluteUrl(product.image)],
+    image: product.images && product.images.length > 0
+      ? product.images.map((img) => getAbsoluteUrl(img))
+      : [getAbsoluteUrl(product.image)],
     description: product.description || product.shortDescription,
-    sku: product.slug,
+    sku: product.sku || product.slug,
+    brand: {
+      "@type": "Brand",
+      name: typeof product.brand === "object" && product.brand?.name ? product.brand.name : "BHT Collections",
+    },
     offers: {
       "@type": "Offer",
-      url: getAbsoluteUrl(`/collections/${product.categorySlug}/${product.slug}`),
+      url: getAbsoluteUrl(`/c=${cat}/${product.slug}`),
       priceCurrency: "AED",
-      price: product.price,
+      price: product.salePrice || product.price,
+      itemCondition: "https://schema.org/NewCondition",
       availability: (product.stock ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
@@ -73,7 +81,7 @@ export function generateProductSchema(product: SerializedProduct) {
           aggregateRating: {
             "@type": "AggregateRating",
             ratingValue: product.rating,
-            reviewCount: product.reviewCount || 12,
+            reviewCount: product.reviewCount || 1,
           },
         }
       : {}),

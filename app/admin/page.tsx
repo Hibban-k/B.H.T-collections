@@ -14,6 +14,7 @@ import {
   RefreshCw,
   CheckCircle2,
   X,
+  Mail,
 } from "lucide-react";
 
 interface StatsData {
@@ -24,6 +25,8 @@ interface StatsData {
   totalCustomers: number;
   totalRevenue: number;
   recentOrders: any[];
+  totalInquiries?: number;
+  newInquiries?: number;
 }
 
 export default function AdminDashboardPage() {
@@ -215,6 +218,22 @@ export default function AdminDashboardPage() {
           </div>
           <div className="w-12 h-12 rounded-xl bg-bht-charcoal border border-[#1E2B3E] flex items-center justify-center text-[#E6C687] shrink-0">
             <DollarSign className="w-6 h-6" strokeWidth={2} />
+          </div>
+        </div>
+
+        {/* Card 7: Customer Inquiries */}
+        <div className="bg-white p-5 sm:p-6 rounded-2xl border border-[#E8DFC8] shadow-xs flex items-center justify-between">
+          <div>
+            <p className="text-[11px] font-bold text-[#8A95A5] uppercase tracking-wider">Inquiries</p>
+            <h3 className="text-2xl sm:text-3xl font-bold text-[#0B131F] mt-1 font-serif">
+              {stats?.totalInquiries ?? 0}
+            </h3>
+            <Link href="/admin/inquiries" className="text-[11px] font-semibold text-bht-red hover:underline flex items-center gap-1 mt-2">
+              <span>{stats?.newInquiries ?? 0} new</span> <ArrowUpRight className="w-3 h-3" />
+            </Link>
+          </div>
+          <div className="w-12 h-12 rounded-xl bg-rose-50 border border-rose-100 flex items-center justify-center text-[#D92626] shrink-0">
+            <Mail className="w-6 h-6" strokeWidth={1.75} />
           </div>
         </div>
       </div>

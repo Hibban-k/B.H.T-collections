@@ -1,6 +1,13 @@
 import mongoose from "mongoose";
-import { ProductRepository, ProductFilter, SerializedProduct } from "@/lib/repositories/product.repository";
+import {
+  ProductRepository,
+  ProductFilter,
+  SerializedProduct,
+  GRID_PRODUCT_SELECT,
+} from "@/lib/repositories/product.repository";
 import { BrandRepository } from "@/lib/repositories/brand.repository";
+
+export { GRID_PRODUCT_SELECT };
 import { cleanImageUrl } from "@/lib/utils/image";
 import type { IProduct } from "@/lib/db/models/Product";
 import type { IProductVariant } from "@/lib/db/models/Product";
@@ -81,6 +88,14 @@ function resolveCategoryId(val?: string | null): mongoose.Types.ObjectId | null 
 export class ProductService {
   static async getProducts(options?: ProductFilter): Promise<SerializedProduct[]> {
     return ProductRepository.findAll(options);
+  }
+
+  /**
+   * Retrieves products using selective projection for catalog card grids.
+   * Strips out heavy variants, full descriptions, materials, and keywords.
+   */
+  static async getGridProducts(options?: ProductFilter): Promise<SerializedProduct[]> {
+    return ProductRepository.findGrid(options);
   }
 
   static async getProductBySlug(slug: string): Promise<SerializedProduct | null> {

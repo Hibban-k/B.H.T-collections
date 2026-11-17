@@ -1,5 +1,6 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
 import { IBrand } from "./Brand";
+import { noBase64Validator, noBase64ArrayValidator } from "@/lib/db/validators";
 
 export interface IProductVariant {
   name: string;
@@ -59,7 +60,7 @@ const ProductVariantSchema = new Schema<IProductVariant>(
     price: { type: Number },
     salePrice: { type: Number, default: null },
     stock: { type: Number, default: 0 },
-    image: { type: String, default: "" },
+    image: { type: String, default: "", validate: noBase64Validator },
   },
   { _id: false }
 );
@@ -86,8 +87,8 @@ const ProductSchema = new Schema<IProduct>(
     originalPrice: { type: Number, default: null },
     rating: { type: Number, default: 5.0, min: 1, max: 5 },
     reviewCount: { type: Number, default: 12 },
-    image: { type: String, required: true },
-    images: { type: [String], default: [] },
+    image: { type: String, required: true, validate: noBase64Validator },
+    images: { type: [String], default: [], validate: noBase64ArrayValidator },
     description: { type: String, required: true },
     shortDescription: { type: String, default: "" },
     sizes: { type: [String], default: ["Single", "Double", "King"] },
@@ -116,6 +117,12 @@ const ProductSchema = new Schema<IProduct>(
   },
   { timestamps: true }
 );
+
+// Compound & Performance Indexes for Storefront and Filtering
+ProductSchema.index({ status: 1, categorySlug: 1 });
+ProductSchema.index({ status: 1, createdAt: -1 });
+ProductSchema.index({ status: 1, featured: 1 });
+ProductSchema.index({ brand: 1, status: 1 });
 
 // Pre-save hook to ensure empty string brand / subcategoryId are never persisted as invalid ObjectIds
 ProductSchema.pre("save", function () {

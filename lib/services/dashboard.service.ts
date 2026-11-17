@@ -1,6 +1,7 @@
 import { connectToDatabase } from "@/lib/db/mongodb";
 import { ProductModel } from "@/lib/db/models/Product";
 import { OrderModel } from "@/lib/db/models/Order";
+import { InquiryModel } from "@/lib/db/models/Inquiry";
 import type { SerializedOrder } from "@/lib/repositories/order.repository";
 
 export interface DashboardStats {
@@ -11,6 +12,8 @@ export interface DashboardStats {
   totalCustomers: number;
   totalRevenue: number;
   recentOrders: SerializedOrder[];
+  totalInquiries: number;
+  newInquiries: number;
 }
 
 export class DashboardService {
@@ -25,6 +28,8 @@ export class DashboardService {
       revenueResult,
       uniqueCustomersResult,
       recentOrderDocs,
+      totalInquiries,
+      newInquiries,
     ] = await Promise.all([
       OrderModel.countDocuments(),
       OrderModel.countDocuments({ orderStatus: "Pending" }),
@@ -39,6 +44,8 @@ export class DashboardService {
         { $count: "count" },
       ]),
       OrderModel.find().sort({ createdAt: -1 }).limit(5).lean(),
+      InquiryModel.countDocuments().catch(() => 0),
+      InquiryModel.countDocuments({ status: "new" }).catch(() => 0),
     ]);
 
     const totalRevenue = revenueResult[0]?.total || 0;
@@ -76,6 +83,8 @@ export class DashboardService {
       totalCustomers,
       totalRevenue,
       recentOrders,
+      totalInquiries,
+      newInquiries,
     };
   }
 }

@@ -12,7 +12,18 @@ export interface ProductFilter {
   featured?: boolean;
   search?: string;
   brand?: string;
+  limit?: number;
+  skip?: number;
+  select?: string;
 }
+
+/**
+ * Selective projection fields for product card grids.
+ * Avoids transferring entire variants arrays, long HTML descriptions,
+ * materials, and gallery arrays on index pages, reducing payload by >90%.
+ */
+export const GRID_PRODUCT_SELECT =
+  "name slug price salePrice originalPrice image category categorySlug rating reviewCount status badge featured bestseller brand";
 
 export interface SerializedProductVariant {
   name: string;
@@ -112,8 +123,21 @@ export class ProductRepository {
   static async findAll(options?: ProductFilter): Promise<SerializedProduct[]> {
     await connectToDatabase();
     const filter = buildMongoFilter(options);
-    const docs = await ProductModel.find(filter).sort({ createdAt: -1 }).lean();
+    let query = ProductModel.find(filter).sort({ createdAt: -1 });
+    if (options?.select) {
+      query = query.select(options.select);
+    }
+    if (options?.skip) query = query.skip(options.skip);
+    if (options?.limit) query = query.limit(options.limit);
+    const docs = await query.lean();
     return (docs || []).map(serialize);
+  }
+
+  static async findGrid(options?: ProductFilter): Promise<SerializedProduct[]> {
+    return this.findAll({
+      ...options,
+      select: options?.select || GRID_PRODUCT_SELECT,
+    });
   }
 
   static async findById(id: string): Promise<SerializedProduct | null> {

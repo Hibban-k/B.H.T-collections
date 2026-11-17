@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { ProductService } from "@/lib/services/product.service";
+import { ProductService, GRID_PRODUCT_SELECT } from "@/lib/services/product.service";
 
-export const revalidate = 30; // Cache store products for 30 seconds
+export const revalidate = 60; // Cache store products for 60 seconds
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -10,6 +10,7 @@ export async function GET(req: Request) {
   const collection = searchParams.get("collection") === "true" ? true : undefined;
   const featured = searchParams.get("featured") === "true" ? true : undefined;
   const search = searchParams.get("search") || undefined;
+  const full = searchParams.get("full") === "true";
 
   try {
     let products = await ProductService.getProducts({
@@ -17,6 +18,7 @@ export async function GET(req: Request) {
       categorySlug: category,
       featured: homepage ? true : featured,
       search,
+      select: full ? undefined : GRID_PRODUCT_SELECT,
     });
 
     // Enforce max 4 products per main category on home screen

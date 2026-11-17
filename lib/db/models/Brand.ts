@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { noBase64Validator } from "@/lib/db/validators";
 
 export interface IBrand extends Document {
   name: string;
@@ -26,8 +27,8 @@ const BrandSchema = new Schema<IBrand>(
     category: { type: String, default: "" },
     categorySlug: { type: String, default: "", index: true },
     categoryId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
-    logo: { type: String, default: "" },
-    image: { type: String, default: "" },
+    logo: { type: String, default: "", validate: noBase64Validator },
+    image: { type: String, default: "", validate: noBase64Validator },
     pdfUrl: { type: String, default: "" },
     description: { type: String, default: "" },
     metaTitle: { type: String, default: "" },
@@ -37,6 +38,9 @@ const BrandSchema = new Schema<IBrand>(
   },
   { timestamps: true }
 );
+
+BrandSchema.index({ isActive: 1, slug: 1 });
+BrandSchema.index({ isActive: 1, categorySlug: 1 });
 
 export const BrandModel: Model<IBrand> =
   mongoose.models.Brand || mongoose.model<IBrand>("Brand", BrandSchema);

@@ -18,13 +18,15 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.next();
   }
 
-  // 3. Regional routing: redirect non-locale root or paths to default /en
-  // (e.g. '/' -> '/en', '/about' -> '/en/about', '/collections' -> '/en/collections')
+  // 3. Regional routing: redirect non-locale root or paths to /en or /ar based on cookie
+  // (e.g. '/' -> '/en' or '/ar', '/about' -> '/en/about', '/collections' -> '/en/collections')
   // Public routes NEVER touch NextAuth logic or admin redirects.
   const hasLocale = /^\/[a-zA-Z]{2}(\/.*)?$/.test(pathname);
 
   if (!hasLocale) {
-    const redirectUrl = new URL(`/en${pathname === "/" ? "" : pathname}`, req.url);
+    const savedLocale = req.cookies.get("bht_language")?.value;
+    const targetLocale = savedLocale === "ar" ? "ar" : "en";
+    const redirectUrl = new URL(`/${targetLocale}${pathname === "/" ? "" : pathname}`, req.url);
     redirectUrl.search = req.nextUrl.search;
     return NextResponse.redirect(redirectUrl);
   }

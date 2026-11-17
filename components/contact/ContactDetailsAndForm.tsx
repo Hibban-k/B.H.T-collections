@@ -27,13 +27,29 @@ export const ContactDetailsAndForm: React.FC = () => {
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate instantaneous smooth submission
-    setTimeout(() => {
-      setIsSubmitting(false);
+    setErrorMessage("");
+    try {
+      const res = await fetch("/api/store/inquiries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: formData.fullName,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || "Failed to submit inquiry.");
+      }
+
       setIsSubmitted(true);
       setFormData({
         fullName: "",
@@ -41,7 +57,16 @@ export const ContactDetailsAndForm: React.FC = () => {
         subject: "",
         message: "",
       });
-    }, 800);
+    } catch (err: any) {
+      setErrorMessage(
+        err.message ||
+          (language === "ar"
+            ? "تعذر إرسال الرسالة، يرجى المحاولة مرة أخرى."
+            : "Could not send message. Please try again.")
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -231,6 +256,14 @@ export const ContactDetailsAndForm: React.FC = () => {
                       : "Thank you for reaching out. Our team will contact you shortly."}
                   </p>
                 </div>
+              </div>
+            )}
+
+            {/* Submission Error Banner */}
+            {errorMessage && (
+              <div className="mb-6 p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-900 flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-rose-600 shrink-0" />
+                <p className="text-xs sm:text-sm font-semibold">{errorMessage}</p>
               </div>
             )}
 

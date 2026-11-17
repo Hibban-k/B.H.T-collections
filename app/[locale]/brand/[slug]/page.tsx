@@ -54,8 +54,8 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
   const brandNameLower = (brand.name || "").trim().toLowerCase();
   const brandSlugLower = (brand.slug || slug || "").trim().toLowerCase();
 
-  // 1. Fetch published products specifically linked to this brand's ObjectId
-  let dbProducts = await ProductService.getProducts({
+  // 1. Fetch published products specifically linked to this brand's ObjectId (selective grid projection)
+  let dbProducts = await ProductService.getGridProducts({
     brand: brandIdStr,
     status: "published",
   }).catch(() => []);
@@ -63,7 +63,7 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
   // 2. If no products matched by direct brand ObjectId, check if any published product has
   // a brand field matching this brand's ID, name, or slug (e.g., if populated or stored as name)
   if (dbProducts.length === 0) {
-    const allPublished = await ProductService.getProducts({ status: "published" }).catch(() => []);
+    const allPublished = await ProductService.getGridProducts({ status: "published" }).catch(() => []);
     dbProducts = allPublished.filter((p) => {
       const b = (p as any).brand;
       if (!b) return false;

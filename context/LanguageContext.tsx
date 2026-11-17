@@ -36,6 +36,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
     setLanguageState(lang);
     if (typeof window !== "undefined") {
       localStorage.setItem("bht_language", lang);
+      document.cookie = `bht_language=${lang};path=/;max-age=31536000;SameSite=Lax`;
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
     }

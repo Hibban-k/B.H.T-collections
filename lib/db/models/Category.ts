@@ -1,4 +1,5 @@
 import mongoose, { Schema, Document, Model } from "mongoose";
+import { noBase64Validator } from "@/lib/db/validators";
 
 export interface ICategory extends Document {
   name: string;
@@ -25,7 +26,7 @@ const CategorySchema = new Schema<ICategory>(
     description: { type: String, default: "" },
     longDescription: { type: String, default: "" },
     faq: [{ question: String, answer: String }],
-    image: { type: String, default: "" },
+    image: { type: String, default: "", validate: noBase64Validator },
     parentId: { type: Schema.Types.ObjectId, ref: "Category", default: null },
     parentSlug: { type: String, default: "" },
     status: { type: String, enum: ["active", "disabled"], default: "active" },
@@ -36,6 +37,9 @@ const CategorySchema = new Schema<ICategory>(
   },
   { timestamps: true }
 );
+
+CategorySchema.index({ status: 1, slug: 1 });
+CategorySchema.index({ parentSlug: 1 });
 
 export const CategoryModel: Model<ICategory> =
   mongoose.models.Category || mongoose.model<ICategory>("Category", CategorySchema);

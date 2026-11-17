@@ -13,8 +13,8 @@ import { CategoryService } from "@/lib/services/category.service";
 import { BrandService } from "@/lib/services/brand.service";
 import { HERO_SLIDES, HeroSlide } from "@/data/heroData";
 
-// Cache for 60s on server, instantaneous 0ms responses, on-demand revalidation on CMS edit
-export const revalidate = 60;
+// Cache for 3600s (1 hour) on server, instantaneous 0ms responses, saving Atlas connection limits
+export const revalidate = 3600;
 
 export default async function HomePage() {
   // Fetch database categories and brands on the server for 0ms load time SSR

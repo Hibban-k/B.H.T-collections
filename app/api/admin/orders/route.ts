@@ -10,3 +10,16 @@ export const GET = withAuth("orders:read", async (req: Request) => {
   });
   return NextResponse.json({ orders });
 });
+
+export const POST = withAuth("orders:write", async (req: Request) => {
+  try {
+    const body = await req.json();
+    const order = await OrderService.createOrder(body);
+    return NextResponse.json({ order }, { status: 201 });
+  } catch (err: any) {
+    return NextResponse.json(
+      { error: err.message || "Failed to create order" },
+      { status: 400 }
+    );
+  }
+});

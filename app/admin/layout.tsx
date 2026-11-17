@@ -19,11 +19,13 @@ import {
   ShieldCheck,
   CheckCircle2,
   Tag,
+  Mail,
 } from "lucide-react";
 
 const sidebarLinks = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard, exact: true },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { label: "Inquiries", href: "/admin/inquiries", icon: Mail },
   { label: "Products", href: "/admin/products", icon: Package },
   { label: "Categories", href: "/admin/categories", icon: Layers },
   { label: "Brands", href: "/admin/brands", icon: Tag },

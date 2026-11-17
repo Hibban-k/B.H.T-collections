@@ -3,7 +3,7 @@ export interface CountryPresence {
   nameEn: string;
   nameAr: string;
   code: string;
-  href: string;
+  href?: string;
   flagColors: {
     type: "uae" | "ksa" | "qatar" | "bahrain" | "kuwait" | "oman";
   };
@@ -25,7 +25,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "UAE",
       nameAr: "الإمارات",
       code: "AE",
-      href: "/regional/uae",
       flagColors: { type: "uae" },
     },
     {
@@ -33,7 +32,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "SAUDI ARABIA",
       nameAr: "المملكة العربية السعودية",
       code: "SA",
-      href: "/regional/saudi-arabia",
       flagColors: { type: "ksa" },
     },
     {
@@ -41,7 +39,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "QATAR",
       nameAr: "قطر",
       code: "QA",
-      href: "/regional/qatar",
       flagColors: { type: "qatar" },
     },
     {
@@ -49,7 +46,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "BAHRAIN",
       nameAr: "البحرين",
       code: "BH",
-      href: "/regional/bahrain",
       flagColors: { type: "bahrain" },
     },
     {
@@ -57,7 +53,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "KUWAIT",
       nameAr: "الكويت",
       code: "KW",
-      href: "/regional/kuwait",
       flagColors: { type: "kuwait" },
     },
     {
@@ -65,7 +60,6 @@ export const REGIONAL_PRESENCE_DATA = {
       nameEn: "OMAN",
       nameAr: "سلطنة عمان",
       code: "OM",
-      href: "/regional/oman",
       flagColors: { type: "oman" },
     },
   ] as CountryPresence[],

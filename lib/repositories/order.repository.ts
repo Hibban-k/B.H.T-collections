@@ -1,5 +1,5 @@
 import { connectToDatabase } from "@/lib/db/mongodb";
-import { OrderModel } from "@/lib/db/models/Order";
+import { OrderModel, IOrder } from "@/lib/db/models/Order";
 
 export interface OrderFilter {
   status?: string;
@@ -63,11 +63,28 @@ function serialize<T extends HasId>(doc: T): SerializedOrder {
 }
 
 export class OrderRepository {
+  static async create(data: Partial<IOrder>): Promise<SerializedOrder> {
+    await connectToDatabase();
+    if (!data.orderNumber) {
+      const timestamp = Date.now().toString().slice(-6);
+      const randomSuffix = Math.floor(100 + Math.random() * 900);
+      data.orderNumber = `BHT-${timestamp}-${randomSuffix}`;
+    }
+    const doc = await OrderModel.create(data);
+    return serialize(doc.toObject());
+  }
+
   static async findAll(options?: OrderFilter): Promise<SerializedOrder[]> {
     await connectToDatabase();
     const filter = buildMongoFilter(options);
     const docs = await OrderModel.find(filter).sort({ createdAt: -1 }).lean();
     return docs.map(serialize);
+  }
+
+  static async count(options?: OrderFilter): Promise<number> {
+    await connectToDatabase();
+    const filter = buildMongoFilter(options);
+    return OrderModel.countDocuments(filter);
   }
 
   static async findById(id: string): Promise<SerializedOrder | null> {

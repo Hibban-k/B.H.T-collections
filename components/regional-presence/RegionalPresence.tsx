@@ -1,16 +1,13 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, ArrowLeft } from "lucide-react";
 import { REGIONAL_PRESENCE_DATA } from "@/data/regionalData";
 import { CircularFlag } from "./CircularFlag";
 import { useLanguage } from "@/context/LanguageContext";
 
 export const RegionalPresence: React.FC = () => {
-  const { language, isRTL } = useLanguage();
-  const ArrowIcon = isRTL ? ArrowLeft : ArrowRight;
+  const { language } = useLanguage();
 
   return (
     <section
@@ -64,30 +61,28 @@ export const RegionalPresence: React.FC = () => {
                 : REGIONAL_PRESENCE_DATA.supportingEn}
             </p>
 
-            {/* 6 Circular Country Flags (3 Columns x 2 Rows) */}
+            {/* 6 Circular Country Flags (3 Columns x 2 Rows) - Informational Presence Badges */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 pt-4 border-t border-[#F0F0F0]">
               {REGIONAL_PRESENCE_DATA.countries.map((country) => (
-                <Link
+                <div
                   key={country.id}
-                  href={country.href}
-                  className="group flex flex-col items-center text-center p-2 rounded-xl hover:bg-bht-offwhite transition-colors"
+                  className="flex flex-col items-center text-center p-2 rounded-xl"
                 >
                   {/* Circular Flag with subtle hover scale */}
-                  <div className="mb-3 transition-transform duration-300 group-hover:scale-108">
+                  <div className="mb-3 transition-transform duration-300 hover:scale-106">
                     <CircularFlag
                       country={country.flagColors.type}
                       size={60}
                     />
                   </div>
 
-                  {/* Country Name + Directional Arrow */}
-                  <div className="flex items-center gap-1.5 text-xs font-extrabold tracking-wider text-bht-charcoal group-hover:text-bht-red uppercase transition-colors">
+                  {/* Country Name */}
+                  <div className="text-xs font-extrabold tracking-wider text-bht-charcoal uppercase">
                     <span>
                       {language === "ar" ? country.nameAr : country.nameEn}
                     </span>
-                    <ArrowIcon className="w-3.5 h-3.5 text-[#999999] group-hover:text-bht-red group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           </div>

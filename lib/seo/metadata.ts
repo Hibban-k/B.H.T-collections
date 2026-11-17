@@ -18,6 +18,11 @@ export function constructMetadata({
 }: MetadataInput = {}): Metadata {
   const url = getAbsoluteUrl(path);
 
+  // Determine canonical and language alternates cleanly
+  const cleanPath = path.replace(/^\/(en|ar)(\/|$)/, "/");
+  const enPath = `/en${cleanPath === "/" ? "" : cleanPath}`;
+  const arPath = `/ar${cleanPath === "/" ? "" : cleanPath}`;
+
   return {
     title,
     description,
@@ -39,9 +44,11 @@ export function constructMetadata({
     alternates: {
       canonical: url,
       languages: {
-        "en-AE": getAbsoluteUrl(path),
-        "en-SA": getAbsoluteUrl(`/sa${path}`),
-        "x-default": getAbsoluteUrl(path),
+        "en": getAbsoluteUrl(enPath),
+        "en-AE": getAbsoluteUrl(enPath),
+        "ar": getAbsoluteUrl(arPath),
+        "ar-AE": getAbsoluteUrl(arPath),
+        "x-default": getAbsoluteUrl(enPath),
       },
     },
     robots: noIndex

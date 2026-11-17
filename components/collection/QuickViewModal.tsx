@@ -7,6 +7,7 @@ import Image from "next/image";
 import { X, Check, Star, ShieldCheck, Truck, MessageCircle, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { Product } from "@/data/productsData";
+import { OrderModal } from "@/components/order/OrderModal";
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -20,6 +21,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
   const { language } = useLanguage();
   const [selectedSize, setSelectedSize] = useState<string>("");
   const [quantity, setQuantity] = useState(1);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
   if (!product) return null;
 
@@ -178,17 +180,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
               </div>
 
               {/* Inquiry / WhatsApp Button */}
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-colors"
+              <button
+                type="button"
+                onClick={() => setIsOrderModalOpen(true)}
+                className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#20BA5A] text-white rounded-xl text-xs font-bold uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm transition-colors cursor-pointer"
               >
                 <MessageCircle className="w-4 h-4 fill-white stroke-none" />
                 <span>
                   {language === "ar" ? "طلب استفسار عبر واتساب" : "WhatsApp Inquiry / Order"}
                 </span>
-              </a>
+              </button>
             </div>
 
             {/* View Full Details */}
@@ -219,6 +220,22 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           </div>
         </div>
       </div>
+
+      {/* Customer details & order confirmation modal */}
+      <OrderModal
+        isOpen={isOrderModalOpen}
+        onClose={() => setIsOrderModalOpen(false)}
+        items={[
+          {
+            productId: String(product.id),
+            name: language === "ar" ? product.nameAr : product.nameEn,
+            price: product.price,
+            quantity,
+            image: product.image,
+            size: selectedSize || undefined,
+          },
+        ]}
+      />
     </div>
   );
 };

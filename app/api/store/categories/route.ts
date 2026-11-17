@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { CategoryService } from "@/lib/services/category.service";
 
-export const revalidate = 60; // Cache for 60 seconds
+export const revalidate = 3600; // Cache storefront categories for 1 hour (3600s) to protect Atlas connection limits
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -18,7 +18,14 @@ export async function GET(req: Request) {
       categories = categories.filter((c) => c.parentSlug === parentSlug);
     }
 
-    return NextResponse.json({ categories });
+    return NextResponse.json(
+      { categories },
+      {
+        headers: {
+          "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+        },
+      }
+    );
   } catch (error) {
     const msg = error instanceof Error ? error.message : "Failed to fetch categories";
     return NextResponse.json({ error: msg }, { status: 500 });

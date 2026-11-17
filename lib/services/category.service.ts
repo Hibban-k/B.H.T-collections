@@ -1,5 +1,12 @@
+import { unstable_cache } from "next/cache";
 import { CategoryRepository, SerializedCategory } from "@/lib/repositories/category.repository";
 import type { ICategory } from "@/lib/db/models/Category";
+
+const getCachedCategories = unstable_cache(
+  async (): Promise<SerializedCategory[]> => CategoryRepository.findAll(),
+  ["storefront-categories"],
+  { revalidate: 3600, tags: ["categories"] }
+);
 
 export interface CreateCategoryInput {
   name: string;
@@ -16,8 +23,9 @@ export interface CreateCategoryInput {
 }
 
 export class CategoryService {
-  static async getCategories(): Promise<SerializedCategory[]> {
-    return CategoryRepository.findAll();
+  static async getCategories(skipCache = false): Promise<SerializedCategory[]> {
+    if (skipCache) return CategoryRepository.findAll();
+    return getCachedCategories();
   }
 
   static async getCategoryById(id: string): Promise<SerializedCategory | null> {

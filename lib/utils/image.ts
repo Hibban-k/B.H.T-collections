@@ -8,6 +8,12 @@ export function cleanImageUrl(inputUrl?: string | null): string {
 
   let url = inputUrl.trim();
 
+  // Reject and prohibit base64 binary strings to protect MongoDB document size limits
+  if (url.startsWith("data:") || url.includes(";base64,")) {
+    console.warn("Base64 image rejected. Images must be uploaded to Cloudinary/CDN, not stored as binary strings.");
+    return fallback;
+  }
+
   // If user pasted /collections/https://... or similar concatenated string
   if (url.includes("http://") || url.includes("https://")) {
     const httpIdx = url.indexOf("http://");

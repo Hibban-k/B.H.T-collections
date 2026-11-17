@@ -73,10 +73,10 @@ export default async function DynamicCategoryPage({ params, searchParams }: Cate
     notFound();
   }
 
-  // Fetch DB data
+  // Fetch DB data with selective projection for catalog card grids
   const [categories, products, brands] = await Promise.all([
     CategoryService.getCategories().catch(() => []),
-    ProductService.getProducts({ status: "published" }).catch(() => []),
+    ProductService.getGridProducts({ status: "published" }).catch(() => []),
     BrandService.getBrands().catch(() => []),
   ]);
 

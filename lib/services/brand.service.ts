@@ -1,5 +1,12 @@
+import { unstable_cache } from "next/cache";
 import { BrandRepository, SerializedBrand } from "@/lib/repositories/brand.repository";
 import type { IBrand } from "@/lib/db/models/Brand";
+
+const getCachedBrands = unstable_cache(
+  async (): Promise<SerializedBrand[]> => BrandRepository.findAll(),
+  ["storefront-brands"],
+  { revalidate: 3600, tags: ["brands"] }
+);
 
 export interface CreateBrandInput {
   name: string;
@@ -25,8 +32,9 @@ export class BrandService {
     return BrandRepository.findByName(clean);
   }
 
-  static async getBrands(): Promise<SerializedBrand[]> {
-    return BrandRepository.findAll();
+  static async getBrands(skipCache = false): Promise<SerializedBrand[]> {
+    if (skipCache) return BrandRepository.findAll();
+    return getCachedBrands();
   }
 
   static async getBrandById(id: string): Promise<SerializedBrand | null> {
@@ -55,7 +63,10 @@ export class BrandService {
 
     if (input.logo) {
       const cleanLogo = input.logo.split("?")[0].trim().toLowerCase();
-      if (!cleanLogo.endsWith(".png") && !cleanLogo.startsWith("data:image/png")) {
+      if (cleanLogo.startsWith("data:") || cleanLogo.includes(";base64,")) {
+        throw new Error("Binary storage (base64) is prohibited in MongoDB. Upload the logo to Cloudinary and provide the HTTPS URL.");
+      }
+      if (!cleanLogo.endsWith(".png")) {
         throw new Error("Brand logo must strictly be in PNG format (.png).");
       }
     }
@@ -95,7 +106,10 @@ export class BrandService {
 
     if (updates.logo) {
       const cleanLogo = updates.logo.split("?")[0].trim().toLowerCase();
-      if (!cleanLogo.endsWith(".png") && !cleanLogo.startsWith("data:image/png")) {
+      if (cleanLogo.startsWith("data:") || cleanLogo.includes(";base64,")) {
+        throw new Error("Binary storage (base64) is prohibited in MongoDB. Upload the logo to Cloudinary and provide the HTTPS URL.");
+      }
+      if (!cleanLogo.endsWith(".png")) {
         throw new Error("Brand logo must strictly be in PNG format (.png).");
       }
     }
