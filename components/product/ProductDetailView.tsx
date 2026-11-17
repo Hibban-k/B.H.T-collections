@@ -3,10 +3,10 @@
 import React, { useState, useMemo } from "react";
 import Image, { type ImageProps } from "next/image";
 import Link from "next/link";
-import styles from "./ProductDetailView.module.css";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
+import { OrderModal, type OrderModalItem } from "@/components/order/OrderModal";
 import { Truck, RotateCcw, MessageCircle, Phone, Share2, Check, ChevronRight, Sparkles, Building2 } from "lucide-react";
 
 interface ProductVariant {
@@ -112,6 +112,10 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
     return initial;
   });
 
+  // Order modal state
+  const [orderModalOpen, setOrderModalOpen] = useState(false);
+  const [modalOrderItems, setModalOrderItems] = useState<OrderModalItem[]>([]);
+
   // Calculate active price and stock based on selected variant or base product
   const activeVariant =
     selectedVariantIndex !== null && product.variants && product.variants[selectedVariantIndex]
@@ -180,6 +184,55 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
     return total;
   }, [currentPrice, crossSellProducts, bundleChecked]);
 
+  // Open Order Modal for individual product
+  const handleOpenOrderModal = () => {
+    setModalOrderItems([
+      {
+        productId: product._id,
+        name: product.name,
+        price: currentPrice,
+        quantity,
+        image: allImages[activeImageIndex] || product.image,
+        size: selectedSize || undefined,
+        color: selectedColor || undefined,
+        sku: currentSku,
+      },
+    ]);
+    setOrderModalOpen(true);
+  };
+
+  // Open Order Modal for combined bundle
+  const handleOpenBundleOrderModal = () => {
+    const items: OrderModalItem[] = [
+      {
+        productId: product._id,
+        name: product.name,
+        price: currentPrice,
+        quantity: 1,
+        image: allImages[activeImageIndex] || product.image,
+        size: selectedSize || undefined,
+        color: selectedColor || undefined,
+        sku: currentSku,
+      },
+    ];
+
+    crossSellProducts.forEach((p) => {
+      if (bundleChecked[p.slug]) {
+        items.push({
+          productId: p._id,
+          name: p.name,
+          price: p.salePrice || p.price,
+          quantity: 1,
+          image: p.image,
+          sku: p.sku,
+        });
+      }
+    });
+
+    setModalOrderItems(items);
+    setOrderModalOpen(true);
+  };
+
   const handleShare = async () => {
     if (typeof window !== "undefined" && navigator.share) {
       try {
@@ -205,7 +258,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
   const brandLogo = resolvedBrand?.logo || (typeof product.brand === "object" ? product.brand?.logo : null);
 
   return (
-    <div className={`${styles.page} flex flex-col min-h-screen bg-white text-neutral-900`} dir={isRTL ? "rtl" : "ltr"}>
+    <div className="flex flex-col min-h-screen bg-white text-neutral-900" dir={isRTL ? "rtl" : "ltr"}>
       <Navbar />
 
       <main className="flex-1 pb-28 sm:pb-24">
@@ -362,7 +415,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 </div>
 
                 <h1
-                  className="text-3xl sm:text-4xl font-medium tracking-tight text-[#171717] leading-tight"
+                  className="text-lg sm:text-xl lg:text-2xl font-semibold tracking-tight text-[#171717] leading-snug"
                   style={{ fontFamily: "var(--font-playfair-display)" }}
                 >
                   {product.name}
@@ -523,11 +576,22 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                     <button type="button" aria-label={isAr ? "زيادة الكمية" : "Increase quantity"} onClick={() => setQuantity(quantity + 1)} className="w-11 h-11">+</button>
                   </div>
                 </div>
-                <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer" className={styles.primaryAction}>
-                  <MessageCircle className="w-5 h-5" />{isAr ? "اطلب عبر واتساب" : "Order via WhatsApp"}
-                </a>
-                <a href={bulkInquiryLink} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>
-                  <Building2 className="w-5 h-5" />{isAr ? "طلب عرض سعر بالجملة" : "Request a bulk quote"}
+                <button
+                  type="button"
+                  onClick={handleOpenOrderModal}
+                  className="w-full flex items-center justify-center gap-2.5 min-h-[52px] py-3.5 px-4 rounded-xl text-sm font-semibold text-center transition-colors bg-[#166534] hover:bg-[#14532d] text-white shadow-xs cursor-pointer"
+                >
+                  <MessageCircle className="w-5 h-5" />
+                  {isAr ? "اطلب عبر واتساب" : "Order via WhatsApp"}
+                </button>
+                <a
+                  href={bulkInquiryLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2.5 min-h-[52px] py-3.5 px-4 rounded-xl text-sm font-semibold text-center transition-colors bg-white border border-[#d4d4d4] hover:bg-[#efeeeb] text-[#171717] shadow-xs"
+                >
+                  <Building2 className="w-5 h-5" />
+                  {isAr ? "طلب عرض سعر بالجملة" : "Request a bulk quote"}
                 </a>
                 <p className="text-sm leading-6 text-neutral-500">{isAr ? "تواصل مع فريقنا لتأكيد التوفر والسعر النهائي وترتيبات التوصيل." : "Speak with our team to confirm availability, final pricing and delivery arrangements."}</p>
               </div>
@@ -632,20 +696,14 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                     </p>
                   </div>
 
-                  <a
-                    href={buildWhatsAppLink(
-                      `Hello BHT Collections! Please quote these products together:\n1. *${product.name}* (AED ${currentPrice})\n${crossSellProducts
-                        .filter((p) => bundleChecked[p.slug])
-                        .map((p, i) => `${i + 2}. *${p.name}* (AED ${p.salePrice || p.price})`)
-                        .join("\n")}\n\n*Indicative combined price: AED ${bundleTotalPrice.toFixed(2)}*\nPlease confirm availability, final pricing and delivery options.`
-                    )}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full py-2.5 px-4 bg-[#166534] hover:bg-[#14532d] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 text-center"
+                  <button
+                    type="button"
+                    onClick={handleOpenBundleOrderModal}
+                    className="w-full py-2.5 px-4 bg-[#166534] hover:bg-[#14532d] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 text-center cursor-pointer"
                   >
                     <MessageCircle className="w-3.5 h-3.5 fill-white" />
                     <span>{isAr ? "طلب المجموعة عبر واتساب" : "Request a combined quote"}</span>
-                  </a>
+                  </button>
                 </div>
               </div>
             </div>
@@ -915,9 +973,30 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
           6. MOBILE STICKY BOTTOM BAR (Amazon / Flipkart Style)
       ========================================================= */}
       <div className="fixed bottom-0 inset-x-0 z-40 bg-white border-t border-neutral-200 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden grid grid-cols-2 gap-3">
-        <a href={buildWhatsAppLink()} target="_blank" rel="noopener noreferrer" className={styles.primaryAction}><MessageCircle className="w-4 h-4" />{isAr ? "طلب واتساب" : "WhatsApp order"}</a>
-        <a href={bulkInquiryLink} target="_blank" rel="noopener noreferrer" className={styles.secondaryAction}>{isAr ? "عرض سعر بالجملة" : "Bulk inquiry"}</a>
+        <button
+          type="button"
+          onClick={handleOpenOrderModal}
+          className="flex items-center justify-center gap-2 min-h-[46px] py-2 px-3 rounded-xl text-xs font-semibold text-center transition-colors bg-[#166534] hover:bg-[#14532d] text-white shadow-xs cursor-pointer"
+        >
+          <MessageCircle className="w-4 h-4" />
+          {isAr ? "طلب واتساب" : "WhatsApp order"}
+        </button>
+        <a
+          href={bulkInquiryLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-center gap-2 min-h-[46px] py-2 px-3 rounded-xl text-xs font-semibold text-center transition-colors bg-white border border-[#d4d4d4] hover:bg-[#efeeeb] text-[#171717] shadow-xs"
+        >
+          {isAr ? "عرض سعر بالجملة" : "Bulk inquiry"}
+        </a>
       </div>
+
+      {/* Customer details & order confirmation modal */}
+      <OrderModal
+        isOpen={orderModalOpen}
+        onClose={() => setOrderModalOpen(false)}
+        items={modalOrderItems}
+      />
 
       <Footer />
     </div>

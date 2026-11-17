@@ -170,11 +170,11 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
                 className="object-contain"
               />
             </div>
-            <div className="flex flex-col text-start">
-              <span className="text-[11px] font-bold text-bht-red font-arabic leading-tight">
+            <div className="flex flex-col text-start min-w-0">
+              <span className="text-[11px] font-bold text-bht-red font-arabic leading-tight whitespace-nowrap">
                 بيت البطانيات للتجارة ذ.م.م
               </span>
-              <span className="text-sm font-extrabold text-bht-charcoal leading-tight">
+              <span className="text-xs xs:text-sm font-extrabold text-bht-charcoal leading-tight whitespace-nowrap">
                 Blanket House Trading LLC
               </span>
             </div>

@@ -33,7 +33,7 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
             href="/"
             className="flex items-center gap-2 sm:gap-3 min-w-0 group focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-bht-red rounded-lg"
           >
-            <div className="relative w-16 h-16 sm:w-22 sm:h-22 lg:w-26 lg:h-26 shrink-0 transition-transform group-hover:scale-105">
+            <div className="relative w-14 h-14 xs:w-16 xs:h-16 sm:w-22 sm:h-22 lg:w-26 lg:h-26 shrink-0 transition-transform group-hover:scale-105">
               <Image
                 src="/logo/logo.png"
                 alt="Blanket House Trading LLC Logo"
@@ -44,10 +44,10 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
               />
             </div>
             <div className="flex flex-col text-start min-w-0">
-              <span className="text-xs sm:text-base lg:text-[17px] font-bold text-bht-red leading-tight font-arabic truncate max-w-[150px] xs:max-w-[210px] sm:max-w-none">
+              <span className="text-[11px] xs:text-xs sm:text-base lg:text-[17px] font-bold text-bht-red leading-tight font-arabic whitespace-nowrap">
                 بيت البطانيات للتجارة ذ.م.م
               </span>
-              <span className="text-sm sm:text-xl lg:text-[22px] font-black tracking-tight text-bht-charcoal leading-tight truncate max-w-[150px] xs:max-w-[210px] sm:max-w-none">
+              <span className="text-xs xs:text-sm sm:text-xl lg:text-[22px] font-black tracking-tight text-bht-charcoal leading-tight whitespace-nowrap">
                 Blanket House Trading LLC
               </span>
             </div>
