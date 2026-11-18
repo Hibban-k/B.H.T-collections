@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { REGIONAL_PRESENCE_DATA } from "@/data/regionalData";
 import { CircularFlag } from "./CircularFlag";
 import { useLanguage } from "@/context/LanguageContext";
@@ -55,34 +56,50 @@ export const RegionalPresence: React.FC = () => {
             </p>
 
             {/* Supporting Paragraph */}
-            <p className="text-xs sm:text-sm text-[#777777] leading-relaxed mb-8 max-w-xl">
+            <p className="text-xs sm:text-sm text-[#777777] leading-relaxed mb-6 max-w-xl">
               {language === "ar"
                 ? REGIONAL_PRESENCE_DATA.supportingAr
                 : REGIONAL_PRESENCE_DATA.supportingEn}
             </p>
 
-            {/* 6 Circular Country Flags (3 Columns x 2 Rows) - Informational Presence Badges */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 sm:gap-8 pt-4 border-t border-[#F0F0F0]">
+            {/* Clickable prompt hint */}
+            <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-neutral-600">
+              <span className="w-1.5 h-1.5 rounded-full bg-bht-red animate-pulse" />
+              <span>
+                {language === "ar"
+                  ? "اضغط على أي دولة لعرض تفاصيل الفرع ومسؤول التواصل المباشر:"
+                  : "Click any country to view branch & direct contact details:"}
+              </span>
+            </div>
+
+            {/* 6 Circular Country Flags (3 Columns x 2 Rows) - Interactive Regional Presence Links */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-[#F0F0F0]">
               {REGIONAL_PRESENCE_DATA.countries.map((country) => (
-                <div
+                <Link
                   key={country.id}
-                  className="flex flex-col items-center text-center p-2 rounded-xl"
+                  href={`/contact?region=${country.id}#store-location`}
+                  className="group flex flex-col items-center text-center p-3 rounded-2xl hover:bg-[#FAF9F7] border border-transparent hover:border-neutral-200 transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs"
                 >
                   {/* Circular Flag with subtle hover scale */}
-                  <div className="mb-3 transition-transform duration-300 hover:scale-106">
+                  <div className="mb-2.5 transition-transform duration-300 group-hover:scale-110">
                     <CircularFlag
                       country={country.flagColors.type}
-                      size={60}
+                      size={56}
                     />
                   </div>
 
                   {/* Country Name */}
-                  <div className="text-xs font-extrabold tracking-wider text-bht-charcoal uppercase">
+                  <div className="text-xs font-extrabold tracking-wider text-bht-charcoal group-hover:text-bht-red uppercase transition-colors">
                     <span>
                       {language === "ar" ? country.nameAr : country.nameEn}
                     </span>
                   </div>
-                </div>
+
+                  {/* Subtle Call to Action */}
+                  <span className="text-[10px] text-neutral-400 group-hover:text-bht-red font-medium mt-1 inline-flex items-center gap-0.5 transition-colors">
+                    {language === "ar" ? "تواصل مع الفرع ←" : "Branch Details →"}
+                  </span>
+                </Link>
               ))}
             </div>
           </div>

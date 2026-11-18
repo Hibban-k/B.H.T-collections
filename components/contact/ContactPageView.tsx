@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { Suspense } from "react";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
 import { ContactHero } from "./ContactHero";
@@ -21,7 +21,9 @@ export const ContactPageView: React.FC = () => {
         <ContactDetailsAndForm />
 
         {/* 4. Visit Our Store: Stylized Dubai Coastline Map + Dubai UAE Store CTA */}
-        <ContactStoreLocation />
+        <Suspense fallback={<div className="py-20 text-center text-neutral-400">Loading locations...</div>}>
+          <ContactStoreLocation />
+        </Suspense>
       </main>
 
       {/* 5. Luxury Dark Footer */}

@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useSearchParams } from "next/navigation";
 import {
   MapPin,
   Phone,
@@ -19,9 +20,60 @@ import { REGIONAL_CONTACTS } from "@/data/regionalContacts";
 
 export const ContactStoreLocation: React.FC = () => {
   const { language, isRTL } = useLanguage();
+  const searchParams = useSearchParams();
+  const regionParam = searchParams.get("region");
   const [selectedId, setSelectedId] = useState("uae");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Sync selected region from URL param (e.g. /contact?region=kuwait#store-location)
+  useEffect(() => {
+    if (regionParam) {
+      const normalized = regionParam.toLowerCase().trim();
+      const matched = REGIONAL_CONTACTS.find(
+        (region) =>
+          region.id.toLowerCase() === normalized ||
+          region.flag.toLowerCase() === normalized ||
+          (normalized === "ksa" && region.id === "saudi") ||
+          (normalized === "saudi-arabia" && region.id === "saudi")
+      );
+      if (matched) {
+        setSelectedId(matched.id);
+        const timer = setTimeout(() => {
+          const el = document.getElementById("store-location");
+          if (el) {
+            el.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [regionParam]);
+
+  // Also support direct hash navigation (e.g. /contact#kuwait)
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash.replace("#", "").toLowerCase().trim();
+      if (hash && hash !== "store-location" && hash !== "contact-form-section") {
+        const matched = REGIONAL_CONTACTS.find(
+          (region) =>
+            region.id.toLowerCase() === hash ||
+            region.flag.toLowerCase() === hash ||
+            (hash === "ksa" && region.id === "saudi")
+        );
+        if (matched) {
+          setSelectedId(matched.id);
+          const timer = setTimeout(() => {
+            const el = document.getElementById("store-location");
+            if (el) {
+              el.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+          }, 150);
+          return () => clearTimeout(timer);
+        }
+      }
+    }
+  }, []);
 
   const selected =
     REGIONAL_CONTACTS.find((region) => region.id === selectedId) ||
