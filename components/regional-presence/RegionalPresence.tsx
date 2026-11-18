@@ -62,18 +62,8 @@ export const RegionalPresence: React.FC = () => {
                 : REGIONAL_PRESENCE_DATA.supportingEn}
             </p>
 
-            {/* Clickable prompt hint */}
-            <div className="flex items-center gap-2 mb-3 text-xs font-semibold text-neutral-600">
-              <span className="w-1.5 h-1.5 rounded-full bg-bht-red animate-pulse" />
-              <span>
-                {language === "ar"
-                  ? "اضغط على أي دولة لعرض تفاصيل الفرع ومسؤول التواصل المباشر:"
-                  : "Click any country to view branch & direct contact details:"}
-              </span>
-            </div>
-
             {/* 6 Circular Country Flags (3 Columns x 2 Rows) - Interactive Regional Presence Links */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4 pt-4 border-t border-[#F0F0F0]">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-6 pt-4 border-t border-[#F0F0F0]">
               {REGIONAL_PRESENCE_DATA.countries.map((country) => (
                 <Link
                   key={country.id}
@@ -84,7 +74,7 @@ export const RegionalPresence: React.FC = () => {
                   <div className="mb-2.5 transition-transform duration-300 group-hover:scale-110">
                     <CircularFlag
                       country={country.flagColors.type}
-                      size={56}
+                      size={58}
                     />
                   </div>
 
@@ -94,11 +84,6 @@ export const RegionalPresence: React.FC = () => {
                       {language === "ar" ? country.nameAr : country.nameEn}
                     </span>
                   </div>
-
-                  {/* Subtle Call to Action */}
-                  <span className="text-[10px] text-neutral-400 group-hover:text-bht-red font-medium mt-1 inline-flex items-center gap-0.5 transition-colors">
-                    {language === "ar" ? "تواصل مع الفرع ←" : "Branch Details →"}
-                  </span>
                 </Link>
               ))}
             </div>
