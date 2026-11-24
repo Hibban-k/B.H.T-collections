@@ -14,6 +14,6 @@ export const DELETE = withAuth("users:manage", async (req: Request, { params }: 
   const { id } = await params;
   const session = await auth();
   
-  const success = await UserService.deleteUser(id, session!.user!.id as string);
+  await UserService.deleteUser(id, session!.user!.id as string);
   return NextResponse.json({ success: true, message: "User deleted" });
 });

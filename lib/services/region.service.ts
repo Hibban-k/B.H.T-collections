@@ -1,3 +1,5 @@
+import { isStoreMarket } from "@/lib/seo/locales";
+import { cache } from "react";
 import { RegionRepository, SerializedRegion } from "@/lib/repositories/region.repository";
 import type { IRegion } from "@/lib/db/models/Region";
 import type { UpdateQuery } from "mongoose";
@@ -11,12 +13,15 @@ export interface CreateRegionInput {
   metaDescriptionTemplate?: string;
 }
 
+const readRegions = cache((includeInactive: boolean) => RegionRepository.findAll(includeInactive));
+const readRegion = cache((code: string) => RegionRepository.findByCode(code));
+
 export class RegionService {
   /**
    * Retrieves all regions. Set includeInactive to true for the admin panel.
    */
   static async getRegions(includeInactive = false): Promise<SerializedRegion[]> {
-    return RegionRepository.findAll(includeInactive);
+    return readRegions(includeInactive);
   }
 
   static async getRegionById(id: string): Promise<SerializedRegion | null> {
@@ -24,7 +29,7 @@ export class RegionService {
   }
 
   static async getRegionByCode(code: string): Promise<SerializedRegion | null> {
-    return RegionRepository.findByCode(code);
+    return readRegion(code);
   }
 
   static async createRegion(input: CreateRegionInput): Promise<SerializedRegion> {
@@ -35,6 +40,7 @@ export class RegionService {
     }
 
     const trimmedCode = input.code.trim().toLowerCase();
+    if (!isStoreMarket(trimmedCode)) throw new Error("Invalid region code. Use ae, sa, qa, kw, bh or om; en is the international route.");
     const existingCode = await RegionRepository.findByCode(trimmedCode);
     if (existingCode) {
       throw new Error(`Region with code "${trimmedCode}" already exists.`);
@@ -57,6 +63,9 @@ export class RegionService {
       if (existingName) {
         throw new Error(`Region with name "${input.name.trim()}" already exists.`);
       }
+    }
+    if (input.code !== undefined && !isStoreMarket(input.code.trim().toLowerCase())) {
+      throw new Error("Invalid region code. Use ae, sa, qa, kw, bh or om.");
     }
     if (input.code) {
       const existingCode = await RegionRepository.findByCode(input.code.trim().toLowerCase(), id);

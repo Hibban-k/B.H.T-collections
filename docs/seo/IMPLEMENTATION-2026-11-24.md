@@ -1,9 +1,40 @@
 # BHT Collections: technical SEO implementation report
 
+> Latest regional decision: country-only `/ae`, `/sa`, `/qa`, `/kw`, `/bh`, `/om`; `/en` is international. Language is a cookie preference on the same URL. See [REGIONAL-TARGETING.md](REGIONAL-TARGETING.md), which supersedes earlier separate-English/Arabic URL guidance. Regional setup code is implemented; the database connection prevented installing the six country records here.
+
 Date: 24 November 2026
 Confirmed production origin: https://www.blankethouse.ae
 
-## Scope and evidence
+## Follow-up: search, Arabic and lint cleanup
+
+The three requested code tasks are implemented locally after commit `c6b3ffc`. These follow-up changes are not yet committed, pushed or deployed. The original audit details below describe the earlier SEO patch; the status in this section supersedes its remaining-code notes.
+
+- Added `/[locale]/search`: server-rendered published products, literal name/description matching, 24 results per page, previous/next links, 120-character query limit, maximum page 100, empty/no-result/error states and noindex/follow metadata. Search queries are not added to the sitemap.
+- Desktop and mobile search preserve the current locale and navigate directly to the results page. Search cards link to canonical product routes, respect zero sale prices and show actual availability.
+- Corrected Arabic product labels that differed from English (urgency, ready-to-ship wording, combined quote and price labels), localized accessibility labels, and translated privacy, terms and refund pages plus metadata. Policy periods and conditions are preserved from the existing English text; this is not a legal-policy revision.
+- Correction to the original audit: the source Arabic was valid Unicode. Question marks in terminal output were a display/encoding issue, not proof of corrupted source. Product names and descriptions supplied in English are intentionally not machine-translated or invented.
+- Replaced explicit `any` with existing catalog/order/inquiry types, inferred form types, generic route context and narrowed errors. Corrected asynchronous route params for admin brand writes. Kept existing authentication/permissions and database schemas.
+- Reworked asynchronous list loading with stable callbacks and abort cleanup, retained submitted search behavior, derived contact-region selection from URL/hash, and removed unused bindings. No ESLint rules were disabled and no dependencies were added.
+- Regression suite expanded from 14 to 18 groups: search rendering/pagination/query boundaries/error handling, literal regex matching, authenticated route context/error handling and bilingual legal rendering.
+
+### Follow-up verification (24 November 2026)
+
+| Check | Result |
+| --- | --- |
+| ESLint | Passed: 0 errors, 0 warnings (previously 127 errors, 28 warnings) |
+| TypeScript, npx tsc --noEmit | Passed |
+| SEO/functional regression suite | Passed: 18 groups, 0 failures (previously 14 groups) |
+| git diff --check | Passed |
+| Production build | Incomplete: repeated Windows EPERM failures creating generated .next directories. One earlier attempt compiled and completed TypeScript before failing during prerender directory creation; later retries failed creating brands output/type directories. No build success is claimed. |
+| Browser and database integration | Not performed successfully end to end in this environment; verify on staging/production |
+| Before/after speed and Core Web Vitals | Not measured; no speed improvement claim |
+
+Before release, run npm run build in the deployment environment and verify populated search results, mobile/desktop navigation, Arabic/RTL pages, admin list filtering, edits/uploads/status updates, contact-region selection, authentication and existing order/contact flows. Mock-based tests do not certify the live database or external services.
+
+The new search page deliberately limits deep pagination to 100 pages and queries to 120 characters. No database records were changed or seeded. Existing business claims and return/shipping policies still require the owner's factual review.
+
+
+## Original audit scope and evidence
 
 Inspected the tracked route inventory, SEO helpers, shared storefront components, product create/update flow, repository projections, model defaults, auth guards, cache invalidation, image references and build configuration. The source inventory contains 158 tracked TypeScript/JavaScript files, 15 localized public page modules, 8 admin pages and 24 API routes. Source review and regression tests are not a substitute for crawling a populated production catalog.
 
@@ -96,10 +127,10 @@ Browser/HTTP limitation: local CLI connections failed with EACCES; the browser p
 
 1. Set NEXT_PUBLIC_SITE_URL=https://www.blankethouse.ae in the production build environment. The local .env.local still uses localhost intentionally. Assign both blankethouse.ae and www.blankethouse.ae to the hosting project with valid TLS. This task did not change DNS or deploy. Verify host redirects and submit the WWW sitemap in Search Console after deployment.
 2. Restore authorized database connectivity for staging/live verification. A passing build does not prove catalog availability; database-backed fallbacks logged connection errors here.
-3. Existing Arabic source strings contain corrupted/question-mark text, and some product/legal text is English in both locales. Supply accurate translations before claiming complete Arabic SEO coverage.
-4. Existing navigation search targets /search, but no dedicated search page exists. This remains a functional gap; adding a search results experience was not mixed into this SEO patch.
+3. Resolved in follow-up: Arabic product-copy discrepancies and English-only legal pages. Database-authored product content still needs accurate translations from the business where desired; source Unicode was not corrupted.
+4. Resolved in follow-up: localized search results page and navigation implemented.
 5. Homepage featured products and the brands grid still fetch some catalog data on the client. Server-rendering these sections and consolidating header catalog fetches are follow-up performance opportunities.
-6. Existing lint debt remains across admin, UI and service code. Unused dependencies/assets were not deleted without sufficient evidence. Broad remote image host patterns remain because active external image origins could not be inventoried from the database.
+6. Lint cleanup is included in the follow-up. Unused dependencies/assets were not deleted without sufficient evidence. Broad remote image host patterns remain because active external image origins could not be inventoried from the database.
 7. Legacy rating/material/stock defaults and some visible marketing claims still need a business-content review. Unverified review schema was removed, but no historical product data was altered.
 8. Full-route cache tradeoff, external fonts, large original hero assets and client bundle behavior require production measurements. No ranking, traffic, indexing or CWV improvement is guaranteed by code changes alone.
 
@@ -180,3 +211,64 @@ Indexing reference: https://developers.google.com/search/docs/crawling-indexing/
 ## Final domain correction
 
 The user confirmed https://www.blankethouse.ae as the main domain. Updated the shared origin fallback, production environment example and regression assertions. The previous production build predates this correction; deploy a fresh build with NEXT_PUBLIC_SITE_URL=https://www.blankethouse.ae. Local development environment remains unchanged.
+
+## Files changed in the search / Arabic / lint follow-up
+
+- app/[locale]/[category]/page.tsx
+- app/[locale]/brand/[slug]/page.tsx
+- app/[locale]/page.tsx
+- app/[locale]/privacy/page.tsx
+- app/[locale]/refund-policy/page.tsx
+- app/[locale]/search/page.tsx
+- app/[locale]/terms/page.tsx
+- app/admin/brands/page.tsx
+- app/admin/categories/page.tsx
+- app/admin/inquiries/page.tsx
+- app/admin/layout.tsx
+- app/admin/login/page.tsx
+- app/admin/orders/page.tsx
+- app/admin/page.tsx
+- app/admin/products/page.tsx
+- app/admin/regions/page.tsx
+- app/api/admin/archive/route.ts
+- app/api/admin/brands/[id]/route.ts
+- app/api/admin/inquiries/[id]/route.ts
+- app/api/admin/orders/route.ts
+- app/api/admin/regions/[id]/route.ts
+- app/api/admin/regions/route.ts
+- app/api/admin/users/[id]/route.ts
+- app/api/store/inquiries/route.ts
+- app/api/store/orders/route.ts
+- app/api/store/products/route.ts
+- components/brands/BrandClientGrid.tsx
+- components/category-showcase/ShopByCategory.tsx
+- components/category-showcase/showcaseUtils.ts
+- components/collection/CollectionPageView.tsx
+- components/collection/ProductCard.tsx
+- components/collection/QuickViewModal.tsx
+- components/contact/ContactDetailsAndForm.tsx
+- components/contact/ContactStoreLocation.tsx
+- components/featured-products/FeaturedProducts.tsx
+- components/header/CollectionDropdown.tsx
+- components/header/LanguageSwitcher.tsx
+- components/header/MobileNav.tsx
+- components/header/PrimaryNav.tsx
+- components/order/OrderModal.tsx
+- components/product/ProductDetailView.tsx
+- docs/seo/IMPLEMENTATION-2026-11-24.md
+- docs/seo/OUTSIDE-CODE-CHECKLIST.md
+- lib/api/helpers.ts
+- lib/db/models/Product.ts
+- lib/repositories/brand.repository.ts
+- lib/repositories/category.repository.ts
+- lib/repositories/product.repository.ts
+- lib/repositories/region.repository.ts
+- lib/services/archive.service.ts
+- lib/services/brand.service.ts
+- lib/services/category.service.ts
+- lib/services/dashboard.service.ts
+- lib/services/product.service.ts
+- lib/services/upload.service.ts
+- proxy.ts
+- scripts/seed-db.ts
+- scripts/seo-regression.mjs

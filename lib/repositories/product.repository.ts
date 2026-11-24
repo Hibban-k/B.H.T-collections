@@ -1,3 +1,4 @@
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
 import "@/lib/db/models/Brand";
 import mongoose from "mongoose";
 import { connectToDatabase } from "@/lib/db/mongodb";
@@ -66,7 +67,7 @@ export interface SerializedProduct {
   showOnCollection?: boolean;
   crossSellSlugs?: string[];
   additionalCategories?: string[];
-  brand?: any;
+  brand?: string | SerializedBrand | null;
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
@@ -149,7 +150,7 @@ export class ProductRepository {
 
   static async findBySlug(slug: string, excludeId?: string): Promise<SerializedProduct | null> {
     await connectToDatabase();
-    const query: any = { slug: slug.trim().toLowerCase() };
+    const query: Record<string, unknown> = { slug: slug.trim().toLowerCase() };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await ProductModel.findOne(query).populate("brand").lean();
     return doc ? serialize(doc) : null;
@@ -157,7 +158,7 @@ export class ProductRepository {
 
   static async findByName(name: string, excludeId?: string): Promise<SerializedProduct | null> {
     await connectToDatabase();
-    const query: any = { name: { $regex: new RegExp(`^${name.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") } };
+    const query: Record<string, unknown> = { name: { $regex: new RegExp(`^${name.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") } };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await ProductModel.findOne(query).lean();
     return doc ? serialize(doc) : null;
@@ -183,8 +184,8 @@ export class ProductRepository {
   static async create(data: Partial<IProduct>): Promise<SerializedProduct> {
     await connectToDatabase();
     // Safety check: ensure brand/subcategoryId are never empty string
-    if ((data as any).brand === "") (data as any).brand = null;
-    if ((data as any).subcategoryId === "") (data as any).subcategoryId = null;
+    if ((data.brand as unknown) === "") data.brand = null;
+    if ((data.subcategoryId as unknown) === "") data.subcategoryId = null;
     const doc = await ProductModel.create(data);
     return serialize(doc.toObject());
   }
@@ -192,11 +193,11 @@ export class ProductRepository {
   static async update(id: string, data: UpdateQuery<IProduct>): Promise<SerializedProduct | null> {
     await connectToDatabase();
     // Safety check: ensure brand/subcategoryId are never empty string in update payload
-    if (data && (data as any).brand === "") {
-      (data as any).brand = null;
+    if (data && data.brand === "") {
+      data.brand = null;
     }
-    if (data && (data as any).subcategoryId === "") {
-      (data as any).subcategoryId = null;
+    if (data && data.subcategoryId === "") {
+      data.subcategoryId = null;
     }
     const doc = await ProductModel.findByIdAndUpdate(
       id,
@@ -217,7 +218,7 @@ export class ProductRepository {
       regex = /bed|blanket|comferter|comforter|sheet/i;
     }
 
-    const query: any = {
+    const query: Record<string, unknown> = {
       $and: [
         { status: { $ne: "disabled" } },
         {
@@ -231,7 +232,7 @@ export class ProductRepository {
     };
 
     if (excludeId) {
-      query.$and.push({ _id: { $ne: excludeId } });
+      (query.$and as Record<string, unknown>[]).push({ _id: { $ne: excludeId } });
     }
 
     return ProductModel.countDocuments(query);

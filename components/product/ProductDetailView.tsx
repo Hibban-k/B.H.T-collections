@@ -412,7 +412,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                     {isOutOfStock
                       ? isAr ? "غير متوفر حالياً" : "Out of Stock"
                       : currentStock < 15
-                      ? isAr ? `متبقي ${currentStock} فقط!` : `In stock · ${currentStock} available`
+                      ? isAr ? `متوفر بالمخزون · ${currentStock} متاح` : `In stock · ${currentStock} available`
                       : isAr ? "متوفر بالمخزون" : "In Stock"}
                   </span>
                 </div>
@@ -448,7 +448,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 </div>
                 <p className="text-xs text-[#737373] leading-relaxed">
                   {isAr
-                    ? "السعر شامل ضريبة القيمة المضافة. متاح خيارات التوزيع بالجملة والتصدير لدول الخليج."
+                    ? "السعر شامل ضريبة القيمة المضافة بنسبة 5٪ في الإمارات. تتوفر خيارات البيع بالجملة والتصدير إلى دول الخليج."
                     : "Inclusive of 5% UAE VAT. Wholesale & export logistics available across GCC."}
                 </p>
               </div>
@@ -613,13 +613,13 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
             <div className="p-6 sm:p-8 bg-white rounded-3xl border border-[#e5e5e5] shadow-sm space-y-6">
               <div>
                 <span className="text-[10px] font-extrabold uppercase tracking-widest text-[#b32025]">
-                  {isAr ? "عروض مكملة حصرية" : "COMPLEMENTARY PRODUCTS"}
+                  {isAr ? "منتجات مكملة" : "COMPLEMENTARY PRODUCTS"}
                 </span>
                 <h2
                   className="text-lg sm:text-2xl font-bold text-[#171717] mt-1"
                   style={{ fontFamily: "var(--font-playfair-display)" }}
                 >
-                  {isAr ? "المجموعة الموصى بها مع هذا المنتج" : "Build your product inquiry"}
+                  {isAr ? "أضف منتجات إلى طلب الاستفسار" : "Build your product inquiry"}
                 </h2>
                 <p className="text-xs text-[#737373] mt-1">
                   {isAr
@@ -689,13 +689,13 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 <div className="lg:w-72 p-5 bg-[#f7f6f3] border border-[#e5e5e5] rounded-2xl flex flex-col justify-between space-y-4 shrink-0">
                   <div>
                     <span className="text-[10px] font-bold text-[#737373] uppercase tracking-wider block">
-                      {isAr ? "إجمالي المجموعة" : "Indicative combined price"}
+                      {isAr ? "السعر الإجمالي التقريبي" : "Indicative combined price"}
                     </span>
                     <span className="text-2xl font-black text-[#171717]">
                       AED {bundleTotalPrice.toFixed(2)}
                     </span>
                     <p className="text-[10px] text-emerald-700 font-semibold mt-0.5">
-                      {isAr ? "جاهز للشحن في طرد موحد" : "Availability and delivery confirmed by our team"}
+                      {isAr ? "يؤكد فريقنا التوفر وترتيبات التوصيل" : "Availability and delivery confirmed by our team"}
                     </p>
                   </div>
 
@@ -705,7 +705,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                     className="w-full py-2.5 px-4 bg-[#166534] hover:bg-[#14532d] text-white rounded-xl text-xs font-bold shadow-sm hover:shadow transition-all flex items-center justify-center gap-1.5 text-center cursor-pointer"
                   >
                     <MessageCircle className="w-3.5 h-3.5 fill-white" />
-                    <span>{isAr ? "طلب المجموعة عبر واتساب" : "Request a combined quote"}</span>
+                    <span>{isAr ? "اطلب عرض سعر للمنتجات المختارة" : "Request a combined quote"}</span>
                   </button>
                 </div>
               </div>
@@ -754,7 +754,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                     : "border-transparent text-[#737373] hover:text-[#171717]"
                 }`}
               >
-                {isAr ? "الشحن وضمان BHT" : "Delivery & support"}
+                {isAr ? "التوصيل والدعم" : "Delivery & support"}
               </button>
             </div>
 
@@ -779,7 +779,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                   {/* Amazon / Flipkart Style Key-Value Table */}
                   <div className="border border-[#e5e5e5] rounded-2xl overflow-hidden divide-y divide-[#ededeb] text-xs">
                     <div className="grid grid-cols-1 sm:grid-cols-3 p-3.5 bg-[#f7f6f3]">
-                      <span className="font-bold text-[#737373]">{isAr ? "الاسم التجاري" : "Product Title"}</span>
+                      <span className="font-bold text-[#737373]">{isAr ? "اسم المنتج" : "Product Title"}</span>
                       <span className="sm:col-span-2 font-semibold text-[#171717]">{product.name}</span>
                     </div>
 
@@ -853,7 +853,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                       <h4 className="text-sm font-bold text-[#171717]">{isAr ? "سياسة التوصيل والشحن" : "Shipping & Delivery Policy"}</h4>
                       <p className="text-xs text-[#737373] leading-relaxed">
                         {isAr
-                          ? "توصيل خلال 24-48 ساعة لجميع مدن الإمارات (دبي، أبوظبي، الشارقة، عجمان). شحن سريع بري وجوي لجميع دول الخليج خلال 2-4 أيام عمل."
+                          ? "توصيل الطلبات في دبي وأبوظبي والشارقة خلال 24–48 ساعة. شحن بري وجوي سريع إلى دول الخليج خلال 2–4 أيام عمل."
                           : "Orders across Dubai, Abu Dhabi, and Sharjah are delivered within 24-48 hours. GCC express road and air logistics delivered within 2-4 business days."}
                       </p>
                     </div>
@@ -863,7 +863,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                       <h4 className="text-sm font-bold text-[#171717]">{isAr ? "سياسة الاستبدال والضمان" : "Warranty & Exchange Terms"}</h4>
                       <p className="text-xs text-[#737373] leading-relaxed">
                         {isAr
-                          ? "استبدال فوري خلال 7 أيام في حال وجود أي عيب مصنعي أو اختلاف في المواصفات. تخضع جميع البضائع لفحص جودة ثلاثي قبل الإرسال."
+                          ? "استبدال مضمون خلال 7 أيام في حال وجود اختلافات ناتجة عن التصنيع. يخضع كل منتج لفحص جودة من ثلاث مراحل قبل التعبئة."
                           : "7-day replacement guaranteed for manufacturing discrepancies. Every item passes our 3-stage quality inspection prior to packaging."}
                       </p>
                     </div>

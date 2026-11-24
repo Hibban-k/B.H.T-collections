@@ -37,7 +37,7 @@ export const LanguageSwitcher: React.FC = () => {
         className="inline-flex items-center gap-2 px-3 py-2 rounded-full border border-neutral-200 hover:border-neutral-900 bg-white hover:bg-neutral-50/80 transition-all duration-200 text-xs font-medium text-neutral-800 shadow-2xs group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-900 cursor-pointer"
         aria-expanded={isOpen}
         aria-haspopup="true"
-        aria-label="Select Language"
+        aria-label={language === "ar" ? "اختر اللغة" : "Select language"}
       >
         <Globe className="w-4 h-4 text-neutral-600 group-hover:text-neutral-900 transition-colors stroke-[1.8]" />
         <span className="font-semibold tracking-wide">

@@ -1,4 +1,6 @@
 "use client";
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 
 import React, { useState, useEffect } from "react";
 import Link from "@/components/common/StoreLink";
@@ -180,8 +182,8 @@ export const ShopByCategory: React.FC<ShopByCategoryProps> = ({ initialCategorie
           const catData = await categoriesRes.json();
           const brandData = await brandsRes.json();
 
-          const dbCategories: any[] = catData.categories || [];
-          const dbBrands: any[] = brandData.brands || [];
+          const dbCategories: SerializedCategory[] = catData.categories || [];
+          const dbBrands: SerializedBrand[] = brandData.brands || [];
 
           if (dbCategories.length > 0 && dbBrands.length > 0 && isMounted) {
             const mapped = buildShowcaseCategories(dbCategories, dbBrands);

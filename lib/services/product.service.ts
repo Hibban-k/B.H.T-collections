@@ -163,14 +163,14 @@ export class ProductService {
       sku: input.sku ? input.sku.trim().toUpperCase() : undefined,
       category: input.category || "Blankets",
       categorySlug: input.categorySlug || "blankets",
-      subcategoryId: (resolvedSubcat as any) ?? null,
+      subcategoryId: resolvedSubcat ?? null,
       subcategorySlug: input.subcategorySlug || "",
       price: Number(input.price) || 0,
       salePrice: input.salePrice ? Number(input.salePrice) : undefined,
       originalPrice: input.originalPrice ? Number(input.originalPrice) : undefined,
       rating: input.rating || 5.0,
       reviewCount: input.reviewCount || 1,
-      brand: (resolvedBrand as any) ?? null,
+      brand: resolvedBrand ?? null,
       image: cleanImg,
       images: cleanImgs,
       description: input.description || "",
@@ -242,13 +242,13 @@ export class ProductService {
     // Safely resolve brand to ObjectId or null (never empty string)
     if ("brand" in updates) {
       const resolvedBrand = await resolveBrandId(updates.brand);
-      sanitized.brand = (resolvedBrand as any) ?? null;
+      sanitized.brand = resolvedBrand ?? null;
     }
 
     // Safely resolve subcategoryId to ObjectId or null (never empty string)
     if ("subcategoryId" in updates) {
       const resolvedSubcat = resolveCategoryId(updates.subcategoryId);
-      sanitized.subcategoryId = (resolvedSubcat as any) ?? null;
+      sanitized.subcategoryId = resolvedSubcat ?? null;
     }
 
     if (Array.isArray(updates.crossSellSlugs)) sanitized.crossSellSlugs = updates.crossSellSlugs;

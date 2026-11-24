@@ -1,4 +1,5 @@
 "use client";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 
 import React, { useState, useEffect } from "react";
 import Link from "@/components/common/StoreLink";
@@ -59,7 +60,7 @@ export const CollectionDropdown: React.FC<CollectionDropdownProps> = ({
         const res = await fetch("/api/store/categories");
         if (res.ok) {
           const data = await res.json();
-          const allCats: any[] = data.categories || [];
+          const allCats: SerializedCategory[] = data.categories || [];
 
           const topCats = allCats.filter((c) => !c.parentId && !c.parentSlug);
           const mapped: DropdownCategory[] = topCats.map((cat) => {

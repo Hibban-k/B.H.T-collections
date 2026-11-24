@@ -1,4 +1,4 @@
-import { constructMetadata } from "@/lib/seo/metadata";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BrandShowcaseView } from "@/components/brand/BrandShowcaseView";
@@ -57,7 +57,7 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
   if (dbProducts.length === 0) {
     const allPublished = await ProductService.getGridProducts({ status: "published" }).catch(() => []);
     dbProducts = allPublished.filter((p) => {
-      const b = (p as any).brand;
+      const b = p.brand;
       if (!b) return false;
 
       // Brand as populated object { _id, name, slug }
@@ -81,7 +81,7 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
     slug: p.slug,
     nameEn: p.name,
     nameAr: p.name,
-    category: (p.categorySlug || p.category || "bedding").toLowerCase() as any,
+    category: (p.categorySlug || p.category || "bedding").toLowerCase() as Product["category"],
     subcategory: (p.subcategorySlug || "").toLowerCase(),
     subcategoryEn: p.subcategorySlug || "",
     subcategoryAr: p.subcategorySlug || "",

@@ -11,9 +11,9 @@ export async function GET(req: NextRequest) {
     const includeInactive = searchParams.get("includeInactive") === "true";
     const regions = await RegionService.getRegions(includeInactive);
     return NextResponse.json({ success: true, regions });
-  } catch (error: any) {
+  } catch (error) {
     console.error("GET /api/admin/regions error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : "Unexpected error") }, { status: 500 });
   }
 }
 
@@ -43,11 +43,11 @@ export async function POST(req: NextRequest) {
     revalidatePath("/[locale]", "layout");
     revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, region }, { status: 201 });
-  } catch (error: any) {
+  } catch (error) {
     console.error("POST /api/admin/regions error:", error);
-    if (error.code === 11000) {
+    if (typeof error === "object" && error !== null && "code" in error && error.code === 11000) {
       return NextResponse.json({ success: false, error: "Region code must be unique." }, { status: 400 });
     }
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: (error instanceof Error ? error.message : "Unexpected error") }, { status: 500 });
   }
 }

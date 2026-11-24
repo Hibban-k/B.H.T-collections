@@ -1,4 +1,4 @@
-import { constructMetadata } from "@/lib/seo/metadata";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { BrandClientPageView } from "@/components/brands/BrandClientPageView";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {

@@ -1,7 +1,7 @@
+import { getRequestLanguage } from "@/lib/seo/request-language";
 /* eslint-disable @next/next/no-page-custom-font -- Global stylesheet in the App Router root, shared by every page. */
-import { headers } from "next/headers";
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const locale = (await headers()).get("x-bht-locale") === "ar" ? "ar" : "en";
+  const locale = await getRequestLanguage();
   return <html lang={locale} dir={locale === "ar" ? "rtl" : "ltr"} suppressHydrationWarning><head>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />

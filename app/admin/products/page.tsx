@@ -1,18 +1,17 @@
 "use client";
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 // app/admin/products/page.tsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
   Search,
   Edit2,
   Trash2,
-  Eye,
   CheckCircle,
   XCircle,
   Sparkles,
-  Home,
-  Layers,
   X,
   RefreshCw,
   AlertCircle,
@@ -56,7 +55,7 @@ interface ProductItem {
   showOnCollection?: boolean;
   crossSellSlugs?: string[];
   additionalCategories?: string[];
-  brand?: string;
+  brand?: string | { _id: string };
   metaTitle?: string;
   metaDescription?: string;
   keywords?: string[];
@@ -82,7 +81,7 @@ const defaultFormData = {
   shortDescription: "",
   featured: false,
   crossSellSlugs: [] as string[],
-  additionalCategories: [],
+  additionalCategories: [] as string[],
   brand: "",
   metaTitle: "",
   metaDescription: "",
@@ -92,8 +91,8 @@ const defaultFormData = {
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<ProductItem[]>([]);
-  const [brands, setBrands] = useState<any[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [brands, setBrands] = useState<SerializedBrand[]>([]);
+  const [categories, setCategories] = useState<SerializedCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -101,7 +100,7 @@ export default function AdminProductsPage() {
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<ProductItem | null>(null);
-  const [formData, setFormData] = useState<any>(defaultFormData);
+  const [formData, setFormData] = useState(defaultFormData);
   const [saving, setSaving] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -115,54 +114,61 @@ export default function AdminProductsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const slotFileInputRefs = useRef<(HTMLInputElement | null)[]>([]);
 
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      let url = "/api/admin/products?";
-      if (categoryFilter !== "all") url += `categorySlug=${categoryFilter}&`;
-      if (search.trim()) url += `search=${encodeURIComponent(search.trim())}&`;
+  const loadProducts = useCallback((signal?: AbortSignal) => {
+    let url = "/api/admin/products?";
+    if (categoryFilter !== "all") url += `categorySlug=${categoryFilter}&`;
 
-      const res = await fetch(url);
+    return fetch(url, { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setProducts(data.products || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load products", e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
+  }, [categoryFilter]);
 
-  const fetchBrands = async () => {
-    try {
-      const res = await fetch("/api/admin/brands");
+  const fetchBrands = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/brands", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setBrands(data.brands || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load brands", e);
-    }
-  };
+    });
+  }, []);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("/api/admin/categories");
+  const fetchCategories = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/categories", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setCategories(data.categories || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load categories", e);
-    }
-  };
+    });
+  }, []);
 
+  const fetchProducts = () => {
+    setLoading(true);
+    return loadProducts();
+  };
   useEffect(() => {
-    fetchProducts();
-    fetchBrands();
-    fetchCategories();
-  }, [categoryFilter]);
+    const controller = new AbortController();
+    void loadProducts(controller.signal);
+    void fetchBrands(controller.signal);
+    void fetchCategories(controller.signal);
+    return () => controller.abort();
+  }, [loadProducts, fetchBrands, fetchCategories]);
 
   const handleOpenAdd = () => {
     setEditingProduct(null);
@@ -198,10 +204,10 @@ export default function AdminProductsPage() {
       featured: Boolean(product.featured),
       crossSellSlugs: product.crossSellSlugs || [],
       additionalCategories: product.additionalCategories || [],
-      brand: (product as any).brand?._id ? String((product as any).brand._id) : ((product as any).brand || ""),
-      metaTitle: (product as any).metaTitle || "",
-      metaDescription: (product as any).metaDescription || "",
-      keywords: (product as any).keywords ? (product as any).keywords.join(", ") : "",
+      brand: typeof product.brand === "object" ? product.brand._id : (product.brand || ""),
+      metaTitle: product.metaTitle || "",
+      metaDescription: product.metaDescription || "",
+      keywords: product.keywords ? product.keywords.join(", ") : "",
       status: product.status,
     });
     setErrorMsg("");
@@ -239,7 +245,7 @@ export default function AdminProductsPage() {
       if (replaceIndex !== undefined && replaceIndex >= 0) {
         // Replacing a specific slot
         const url = await uploadSingleFile(files[0]);
-        setFormData((prev: any) => {
+        setFormData((prev) => {
           const current = [...(prev.images || [])];
           while (current.length <= replaceIndex) {
             current.push("");
@@ -271,7 +277,7 @@ export default function AdminProductsPage() {
           if (url) uploadedUrls.push(url);
         }
 
-        setFormData((prev: any) => {
+        setFormData((prev) => {
           const combined = [...(prev.images || []), ...uploadedUrls].slice(0, 4);
           return {
             ...prev,
@@ -280,15 +286,15 @@ export default function AdminProductsPage() {
           };
         });
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to upload image(s).");
+    } catch (err) {
+      setErrorMsg((err instanceof Error ? err.message : "Unexpected error") || "Failed to upload image(s).");
     } finally {
       setUploading(false);
     }
   };
 
   const handleRemoveImage = (index: number) => {
-    setFormData((prev: any) => {
+    setFormData((prev) => {
       const updated = [...(prev.images || [])];
       updated.splice(index, 1);
       return {
@@ -301,7 +307,7 @@ export default function AdminProductsPage() {
 
   const handleSetCoverImage = (index: number) => {
     if (index === 0) return;
-    setFormData((prev: any) => {
+    setFormData((prev) => {
       const updated = [...(prev.images || [])];
       const [selected] = updated.splice(index, 1);
       if (selected) {
@@ -338,7 +344,7 @@ export default function AdminProductsPage() {
       } else {
         setErrorMsg(data.error || "Failed to upload variant image.");
       }
-    } catch (err) {
+    } catch {
       setErrorMsg("Network error while uploading variant image.");
     } finally {
       setUploadingVariantIndex(null);
@@ -460,8 +466,8 @@ export default function AdminProductsPage() {
       } else {
         setErrorMsg(data.error || "Failed to save product");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to save product");
+    } catch (err) {
+      setErrorMsg((err instanceof Error ? err.message : "Unexpected error") || "Failed to save product");
     } finally {
       setSaving(false);
     }
@@ -801,7 +807,7 @@ export default function AdminProductsPage() {
                     onChange={(e) => {
                       const newName = e.target.value;
                       const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-                      setFormData((prev: any) => ({
+                      setFormData((prev) => ({
                         ...prev,
                         name: newName,
                         slug: (!editingProduct && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))
@@ -1443,7 +1449,7 @@ export default function AdminProductsPage() {
 
                 {formData.variants && formData.variants.length > 0 ? (
                   <div className="space-y-3">
-                    {formData.variants.map((v: any, index: number) => (
+                    {formData.variants.map((v, index: number) => (
                       <div
                         key={index}
                         className="p-3.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-2xl space-y-3 relative"

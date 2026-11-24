@@ -1,4 +1,4 @@
-import { constructMetadata } from "@/lib/seo/metadata";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { ContactPageView } from "@/components/contact/ContactPageView";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {

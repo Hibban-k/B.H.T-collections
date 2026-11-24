@@ -31,8 +31,8 @@ export const PATCH = withAuth(
         return NextResponse.json({ error: "Inquiry not found" }, { status: 404 });
       }
       return NextResponse.json({ inquiry: updated });
-    } catch (err: any) {
-      return NextResponse.json({ error: err.message }, { status: 400 });
+    } catch (err) {
+      return NextResponse.json({ error: (err instanceof Error ? err.message : "Unexpected error") }, { status: 400 });
     }
   }
 );

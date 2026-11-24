@@ -6,9 +6,14 @@ import Link from "@/components/common/StoreLink";
 import { REGIONAL_PRESENCE_DATA } from "@/data/regionalData";
 import { CircularFlag } from "./CircularFlag";
 import { useLanguage } from "@/context/LanguageContext";
+import { MARKETS } from "@/lib/seo/locales";
 
 export const RegionalPresence: React.FC = () => {
-  const { language } = useLanguage();
+  const { language, availableMarkets } = useLanguage();
+  const countryHref = (id: string) => {
+    const code = availableMarkets.find(market => MARKETS[market].contactId === id);
+    return `${code ? "/" + code : ""}/contact?region=${id}#store-location`;
+  };
 
   return (
     <section
@@ -67,7 +72,7 @@ export const RegionalPresence: React.FC = () => {
               {REGIONAL_PRESENCE_DATA.countries.map((country) => (
                 <Link
                   key={country.id}
-                  href={`/contact?region=${country.id}#store-location`}
+                  href={countryHref(country.id)}
                   className="group flex flex-col items-center text-center p-3 rounded-2xl hover:bg-[#FAF9F7] border border-transparent hover:border-neutral-200 transition-all duration-200 cursor-pointer shadow-2xs hover:shadow-xs"
                 >
                   {/* Circular Flag with subtle hover scale */}

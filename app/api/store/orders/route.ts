@@ -40,10 +40,10 @@ export async function POST(req: Request) {
       },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error("[API Store Orders POST] Error:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to process order. Please try again." },
+      { error: (error instanceof Error ? error.message : "Unexpected error") || "Failed to process order. Please try again." },
       { status: 500 }
     );
   }

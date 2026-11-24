@@ -1,6 +1,6 @@
 "use client";
 // app/admin/categories/page.tsx
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
@@ -8,7 +8,6 @@ import {
   Trash2,
   RefreshCw,
   X,
-  Layers,
   AlertCircle,
   UploadCloud,
   Loader2,
@@ -47,7 +46,7 @@ export default function AdminCategoriesPage() {
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
   const [editingCategory, setEditingCategory] = useState<CategoryItem | null>(null);
-  const [formData, setFormData] = useState<any>(defaultFormData);
+  const [formData, setFormData] = useState(defaultFormData);
   const [saving, setSaving] = useState(false);
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState("");
@@ -58,24 +57,30 @@ export default function AdminCategoriesPage() {
   const [imageInputMode, setImageInputMode] = useState<"upload" | "url">("upload");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchCategories = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/categories");
+  const loadCategories = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/categories", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setCategories(data.categories || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load categories", e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchCategories();
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
   }, []);
+
+  const fetchCategories = () => {
+    setLoading(true);
+    return loadCategories();
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadCategories(controller.signal);
+    return () => controller.abort();
+  }, [loadCategories]);
 
   const handleOpenAdd = () => {
     setEditingCategory(null);
@@ -124,11 +129,11 @@ export default function AdminCategoriesPage() {
 
       const data = await res.json();
       if (res.ok && data.success && data.url) {
-        setFormData((prev: any) => ({ ...prev, image: data.url }));
+        setFormData((prev) => ({ ...prev, image: data.url }));
       } else {
         setErrorMsg(data.error || "Failed to upload image.");
       }
-    } catch (err) {
+    } catch {
       setErrorMsg("Network error while uploading category image.");
     } finally {
       setUploading(false);
@@ -157,11 +162,11 @@ export default function AdminCategoriesPage() {
 
         const data = await res.json();
         if (res.ok && data.success && data.url) {
-          setFormData((prev: any) => ({ ...prev, image: data.url }));
+          setFormData((prev) => ({ ...prev, image: data.url }));
         } else {
           setErrorMsg(data.error || "Failed to upload dropped image");
         }
-      } catch (err) {
+      } catch {
         setErrorMsg("Failed to upload dropped image");
       } finally {
         setUploading(false);
@@ -240,8 +245,8 @@ export default function AdminCategoriesPage() {
 
       setModalOpen(false);
       await fetchCategories();
-    } catch (err: any) {
-      setErrorMsg(err.message || "An error occurred");
+    } catch (err) {
+      setErrorMsg((err instanceof Error ? err.message : "Unexpected error") || "An error occurred");
     } finally {
       setSaving(false);
     }
@@ -436,7 +441,7 @@ export default function AdminCategoriesPage() {
                   onChange={(e) => {
                     const newName = e.target.value;
                     const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-                    setFormData((prev: any) => ({
+                    setFormData((prev) => ({
                       ...prev,
                       name: newName,
                       slug: (!editingCategory && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))

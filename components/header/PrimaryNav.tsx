@@ -1,4 +1,5 @@
 "use client";
+import { useRouter, usePathname } from "next/navigation";
 
 import React, { useState } from "react";
 import Link from "@/components/common/StoreLink";
@@ -15,12 +16,14 @@ export const PrimaryNav: React.FC<PrimaryNavProps> = ({
   onToggleMobileMenu,
 }) => {
   const { language } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
+      router.push(`/${pathname.split("/")[1] || language}/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 

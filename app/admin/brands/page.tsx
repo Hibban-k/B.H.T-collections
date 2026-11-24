@@ -1,6 +1,7 @@
 "use client";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import {
   Plus,
@@ -54,14 +55,14 @@ const defaultFormData = {
 
 export default function BrandsPage() {
   const [brands, setBrands] = useState<BrandItem[]>([]);
-  const [categories, setCategories] = useState<any[]>([]);
+  const [categories, setCategories] = useState<SerializedCategory[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
   const [editingBrand, setEditingBrand] = useState<BrandItem | null>(null);
-  const [formData, setFormData] = useState<any>(defaultFormData);
+  const [formData, setFormData] = useState(defaultFormData);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
@@ -74,37 +75,44 @@ export default function BrandsPage() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const pdfInputRef = useRef<HTMLInputElement>(null);
 
-  const fetchBrands = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/brands");
+  const loadBrands = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/brands", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setBrands(data.brands || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load brands", e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
+  }, []);
 
-  const fetchCategories = async () => {
-    try {
-      const res = await fetch("/api/admin/categories");
+  const fetchCategories = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/categories", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setCategories(data.categories || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load categories", e);
-    }
-  };
-
-  useEffect(() => {
-    fetchBrands();
-    fetchCategories();
+    });
   }, []);
+
+  const fetchBrands = () => {
+    setLoading(true);
+    return loadBrands();
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadBrands(controller.signal);
+    void fetchCategories(controller.signal);
+    return () => controller.abort();
+  }, [loadBrands, fetchCategories]);
 
   const handleOpenAdd = () => {
     setEditingBrand(null);
@@ -168,11 +176,11 @@ export default function BrandsPage() {
 
       const data = await res.json();
       if (res.ok && data.success && data.url) {
-        setFormData((prev: any) => ({ ...prev, [target]: data.url }));
+        setFormData((prev) => ({ ...prev, [target]: data.url }));
       } else {
         setErrorMsg(data.error || "Failed to upload file.");
       }
-    } catch (err: any) {
+    } catch {
       setErrorMsg("Network error while uploading file.");
     } finally {
       if (target === "logo") setUploadingLogo(false);
@@ -264,8 +272,8 @@ export default function BrandsPage() {
       } else {
         setErrorMsg(data.error || "Failed to save brand");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to save brand");
+    } catch (err) {
+      setErrorMsg((err instanceof Error ? err.message : "Unexpected error") || "Failed to save brand");
     } finally {
       setSaving(false);
     }
@@ -489,7 +497,7 @@ export default function BrandsPage() {
                   onChange={(e) => {
                     const newName = e.target.value;
                     const autoSlug = newName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-                    setFormData((prev: any) => ({
+                    setFormData((prev) => ({
                       ...prev,
                       name: newName,
                       slug: (!editingBrand && (!prev.slug || prev.slug === prev.name?.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")))

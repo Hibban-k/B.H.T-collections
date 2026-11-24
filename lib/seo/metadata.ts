@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import { getAbsoluteUrl } from "./urls";
 
-interface MetadataInput {
+export interface MetadataInput {
   title?: string;
   description?: string;
   image?: string;
   path?: string;
   noIndex?: boolean;
+  languages?: Record<string, string>;
 }
 
 export function constructMetadata({
@@ -15,13 +16,10 @@ export function constructMetadata({
   image = "/logo/logo.png",
   path = "",
   noIndex = false,
+  languages,
 }: MetadataInput = {}): Metadata {
   const url = getAbsoluteUrl(path);
 
-  // Determine canonical and language alternates cleanly
-  const cleanPath = path.replace(/^\/[a-z]{2}(\/|$)/, "/");
-  const enPath = `/en${cleanPath === "/" ? "" : cleanPath}`;
-  const arPath = `/ar${cleanPath === "/" ? "" : cleanPath}`;
 
   return {
     title: { absolute: title },
@@ -43,13 +41,7 @@ export function constructMetadata({
     },
     alternates: {
       canonical: url,
-      languages: {
-        "en": getAbsoluteUrl(enPath),
-        "en-AE": getAbsoluteUrl(enPath),
-        "ar": getAbsoluteUrl(arPath),
-        "ar-AE": getAbsoluteUrl(arPath),
-        "x-default": getAbsoluteUrl(enPath),
-      },
+      ...(languages ? { languages } : {}),
     },
     robots: noIndex
       ? { index: false, follow: false }

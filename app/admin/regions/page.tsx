@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Plus,
   Edit2,
@@ -39,29 +39,35 @@ export default function RegionsPage() {
   // Modal states
   const [modalOpen, setModalOpen] = useState(false);
   const [editingRegion, setEditingRegion] = useState<RegionItem | null>(null);
-  const [formData, setFormData] = useState<any>(defaultFormData);
+  const [formData, setFormData] = useState(defaultFormData);
   const [saving, setSaving] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  const fetchRegions = async () => {
-    setLoading(true);
-    try {
-      // Pass includeInactive=true for admin to see all regions
-      const res = await fetch("/api/admin/regions?includeInactive=true");
+  const loadRegions = useCallback((signal?: AbortSignal) => {
+    // Pass includeInactive=true for admin to see all regions
+    return fetch("/api/admin/regions?includeInactive=true", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setRegions(data.regions || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load regions", e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchRegions();
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
   }, []);
+
+  const fetchRegions = () => {
+    setLoading(true);
+    return loadRegions();
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadRegions(controller.signal);
+    return () => controller.abort();
+  }, [loadRegions]);
 
   const handleOpenAdd = () => {
     setEditingRegion(null);
@@ -149,8 +155,8 @@ export default function RegionsPage() {
       } else {
         setErrorMsg(data.error || "Failed to save region");
       }
-    } catch (err: any) {
-      setErrorMsg(err.message || "Failed to save region");
+    } catch (err) {
+      setErrorMsg((err instanceof Error ? err.message : "Unexpected error") || "Failed to save region");
     } finally {
       setSaving(false);
     }
@@ -193,7 +199,7 @@ export default function RegionsPage() {
             Regions &amp; Programmatic SEO
           </h1>
           <p className="text-xs text-[#64748B] mt-1">
-            Manage your localized store variants (e.g. /ae, /sa) and their SEO metadata templates.
+            Manage GCC markets: /ae, /sa, /qa, /kw, /bh and /om. /en is international; language selection stays on the same URL.
           </p>
         </div>
 
@@ -217,7 +223,7 @@ export default function RegionsPage() {
           <div className="p-12 text-center text-[#64748B] space-y-3">
             <Globe className="w-8 h-8 mx-auto text-[#D4AF37]" />
             <p className="text-sm font-semibold text-[#0B131F]">No regions found</p>
-            <p className="text-xs text-[#64748B]">Add a region (like 'ae' for UAE) to start generating localized URLs.</p>
+            <p className="text-xs text-[#64748B]">Add a region (like &apos;ae&apos; for UAE) to start generating localized URLs.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -355,7 +361,7 @@ export default function RegionsPage() {
               <div className="pt-4 border-t border-[#F2EBDC] space-y-4">
                 <h4 className="font-bold text-[11px] uppercase tracking-wider text-[#64748B]">Programmatic SEO Templates</h4>
                 <p className="text-[10px] text-[#64748B]">
-                  These templates automatically inject localization into your meta titles and descriptions for this specific region. Use <code>{`{{region_name}}`}</code> as a placeholder.
+                  These English templates customize this market&apos;s landing page. Use <code>{`{{region_name}}`}</code> as a placeholder. Describe verified offerings; these fields do not measure search volume or change product currency.
                 </p>
                 
                 <div>
@@ -375,7 +381,7 @@ export default function RegionsPage() {
                     rows={2}
                     value={formData.metaDescriptionTemplate}
                     onChange={(e) => setFormData({ ...formData, metaDescriptionTemplate: e.target.value })}
-                    placeholder="e.g. Shop our premium collections in {{region_name}}. Free shipping across the {{region_name}}..."
+                    placeholder="e.g. Explore blankets and bedding in {{region_name}}. Contact our regional team for availability and delivery details."
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none"
                   />
                 </div>

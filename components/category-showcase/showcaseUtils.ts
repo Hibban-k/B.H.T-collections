@@ -1,3 +1,5 @@
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 export interface BrandSlide {
   name: string;
   slug: string;
@@ -19,8 +21,8 @@ export interface CategoryWithSlidingBrands {
 // Pure function callable from Server Components or Client Components
 // STRICT DB ONLY: If DB is empty, returns empty array (no mock/dummy data)
 export function buildShowcaseCategories(
-  dbCategories: any[],
-  dbBrands: any[]
+  dbCategories: SerializedCategory[],
+  dbBrands: SerializedBrand[]
 ): CategoryWithSlidingBrands[] {
   if (!dbCategories || dbCategories.length === 0) {
     return [];

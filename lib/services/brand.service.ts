@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { unstable_cache } from "next/cache";
 import { BrandRepository, SerializedBrand } from "@/lib/repositories/brand.repository";
 import type { IBrand } from "@/lib/db/models/Brand";
@@ -76,7 +77,7 @@ export class BrandService {
       slug,
       category: input.category || "",
       categorySlug: input.categorySlug || "",
-      categoryId: (input.categoryId as any) || undefined,
+      categoryId: (input.categoryId ? new Types.ObjectId(input.categoryId) : null) || undefined,
       logo: input.logo || "",
       image: input.image || "",
       pdfUrl: input.pdfUrl || "",

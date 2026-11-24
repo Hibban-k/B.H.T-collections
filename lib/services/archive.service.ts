@@ -102,7 +102,7 @@ export class ArchiveService {
 
     // 2. Archive cancelled orders older than 12 months
     const oldOrders = await OrderModel.find({
-      orderStatus: { $in: ["Cancelled", "cancelled"] as any },
+      orderStatus: { $in: [/^[Cc]ancelled$/] },
       createdAt: { $lt: cutoffDate },
     }).lean();
 

@@ -1,7 +1,8 @@
 "use client";
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
 
 import React, { useState, useMemo, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
@@ -38,7 +39,7 @@ export interface DBProduct {
   sizes?: string[];
   colors?: string[];
   materials?: string[];
-  brand?: any;
+  brand?: string | SerializedBrand | null;
   status?: string;
   featured?: boolean;
 }
@@ -85,6 +86,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
 }) => {
   const { language } = useLanguage();
   const router = useRouter();
+  const locale = usePathname().split("/")[1] || language;
 
   // 1. DATA STATE
   const [categories, setCategories] = useState<DBCategory[]>(propCategories || []);
@@ -143,18 +145,17 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [visibleCount, setVisibleCount] = useState<number>(12);
 
-  // Sync if initialCategory prop changes
-  useEffect(() => {
-    if (initialCategory) {
-      setActiveCategory(initialCategory.toLowerCase());
-    }
-  }, [initialCategory]);
-
-  useEffect(() => {
-    if (initialSubcategory) {
-      setActiveSubcategory(initialSubcategory.toLowerCase());
-    }
-  }, [initialSubcategory]);
+  // Reset selections during render when navigation supplies a different category.
+  const [previousCategory, setPreviousCategory] = useState(initialCategory);
+  const [previousSubcategory, setPreviousSubcategory] = useState(initialSubcategory);
+  if (previousCategory !== initialCategory) {
+    setPreviousCategory(initialCategory);
+    setActiveCategory(initialCategory.toLowerCase());
+  }
+  if (previousSubcategory !== initialSubcategory) {
+    setPreviousSubcategory(initialSubcategory);
+    setActiveSubcategory(initialSubcategory.toLowerCase());
+  }
 
   // Find active category DB object
   const activeCategoryObj = useMemo(() => {
@@ -228,7 +229,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         ? brandsMap[String(p.brand)] ||
           brandsMap[String(p.brand).toLowerCase()] || {
             name: typeof p.brand === "string" ? p.brand : p.brand?.name || "",
-            logo: p.brand?.logo || "",
+            logo: (typeof p.brand === "object" ? p.brand?.logo : undefined) || "",
           }
         : { name: "", logo: "" };
 
@@ -237,7 +238,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         slug: p.slug,
         nameEn: p.name,
         nameAr: p.name,
-        category: (p.categorySlug || p.category || "bedding").toLowerCase() as any,
+        category: (p.categorySlug || p.category || "bedding").toLowerCase() as Product["category"],
         subcategory: (p.subcategorySlug || "").toLowerCase(),
         subcategoryEn: p.subcategorySlug || "",
         subcategoryAr: p.subcategorySlug || "",
@@ -309,7 +310,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       inStockOnly: false,
     });
     setVisibleCount(12);
-    router.push(`/${language}/${slug}`, { scroll: false });
+    router.push(`/${locale}/${slug}`, { scroll: false });
   };
 
   // Helper to sync URL search params without page reload
@@ -426,7 +427,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
   }, [sortedProducts, visibleCount]);
 
   // Active filter chips
-  const activeFilterChips = useMemo(() => {
+  const activeFilterChips = (() => {
     const chips: { id: string; label: string; onRemove: () => void }[] = [];
 
     if (filters.subcategory !== "all") {
@@ -456,7 +457,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
     });
 
     return chips;
-  }, [filters, subcategoryPillItems, language]);
+  })();
 
   // Build categoryMeta dynamically from DB
   const categoryMeta: CollectionCategoryMeta = useMemo(() => {
@@ -486,7 +487,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       }));
 
     return {
-      id: slug as any,
+      id: slug as CollectionCategoryMeta["id"],
       slug,
       nameEn: name.toUpperCase(),
       nameAr: name,

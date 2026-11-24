@@ -1,6 +1,7 @@
 "use client";
+import type { StoreMarket } from "@/lib/seo/locales";
 
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { createContext, useContext, useEffect } from "react";
 
 export type Language = "en" | "ar";
@@ -12,31 +13,31 @@ interface LanguageContextType {
   setLanguage: (lang: Language) => void;
   toggleLanguage: () => void;
   isRTL: boolean;
+  availableMarkets: StoreMarket[];
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLanguage?: Language }> = ({
+export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLanguage?: Language; availableMarkets?: StoreMarket[] }> = ({
   children,
   initialLanguage = "en",
+  availableMarkets = [],
 }) => {
   const language = initialLanguage;
 
   const router = useRouter();
-  const pathname = usePathname();
   useEffect(() => {
     document.documentElement.lang = initialLanguage;
     document.documentElement.dir = initialLanguage === "ar" ? "rtl" : "ltr";
   }, [initialLanguage]);
 
   const setLanguage = (lang: Language) => {
-    const path = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, "/" + lang);
-    router.push(path + window.location.search);
     if (typeof window !== "undefined") {
-      localStorage.setItem("bht_language", lang);
+      // Cookie is read on the server too; the market URL stays unchanged.
       document.cookie = `bht_language=${lang};path=/;max-age=31536000;SameSite=Lax`;
       document.documentElement.lang = lang;
       document.documentElement.dir = lang === "ar" ? "rtl" : "ltr";
+      router.refresh();
     }
   };
 
@@ -55,6 +56,7 @@ export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLang
         setLanguage,
         toggleLanguage,
         isRTL,
+        availableMarkets,
       }}
     >
       {children}

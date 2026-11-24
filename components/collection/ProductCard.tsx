@@ -67,7 +67,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             type="button"
             onClick={() => onQuickView(product)}
             className="w-full py-2 px-3 bg-white/95 hover:bg-bht-charcoal text-bht-charcoal hover:text-white rounded-xl text-xs font-bold shadow-md backdrop-blur-xs border border-gray-200 transition-colors flex items-center justify-center gap-1.5"
-            aria-label={`Quick View ${product.nameEn}`}
+            aria-label={language === "ar" ? `معاينة سريعة ${product.nameAr}` : `Quick view ${product.nameEn}`}
           >
             <Eye className="w-3.5 h-3.5" />
             <span>{language === "ar" ? "معاينة سريعة" : "Quick View"}</span>
@@ -123,7 +123,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   key={i}
                   className="w-2.5 h-2.5 rounded-full border border-gray-300"
                   style={{ backgroundColor: hex }}
-                  title="Color option"
+                  title={language === "ar" ? "خيار اللون" : "Color option"}
                 />
               ))}
               {product.colorVariants.length > 3 && (

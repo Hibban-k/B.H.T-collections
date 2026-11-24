@@ -1,4 +1,4 @@
-import { constructMetadata } from "@/lib/seo/metadata";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CollectionPageView } from "@/components/collection/CollectionPageView";
@@ -25,6 +25,7 @@ interface CategoryPageProps {
 
 const RESERVED_STATIC_SLUGS = new Set([
   "about",
+  "search",
   "brands",
   "brand",
   "contact",

@@ -8,7 +8,7 @@ import { withAuth } from "@/lib/api/helpers";
  */
 export const POST = withAuth("orders:write", async (req: Request) => {
   try {
-    let body: any = {};
+    let body: { threshold?: number; force?: boolean; retentionDays?: number } = {};
     try {
       body = await req.json();
     } catch {
@@ -22,10 +22,10 @@ export const POST = withAuth("orders:write", async (req: Request) => {
     });
 
     return NextResponse.json(result);
-  } catch (error: any) {
+  } catch (error) {
     console.error("[AdminArchiveRoute] Archiving failed:", error);
     return NextResponse.json(
-      { error: error.message || "Failed to execute database archive" },
+      { error: (error instanceof Error ? error.message : "Unexpected error") || "Failed to execute database archive" },
       { status: 500 }
     );
   }

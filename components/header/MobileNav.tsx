@@ -1,4 +1,6 @@
 "use client";
+import { useRouter, usePathname } from "next/navigation";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
 
 import React, { useState, useEffect } from "react";
 import Link from "@/components/common/StoreLink";
@@ -44,6 +46,8 @@ interface MobileCategoryItem {
 
 export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
   const { language, isRTL } = useLanguage();
+  const router = useRouter();
+  const pathname = usePathname();
   const [expandedCategory, setExpandedCategory] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState<MobileCategoryItem[]>([]);
@@ -56,7 +60,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
         const res = await fetch("/api/store/categories");
         if (res.ok) {
           const data = await res.json();
-          const allCats: any[] = data.categories || [];
+          const allCats: SerializedCategory[] = data.categories || [];
 
           const topCats = allCats.filter((c) => !c.parentId && !c.parentSlug);
           const mapped: MobileCategoryItem[] = topCats.map((cat) => {
@@ -133,7 +137,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       onClose();
-      window.location.href = `/search?q=${encodeURIComponent(searchQuery.trim())}`;
+      router.push(`/${pathname.split("/")[1] || language}/search?q=${encodeURIComponent(searchQuery.trim())}`);
     }
   };
 

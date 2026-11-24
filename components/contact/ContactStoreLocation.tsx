@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useSyncExternalStore } from "react";
 import Image from "next/image";
-import { useSearchParams } from "next/navigation";
+import { useSearchParams, usePathname } from "next/navigation";
 import {
   MapPin,
   Phone,
@@ -16,64 +16,40 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { CircularFlag } from "@/components/regional-presence/CircularFlag";
+import { MARKETS, parseStoreLocale } from "@/lib/seo/locales";
 import { REGIONAL_CONTACTS } from "@/data/regionalContacts";
+
+function subscribeToHash(onChange: () => void) {
+  window.addEventListener("hashchange", onChange);
+  return () => window.removeEventListener("hashchange", onChange);
+}
+const getHash = () => window.location.hash.slice(1).toLowerCase().trim();
+const getServerHash = () => "";
 
 export const ContactStoreLocation: React.FC = () => {
   const { language, isRTL } = useLanguage();
   const searchParams = useSearchParams();
   const regionParam = searchParams.get("region");
-  const [selectedId, setSelectedId] = useState("uae");
+  const hash = useSyncExternalStore(subscribeToHash, getHash, getServerHash);
+  const market = parseStoreLocale(usePathname().split("/")[1])?.market;
+  const source = regionParam?.toLowerCase().trim() || hash || (market ? MARKETS[market].contactId : "");
+  const matched = REGIONAL_CONTACTS.find(region =>
+    region.id === source || region.flag.toLowerCase() === source ||
+    ((source === "ksa" || source === "saudi-arabia") && region.id === "saudi"));
+  const [selection, setSelection] = useState({ source, id: matched?.id || "uae" });
+  const selectedId = selection.source === source ? selection.id : matched?.id || "uae";
+  const setSelectedId = (id: string) => setSelection({ source, id });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sync selected region from URL param (e.g. /contact?region=kuwait#store-location)
+  // URL navigation scrolls to the selected location; selection is derived above.
   useEffect(() => {
-    if (regionParam) {
-      const normalized = regionParam.toLowerCase().trim();
-      const matched = REGIONAL_CONTACTS.find(
-        (region) =>
-          region.id.toLowerCase() === normalized ||
-          region.flag.toLowerCase() === normalized ||
-          (normalized === "ksa" && region.id === "saudi") ||
-          (normalized === "saudi-arabia" && region.id === "saudi")
-      );
-      if (matched) {
-        setSelectedId(matched.id);
-        const timer = setTimeout(() => {
-          const el = document.getElementById("store-location");
-          if (el) {
-            el.scrollIntoView({ behavior: "smooth", block: "start" });
-          }
-        }, 150);
-        return () => clearTimeout(timer);
-      }
-    }
-  }, [regionParam]);
-
-  // Also support direct hash navigation (e.g. /contact#kuwait)
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const hash = window.location.hash.replace("#", "").toLowerCase().trim();
-      if (hash && hash !== "store-location" && hash !== "contact-form-section") {
-        const matched = REGIONAL_CONTACTS.find(
-          (region) =>
-            region.id.toLowerCase() === hash ||
-            region.flag.toLowerCase() === hash ||
-            (hash === "ksa" && region.id === "saudi")
-        );
-        if (matched) {
-          setSelectedId(matched.id);
-          const timer = setTimeout(() => {
-            const el = document.getElementById("store-location");
-            if (el) {
-              el.scrollIntoView({ behavior: "smooth", block: "start" });
-            }
-          }, 150);
-          return () => clearTimeout(timer);
-        }
-      }
-    }
-  }, []);
+    if (!matched) return;
+    const timer = setTimeout(() => {
+      document.getElementById("store-location")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 150);
+    return () => clearTimeout(timer);
+  }, [matched, source]);
 
   const selected =
     REGIONAL_CONTACTS.find((region) => region.id === selectedId) ||

@@ -1,3 +1,4 @@
+import type { HydratedDocument } from "mongoose";
 import { connectToDatabase as dbConnect } from "@/lib/db/mongodb";
 import { BrandModel, IBrand } from "@/lib/db/models/Brand";
 
@@ -21,7 +22,7 @@ export interface SerializedBrand {
 }
 
 export class BrandRepository {
-  private static serialize(doc: any): SerializedBrand {
+  private static serialize(doc: HydratedDocument<IBrand>): SerializedBrand {
     const obj = doc.toObject();
     return {
       ...obj,
@@ -46,7 +47,7 @@ export class BrandRepository {
 
   static async findBySlug(slug: string, excludeId?: string): Promise<SerializedBrand | null> {
     await dbConnect();
-    const query: any = { slug: slug.trim().toLowerCase() };
+    const query: Record<string, unknown> = { slug: slug.trim().toLowerCase() };
     if (excludeId) query._id = { $ne: excludeId };
     const brand = await BrandModel.findOne(query);
     return brand ? this.serialize(brand) : null;
@@ -54,7 +55,7 @@ export class BrandRepository {
 
   static async findByName(name: string, excludeId?: string): Promise<SerializedBrand | null> {
     await dbConnect();
-    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    const query: Record<string, unknown> = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
     if (excludeId) query._id = { $ne: excludeId };
     const brand = await BrandModel.findOne(query);
     return brand ? this.serialize(brand) : null;

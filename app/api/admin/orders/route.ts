@@ -16,9 +16,9 @@ export const POST = withAuth("orders:write", async (req: Request) => {
     const body = await req.json();
     const order = await OrderService.createOrder(body);
     return NextResponse.json({ order }, { status: 201 });
-  } catch (err: any) {
+  } catch (err) {
     return NextResponse.json(
-      { error: err.message || "Failed to create order" },
+      { error: (err instanceof Error ? err.message : "Unexpected error") || "Failed to create order" },
       { status: 400 }
     );
   }

@@ -32,8 +32,8 @@ export default function AdminLoginPage() {
 
       router.push("/admin");
       router.refresh();
-    } catch (err: any) {
-      setError(err.message || "Invalid credentials. Please try again.");
+    } catch (err) {
+      setError((err instanceof Error ? err.message : "Unexpected error") || "Invalid credentials. Please try again.");
     } finally {
       setLoading(false);
     }

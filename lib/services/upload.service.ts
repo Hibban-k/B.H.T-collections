@@ -1,3 +1,4 @@
+import type { UploadApiOptions } from "cloudinary";
 import { v2 as cloudinary, UploadApiResponse, UploadApiErrorResponse } from "cloudinary";
 
 // Configure Cloudinary securely on the backend
@@ -42,7 +43,7 @@ export class UploadService {
 
     // 5. Wrap the upload_stream in a Promise so we can await it
     return new Promise((resolve, reject) => {
-      const uploadOptions: Record<string, any> = {
+      const uploadOptions: UploadApiOptions = {
         folder: targetFolder,
         public_id: `${originalName.split('.')[0]}_${Date.now()}`,
         resource_type: isPdf ? "raw" : "image",

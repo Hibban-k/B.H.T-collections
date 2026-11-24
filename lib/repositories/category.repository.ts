@@ -49,7 +49,7 @@ export class CategoryRepository {
 
   static async findBySlug(slug: string, excludeId?: string): Promise<SerializedCategory | null> {
     await connectToDatabase();
-    const query: any = { slug: slug.trim().toLowerCase() };
+    const query: Record<string, unknown> = { slug: slug.trim().toLowerCase() };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await CategoryModel.findOne(query).lean();
     return doc ? serialize(doc) : null;
@@ -57,7 +57,7 @@ export class CategoryRepository {
 
   static async findByName(name: string, excludeId?: string): Promise<SerializedCategory | null> {
     await connectToDatabase();
-    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    const query: Record<string, unknown> = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await CategoryModel.findOne(query).lean();
     return doc ? serialize(doc) : null;

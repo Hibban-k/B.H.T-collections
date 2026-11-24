@@ -31,12 +31,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
       )
     : 0;
 
-  // WhatsApp order link with pre-filled message
-  const whatsappMsg = encodeURIComponent(
-    `Hello Blanket House Trading LLC, I am interested in inquiring about: ${product.nameEn} (AED ${product.price}, Brand: ${product.brand}).`
-  );
-  const whatsappUrl = `https://wa.me/971558879237?text=${whatsappMsg}`;
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
@@ -52,7 +46,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({
           type="button"
           onClick={onClose}
           className="absolute top-3.5 right-3.5 rtl:right-auto rtl:left-3.5 z-20 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-gray-700 hover:text-black shadow-md flex items-center justify-center transition-colors border border-gray-200"
-          aria-label="Close dialog"
+          aria-label={language === "ar" ? "إغلاق النافذة" : "Close dialog"}
         >
           <X className="w-4 h-4 stroke-[2.5]" />
         </button>

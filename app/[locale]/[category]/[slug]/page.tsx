@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ProductDetailView } from "@/components/product/ProductDetailView";
 import { ProductService, getPublishedProduct } from "@/lib/services/product.service";
-import { constructMetadata } from "@/lib/seo/metadata";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { getProductPath } from "@/lib/seo/urls";
 import { generateProductSeo } from "@/lib/seo/product";
 import { generateProductSchema, generateBreadcrumbSchema, serializeJsonLd } from "@/lib/seo/schema";

@@ -1,14 +1,11 @@
-import { RegionService } from "@/lib/services/region.service";
-import { constructMetadata } from "@/lib/seo/metadata";
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
+import type { SerializedCategory } from "@/lib/repositories/category.repository";
+import { constructRegionalMetadata as constructMetadata } from "@/lib/seo/regional-metadata";
 import { generateOrganizationSchema, serializeJsonLd } from "@/lib/seo/schema";
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
-  const region = await RegionService.getRegionByCode(locale).catch(() => null);
-  const regionName = region?.name || "Dubai & GCC";
-  const regionTitle = region?.metaTitleSuffix?.replaceAll("{{region_name}}", regionName);
-  const regionDescription = region?.metaDescriptionTemplate?.replaceAll("{{region_name}}", regionName);
-  return constructMetadata({ path: `/${locale}`, title: regionTitle ? "BHT Collections " + regionTitle : "BHT Collections | Bedding, Footwear & Travel Bags Dubai",
-    description: regionDescription || "Explore bedding, blankets, footwear and travel bags from Blanket House Trading LLC in Dubai. Contact us for retail and wholesale inquiries." });
+  return constructMetadata({ path: `/${locale}`, title: "BHT Collections | Bedding, Footwear & Travel Bags",
+    description: "Explore bedding, blankets, footwear and travel bags from Blanket House Trading LLC in Dubai. Contact us for retail and wholesale inquiries." });
 }
 import { Navbar } from "@/components/header/Navbar";
 import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
@@ -30,8 +27,8 @@ export const revalidate = 3600;
 
 export default async function HomePage() {
   // Fetch database categories and brands on the server for 0ms load time SSR
-  let categories: any[] = [];
-  let brands: any[] = [];
+  let categories: SerializedCategory[] = [];
+  let brands: SerializedBrand[] = [];
   try {
     [categories, brands] = await Promise.all([
       CategoryService.getCategories(),

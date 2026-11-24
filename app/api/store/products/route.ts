@@ -7,7 +7,6 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const category = searchParams.get("category") || undefined;
   const homepage = searchParams.get("homepage") === "true" ? true : undefined;
-  const collection = searchParams.get("collection") === "true" ? true : undefined;
   const featured = searchParams.get("featured") === "true" ? true : undefined;
   const search = searchParams.get("search") || undefined;
   const full = searchParams.get("full") === "true";

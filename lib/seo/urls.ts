@@ -1,3 +1,4 @@
+import { parseStoreLocale } from "./locales";
 /** One explicit production origin; preview hosts never become canonicals. */
 export function getBaseUrl(): string {
   const configured = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_APP_URL;
@@ -19,7 +20,7 @@ export function getProductPath(product: { categorySlug?: string; category?: stri
 }
 export function localizePath(path: string, locale: string): string {
   if (!path.startsWith("/") || path.startsWith("//") || /^\/(api|admin)(\/|$)/.test(path)) return path;
-  if (/^\/[a-z]{2}(\/|$|\?)/.test(path)) return path;
+  if (parseStoreLocale(path.slice(1).split(/[/?#]/)[0])) return path;
   const canonicalPath = path.replace(/^\/collections(?=$|\?)/, "/bedding").replace(/^\/collections\//, "/");
   return `/${locale}${canonicalPath === "/" ? "" : canonicalPath}`;
 }

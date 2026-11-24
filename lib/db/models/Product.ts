@@ -76,7 +76,7 @@ const ProductSchema = new Schema<IProduct>(
       type: Schema.Types.ObjectId,
       ref: "Category",
       default: null,
-      set: (val: any) => {
+      set: (val: unknown) => {
         if (!val || val === "" || val === "null" || val === "undefined") return null;
         return mongoose.isValidObjectId(val) ? val : null;
       },
@@ -100,7 +100,7 @@ const ProductSchema = new Schema<IProduct>(
       type: Schema.Types.ObjectId,
       ref: "Brand",
       default: null,
-      set: (val: any) => {
+      set: (val: unknown) => {
         if (!val || val === "" || val === "null" || val === "undefined") return null;
         return mongoose.isValidObjectId(val) ? val : null;
       },
@@ -126,8 +126,8 @@ ProductSchema.index({ brand: 1, status: 1 });
 
 // Pre-save hook to ensure empty string brand / subcategoryId are never persisted as invalid ObjectIds
 ProductSchema.pre("save", function () {
-  if (this.brand === ("" as any)) this.brand = null;
-  if (this.subcategoryId === ("" as any)) this.subcategoryId = null;
+  if ((this.brand as unknown) === "") this.brand = null;
+  if ((this.subcategoryId as unknown) === "") this.subcategoryId = null;
 });
 
 export const ProductModel: Model<IProduct> =

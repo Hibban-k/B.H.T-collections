@@ -1,6 +1,7 @@
 "use client";
+import type { SerializedOrder } from "@/lib/repositories/order.repository";
 // app/admin/page.tsx
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import Link from "next/link";
 import {
   ShoppingCart,
@@ -24,7 +25,7 @@ interface StatsData {
   lowStockProducts: number;
   totalCustomers: number;
   totalRevenue: number;
-  recentOrders: any[];
+  recentOrders: SerializedOrder[];
   totalInquiries?: number;
   newInquiries?: number;
 }
@@ -32,29 +33,35 @@ interface StatsData {
 export default function AdminDashboardPage() {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<SerializedOrder | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  const fetchStats = async () => {
-    setLoading(true);
-    try {
-      const res = await fetch("/api/admin/stats");
+  const loadStats = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/admin/stats", { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setStats(data);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load dashboard stats", e);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchStats();
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
   }, []);
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
+  const fetchStats = () => {
+    setLoading(true);
+    return loadStats();
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadStats(controller.signal);
+    return () => controller.abort();
+  }, [loadStats]);
+
+  const handleStatusChange = async (orderId: string, newStatus: SerializedOrder["orderStatus"]) => {
     setUpdatingId(orderId);
     try {
       const res = await fetch(`/api/admin/orders/${orderId}`, {
@@ -65,7 +72,7 @@ export default function AdminDashboardPage() {
       if (res.ok) {
         await fetchStats();
         if (selectedOrder && selectedOrder._id === orderId) {
-          setSelectedOrder((prev: any) => ({ ...prev, orderStatus: newStatus }));
+          setSelectedOrder((prev) => prev ? { ...prev, orderStatus: newStatus } : null);
         }
       }
     } catch (e) {
@@ -281,7 +288,7 @@ export default function AdminDashboardPage() {
                   </td>
                 </tr>
               ) : (
-                stats.recentOrders.map((order: any) => (
+                stats.recentOrders.map((order) => (
                   <tr key={order._id} className="hover:bg-[#FAF8F5]/80 transition-colors">
                     <td className="py-4 px-6 font-bold text-[#0B131F] font-mono">
                       {order.orderNumber}
@@ -292,7 +299,7 @@ export default function AdminDashboardPage() {
                     </td>
                     <td className="py-4 px-6">
                       <div className="max-w-xs truncate font-semibold">
-                        {order.items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "1 item"}
+                        {order.items?.map((i) => `${i.name} (x${i.quantity})`).join(", ") || "1 item"}
                       </div>
                     </td>
                     <td className="py-4 px-6 font-bold text-[#0B131F]">
@@ -302,7 +309,7 @@ export default function AdminDashboardPage() {
                       <select
                         value={order.orderStatus}
                         disabled={updatingId === order._id}
-                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value as SerializedOrder["orderStatus"])}
                         className={`text-[11px] font-bold px-2.5 py-1 rounded-md border outline-none cursor-pointer ${getStatusBadge(
                           order.orderStatus
                         )}`}
@@ -374,7 +381,7 @@ export default function AdminDashboardPage() {
               <div>
                 <h4 className="font-bold text-xs uppercase tracking-wider text-[#64748B] mb-2">Purchased Items</h4>
                 <div className="space-y-2">
-                  {selectedOrder.items?.map((item: any, idx: number) => (
+                  {selectedOrder.items?.map((item, idx: number) => (
                     <div key={idx} className="p-3 bg-white border border-[#E8DFC8] rounded-xl flex items-center justify-between">
                       <div>
                         <div className="font-bold text-sm text-[#0B131F]">{item.name}</div>
@@ -402,7 +409,7 @@ export default function AdminDashboardPage() {
                   <label className="block text-[10px] text-[#64748B] uppercase font-bold mb-1">Status</label>
                   <select
                     value={selectedOrder.orderStatus}
-                    onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value as SerializedOrder["orderStatus"])}
                     className={`text-xs font-bold px-3 py-1.5 rounded-lg border outline-none ${getStatusBadge(selectedOrder.orderStatus)}`}
                   >
                     <option value="Pending">Pending</option>

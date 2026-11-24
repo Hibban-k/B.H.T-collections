@@ -3,7 +3,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { BrandService } from "@/lib/services/brand.service";
 import { withAuth } from "@/lib/api/helpers";
 
-export const PUT = withAuth("brands:write", async (req: Request, { params }: { params: { id: string } }) => {
+export const PUT = withAuth("brands:write", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const body = await req.json();
 
@@ -19,7 +19,7 @@ export const PUT = withAuth("brands:write", async (req: Request, { params }: { p
   return NextResponse.json({ success: true, brand: updated });
 });
 
-export const DELETE = withAuth("brands:write", async (req: Request, { params }: { params: { id: string } }) => {
+export const DELETE = withAuth("brands:write", async (req: Request, { params }: { params: Promise<{ id: string }> }) => {
   const { id } = await params;
   const success = await BrandService.deleteBrand(id);
 

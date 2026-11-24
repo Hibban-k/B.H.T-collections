@@ -3,13 +3,13 @@ import { auth } from "@/lib/auth/auth";
 import { assertPermission, ForbiddenError, UnauthorizedError } from "@/lib/auth/rbac";
 import type { Role, Permission } from "@/lib/auth/rbac";
 
-type RouteHandler = (
+type RouteHandler<Context> = (
   req: Request,
-  context: any
+  context: Context
 ) => Promise<NextResponse> | NextResponse;
 
-export function withAuth(permission: Permission, handler: RouteHandler): RouteHandler {
-  return async (req: Request, context: any) => {
+export function withAuth<Context>(permission: Permission, handler: RouteHandler<Context>): RouteHandler<Context> {
+  return async (req: Request, context: Context) => {
     try {
       const session = await auth();
       if (!session?.user) throw new UnauthorizedError();
@@ -25,8 +25,8 @@ export function withAuth(permission: Permission, handler: RouteHandler): RouteHa
         return NextResponse.json({ error: error.message }, { status: 403 });
       }
       // Map duplicate key error from MongoDB
-      if ((error as any)?.code === 11000) {
-        const keyPattern = (error as any)?.keyPattern || {};
+      if (typeof error === "object" && error !== null && "code" in error && error.code === 11000) {
+        const keyPattern = "keyPattern" in error && typeof error.keyPattern === "object" && error.keyPattern !== null ? error.keyPattern : {};
         const field = Object.keys(keyPattern)[0] || "record";
         return NextResponse.json({ error: `A record with this ${field} already exists.` }, { status: 409 });
       }

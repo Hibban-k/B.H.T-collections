@@ -1,6 +1,7 @@
 "use client";
+import type { SerializedInquiry } from "@/lib/repositories/inquiry.repository";
 // app/admin/inquiries/page.tsx
-import { useState, useEffect } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Search,
   Eye,
@@ -8,49 +9,55 @@ import {
   X,
   Mail,
   Phone,
-  Calendar,
-  MessageSquare,
   Trash2,
-  CheckCircle,
 } from "lucide-react";
 
 export default function AdminInquiriesPage() {
-  const [inquiries, setInquiries] = useState<any[]>([]);
+  const [inquiries, setInquiries] = useState<SerializedInquiry[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [submittedSearch, setSubmittedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedInquiry, setSelectedInquiry] = useState<any | null>(null);
+  const [selectedInquiry, setSelectedInquiry] = useState<SerializedInquiry | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
-  const fetchInquiries = async () => {
-    setLoading(true);
-    try {
-      let url = "/api/admin/inquiries?";
-      if (statusFilter !== "all") url += `status=${statusFilter}&`;
-      if (search.trim()) url += `search=${encodeURIComponent(search.trim())}&`;
+  const loadInquiries = useCallback((signal?: AbortSignal) => {
+    let url = "/api/admin/inquiries?";
+    if (statusFilter !== "all") url += `status=${statusFilter}&`;
+    if (submittedSearch.trim()) url += `search=${encodeURIComponent(submittedSearch.trim())}&`;
 
-      const res = await fetch(url);
+    return fetch(url, { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setInquiries(data.inquiries || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load inquiries", e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
+  }, [statusFilter, submittedSearch]);
 
+  const fetchInquiries = () => {
+    setLoading(true);
+    return loadInquiries();
+  };
   useEffect(() => {
-    fetchInquiries();
-  }, [statusFilter]);
+    const controller = new AbortController();
+    void loadInquiries(controller.signal);
+    return () => controller.abort();
+  }, [loadInquiries]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchInquiries();
+    setLoading(true);
+    if (search === submittedSearch) void fetchInquiries();
+    else setSubmittedSearch(search);
   };
 
-  const handleStatusChange = async (inquiryId: string, newStatus: string) => {
+  const handleStatusChange = async (inquiryId: string, newStatus: SerializedInquiry["status"]) => {
     setUpdatingId(inquiryId);
     try {
       const res = await fetch(`/api/admin/inquiries/${inquiryId}`, {
@@ -59,12 +66,12 @@ export default function AdminInquiriesPage() {
         body: JSON.stringify({ status: newStatus }),
       });
       if (res.ok) {
-        const data = await res.json();
+        await res.json();
         setInquiries((prev) =>
           prev.map((inq) => (inq._id === inquiryId ? { ...inq, status: newStatus } : inq))
         );
         if (selectedInquiry && selectedInquiry._id === inquiryId) {
-          setSelectedInquiry((prev: any) => ({ ...prev, status: newStatus }));
+          setSelectedInquiry((prev) => prev ? { ...prev, status: newStatus } : null);
         }
       }
     } catch (e) {
@@ -229,7 +236,7 @@ export default function AdminInquiriesPage() {
                       <select
                         value={inq.status}
                         disabled={updatingId === inq._id}
-                        onChange={(e) => handleStatusChange(inq._id, e.target.value)}
+                        onChange={(e) => handleStatusChange(inq._id, e.target.value as SerializedInquiry["status"])}
                         className={`text-[11px] font-bold px-2.5 py-1 rounded-md border outline-none cursor-pointer ${getStatusBadge(
                           inq.status
                         )}`}
@@ -346,7 +353,7 @@ export default function AdminInquiriesPage() {
                   <span className="text-xs text-[#64748B]">Change Status:</span>
                   <select
                     value={selectedInquiry.status}
-                    onChange={(e) => handleStatusChange(selectedInquiry._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(selectedInquiry._id, e.target.value as SerializedInquiry["status"])}
                     className="text-xs font-bold px-3 py-1.5 rounded-lg border border-[#E8DFC8] bg-white outline-none cursor-pointer"
                   >
                     <option value="new">New</option>

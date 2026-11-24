@@ -17,7 +17,6 @@ import {
   Menu,
   X,
   ShieldCheck,
-  CheckCircle2,
   Tag,
   Mail,
 } from "lucide-react";

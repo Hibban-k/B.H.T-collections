@@ -57,9 +57,9 @@ export const ContactDetailsAndForm: React.FC = () => {
         subject: "",
         message: "",
       });
-    } catch (err: any) {
+    } catch (err) {
       setErrorMessage(
-        err.message ||
+        (err instanceof Error ? err.message : "Unexpected error") ||
           (language === "ar"
             ? "تعذر إرسال الرسالة، يرجى المحاولة مرة أخرى."
             : "Could not send message. Please try again.")

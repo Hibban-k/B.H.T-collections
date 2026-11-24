@@ -1,27 +1,27 @@
 "use client";
+import type { SerializedOrder } from "@/lib/repositories/order.repository";
 // app/admin/orders/page.tsx
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import {
   Search,
-  Filter,
   Eye,
   RefreshCw,
   X,
   Phone,
   Mail,
   MapPin,
-  Calendar,
   CreditCard,
   Package,
   Plus,
 } from "lucide-react";
 
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<SerializedOrder[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [submittedSearch, setSubmittedSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
-  const [selectedOrder, setSelectedOrder] = useState<any | null>(null);
+  const [selectedOrder, setSelectedOrder] = useState<SerializedOrder | null>(null);
   const [updatingId, setUpdatingId] = useState<string | null>(null);
 
   const [createModalOpen, setCreateModalOpen] = useState(false);
@@ -91,35 +91,43 @@ export default function AdminOrdersPage() {
     }
   };
 
-  const fetchOrders = async () => {
-    setLoading(true);
-    try {
-      let url = "/api/admin/orders?";
-      if (statusFilter !== "all") url += `status=${statusFilter}&`;
-      if (search.trim()) url += `search=${encodeURIComponent(search.trim())}&`;
+  const loadOrders = useCallback((signal?: AbortSignal) => {
+    let url = "/api/admin/orders?";
+    if (statusFilter !== "all") url += `status=${statusFilter}&`;
+    if (submittedSearch.trim()) url += `search=${encodeURIComponent(submittedSearch.trim())}&`;
 
-      const res = await fetch(url);
+    return fetch(url, { signal }).then(async (res) => {
       if (res.ok) {
         const data = await res.json();
+        if (signal?.aborted) return;
         setOrders(data.orders || []);
       }
-    } catch (e) {
+    }).catch((e: unknown) => {
+      if (signal?.aborted) return;
       console.error("Failed to load orders", e);
-    } finally {
-      setLoading(false);
-    }
-  };
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
+  }, [statusFilter, submittedSearch]);
 
+  const fetchOrders = () => {
+    setLoading(true);
+    return loadOrders();
+  };
   useEffect(() => {
-    fetchOrders();
-  }, [statusFilter]);
+    const controller = new AbortController();
+    void loadOrders(controller.signal);
+    return () => controller.abort();
+  }, [loadOrders]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchOrders();
+    setLoading(true);
+    if (submittedSearch === search) void fetchOrders();
+    else setSubmittedSearch(search);
   };
 
-  const handleStatusChange = async (orderId: string, newStatus: string) => {
+  const handleStatusChange = async (orderId: string, newStatus: SerializedOrder["orderStatus"]) => {
     setUpdatingId(orderId);
     try {
       const res = await fetch(`/api/admin/orders/${orderId}`, {
@@ -128,12 +136,12 @@ export default function AdminOrdersPage() {
         body: JSON.stringify({ orderStatus: newStatus }),
       });
       if (res.ok) {
-        const data = await res.json();
+        await res.json();
         setOrders((prev) =>
           prev.map((o) => (o._id === orderId ? { ...o, orderStatus: newStatus } : o))
         );
         if (selectedOrder && selectedOrder._id === orderId) {
-          setSelectedOrder((prev: any) => ({ ...prev, orderStatus: newStatus }));
+          setSelectedOrder((prev) => prev ? { ...prev, orderStatus: newStatus } : null);
         }
       }
     } catch (e) {
@@ -275,7 +283,7 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="py-4 px-6">
                       <div className="max-w-xs truncate font-semibold">
-                        {order.items?.map((i: any) => `${i.name} (x${i.quantity})`).join(", ") || "1 item"}
+                        {order.items?.map((i) => `${i.name} (x${i.quantity})`).join(", ") || "1 item"}
                       </div>
                     </td>
                     <td className="py-4 px-6 font-bold text-[#0B131F]">
@@ -290,7 +298,7 @@ export default function AdminOrdersPage() {
                       <select
                         value={order.orderStatus}
                         disabled={updatingId === order._id}
-                        onChange={(e) => handleStatusChange(order._id, e.target.value)}
+                        onChange={(e) => handleStatusChange(order._id, e.target.value as SerializedOrder["orderStatus"])}
                         className={`text-[11px] font-bold px-2.5 py-1 rounded-md border outline-none cursor-pointer ${getStatusBadge(
                           order.orderStatus
                         )}`}
@@ -381,7 +389,7 @@ export default function AdminOrdersPage() {
                   <Package className="w-3.5 h-3.5 text-[#D92626]" /> Items Ordered
                 </h4>
                 <div className="space-y-2">
-                  {selectedOrder.items?.map((item: any, idx: number) => (
+                  {selectedOrder.items?.map((item, idx: number) => (
                     <div key={idx} className="p-3 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl flex items-center justify-between">
                       <div>
                         <div className="font-bold text-sm text-[#0B131F]">{item.name}</div>
@@ -415,7 +423,7 @@ export default function AdminOrdersPage() {
                   <label className="block text-[10px] text-[#64748B] uppercase font-bold mb-1">Update Status</label>
                   <select
                     value={selectedOrder.orderStatus}
-                    onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value)}
+                    onChange={(e) => handleStatusChange(selectedOrder._id, e.target.value as SerializedOrder["orderStatus"])}
                     className={`text-xs font-bold px-3 py-1.5 rounded-lg border outline-none cursor-pointer ${getStatusBadge(
                       selectedOrder.orderStatus
                     )}`}

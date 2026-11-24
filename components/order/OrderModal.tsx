@@ -131,10 +131,10 @@ Please confirm my order and provide delivery and payment details. Thank you!`;
       if (typeof window !== "undefined") {
         window.open(whatsappUrl, "_blank");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("[OrderModal] Error placing order:", err);
       setErrorMessage(
-        err.message ||
+        (err instanceof Error ? err.message : "Unexpected error") ||
           (language === "ar"
             ? "حدث خطأ أثناء حفظ الطلب، يرجى المحاولة مرة أخرى."
             : "An error occurred while saving your order. Please try again.")

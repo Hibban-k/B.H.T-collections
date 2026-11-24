@@ -1,3 +1,4 @@
+import { isStoreMarket, marketAlternates } from "@/lib/seo/locales";
 import type { MetadataRoute } from "next";
 import { getAbsoluteUrl, getProductPath } from "@/lib/seo/urls";
 import { ProductService } from "@/lib/services/product.service";
@@ -12,11 +13,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ProductService.getProducts({ status: "published", select: "slug categorySlug category updatedAt" }),
     BrandService.getBrands(), CategoryService.getCategories(), RegionService.getRegions(),
   ]);
-  const locales = [...new Set(["en", "ar", ...regions.map(r => r.code)])];
+  const markets = [...new Set(regions.filter(r => r.isActive && isStoreMarket(r.code)).map(r => r.code))];
+  const locales = ["en", ...markets];
   const entries: MetadataRoute.Sitemap = [];
   for (const locale of locales) {
     const add = (path: string, updatedAt?: string | Date) => entries.push({
       url: getAbsoluteUrl(path), ...(updatedAt ? { lastModified: new Date(updatedAt) } : {}),
+      alternates: { languages: Object.fromEntries(Object.entries(marketAlternates(path, markets)).map(([key, url]) => [key, getAbsoluteUrl(url)])) },
     });
     for (const path of ["", "/about", "/brands", "/contact", "/privacy", "/terms", "/refund-policy"]) add("/" + locale + path);
     const slugs = new Set(["bedding", "travel-bags", "footwear", ...categories.filter(c => c.status === "active").map(c => c.slug)]);

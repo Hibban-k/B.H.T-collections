@@ -38,7 +38,7 @@ export class RegionRepository {
 
   static async findByCode(code: string, excludeId?: string): Promise<SerializedRegion | null> {
     await connectToDatabase();
-    const query: any = { code: code.trim().toLowerCase() };
+    const query: Record<string, unknown> = { code: code.trim().toLowerCase() };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await RegionModel.findOne(query).lean();
     return doc ? serialize(doc) : null;
@@ -46,7 +46,7 @@ export class RegionRepository {
 
   static async findByName(name: string, excludeId?: string): Promise<SerializedRegion | null> {
     await connectToDatabase();
-    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    const query: Record<string, unknown> = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await RegionModel.findOne(query).lean();
     return doc ? serialize(doc) : null;

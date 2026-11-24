@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useCallback, useEffect, useMemo } from "react";
 import { BrandClientCard } from "./BrandClientCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { MessageCircle, AlertCircle, RefreshCw } from "lucide-react";
@@ -52,15 +52,13 @@ export const BrandClientGrid: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchBrands = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/store/brands");
+  const loadBrands = useCallback((signal?: AbortSignal) => {
+    return fetch("/api/store/brands", { signal }).then(async (res) => {
       if (!res.ok) {
         throw new Error(`Failed to load brands (${res.status})`);
       }
       const data = await res.json();
+        if (signal?.aborted) return;
       const rawBrands: RawBrandData[] = data.brands || [];
 
       // Transform DB brands into BrandClientItem format
@@ -82,17 +80,25 @@ export const BrandClientGrid: React.FC = () => {
       });
 
       setBrands(formatted);
-    } catch (err) {
+    }).catch((err: unknown) => {
+      if (signal?.aborted) return;
       console.error("BrandClientGrid error:", err);
       setError(err instanceof Error ? err.message : "Error loading brands");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBrands();
+    }).finally(() => {
+      if (!signal?.aborted) setLoading(false);
+    });
   }, []);
+
+  const fetchBrands = () => {
+    setLoading(true);
+    setError(null);
+    return loadBrands();
+  };
+  useEffect(() => {
+    const controller = new AbortController();
+    void loadBrands(controller.signal);
+    return () => controller.abort();
+  }, [loadBrands]);
 
   const categories = [
     { id: "all", labelEn: "All Brands & Clients", labelAr: "جميع العلامات والعملاء" },
@@ -100,7 +106,7 @@ export const BrandClientGrid: React.FC = () => {
     { id: "travel", labelEn: "Travel & Luggage", labelAr: "حقائب السفر والترولي" },
     { id: "footwear", labelEn: "Footwear & Comfort", labelAr: "الأحذية والراحة" },
     { id: "corporate", labelEn: "Corporate & Wholesale", labelAr: "التوزيع والمؤسسات" },
-  ];
+  ] as const;
 
   const filteredItems = useMemo(() => {
     if (selectedCategory === "all") return brands;
@@ -128,7 +134,7 @@ export const BrandClientGrid: React.FC = () => {
               <button
                 key={cat.id}
                 type="button"
-                onClick={() => setSelectedCategory(cat.id as any)}
+                onClick={() => setSelectedCategory(cat.id)}
                 className={`px-4 sm:px-5 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all duration-200 cursor-pointer ${
                   isActive
                     ? "bg-bht-charcoal text-white shadow-sm"

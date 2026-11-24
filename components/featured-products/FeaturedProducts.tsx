@@ -1,4 +1,5 @@
 "use client";
+import type { SerializedBrand } from "@/lib/repositories/brand.repository";
 
 import React, { useState, useEffect, useMemo } from "react";
 import Link from "@/components/common/StoreLink";
@@ -52,7 +53,7 @@ export const FeaturedProducts: React.FC = () => {
           const pData = await productsRes.json();
           const rawProducts: DbProduct[] = pData.products || [];
 
-          let brandsList: any[] = [];
+          let brandsList: SerializedBrand[] = [];
           if (brandsRes.ok) {
             const bData = await brandsRes.json();
             brandsList = bData.brands || [];

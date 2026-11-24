@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { unstable_cache } from "next/cache";
 import { CategoryRepository, SerializedCategory } from "@/lib/repositories/category.repository";
 import type { ICategory } from "@/lib/db/models/Category";
@@ -62,7 +63,7 @@ export class CategoryService {
       description: input.description || "",
       longDescription: input.longDescription || "",
       image: input.image || "/logo/logo.png",
-      parentId: (input.parentId as any) || null,
+      parentId: (input.parentId ? new Types.ObjectId(input.parentId) : null) || null,
       parentSlug: input.parentSlug || "",
       status: input.status || "active",
       metaTitle: input.metaTitle || "",
