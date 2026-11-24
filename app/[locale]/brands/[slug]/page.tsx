@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default async function BrandsRedirectPage({
   params,
@@ -6,5 +6,5 @@ export default async function BrandsRedirectPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  redirect(`/${locale}/brand/${slug}`);
+  permanentRedirect(`/${locale}/brand/${slug}`);
 }

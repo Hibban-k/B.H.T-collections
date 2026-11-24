@@ -66,7 +66,7 @@ export const AnnouncementTicker: React.FC = () => {
                 <Image
                   src="/logo/logo.png"
                   alt="BHT Logo"
-                  fill
+                  fill sizes="20px"
                   className="object-contain"
                 />
               </div>

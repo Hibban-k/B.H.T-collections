@@ -12,19 +12,19 @@ interface MetadataInput {
 export function constructMetadata({
   title = "Blanket House Trading L.L.C. | Premium Home Textiles Dubai",
   description = "Wholesale & retail supplier of premium Korean blankets, bed linen, comforters, and hotel textiles in Dubai & across GCC.",
-  image = "/bht-logo.jpg",
+  image = "/logo/logo.png",
   path = "",
   noIndex = false,
 }: MetadataInput = {}): Metadata {
   const url = getAbsoluteUrl(path);
 
   // Determine canonical and language alternates cleanly
-  const cleanPath = path.replace(/^\/(en|ar)(\/|$)/, "/");
+  const cleanPath = path.replace(/^\/[a-z]{2}(\/|$)/, "/");
   const enPath = `/en${cleanPath === "/" ? "" : cleanPath}`;
   const arPath = `/ar${cleanPath === "/" ? "" : cleanPath}`;
 
   return {
-    title,
+    title: { absolute: title },
     description,
     metadataBase: new URL(getAbsoluteUrl("")),
     openGraph: {

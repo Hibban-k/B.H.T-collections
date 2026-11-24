@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -8,5 +8,5 @@ export default async function LegacyCollectionsRedirectPage({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  redirect(`/${locale}/bedding`);
+  permanentRedirect(`/${locale}/bedding`);
 }

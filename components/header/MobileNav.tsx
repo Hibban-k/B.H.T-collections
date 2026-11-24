@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import Image from "next/image";
 import {
   X,
@@ -166,7 +166,7 @@ export const MobileNav: React.FC<MobileNavProps> = ({ isOpen, onClose }) => {
               <Image
                 src="/logo/logo.png"
                 alt="Blanket House Trading LLC Logo"
-                fill
+                fill sizes="72px"
                 className="object-contain"
               />
             </div>

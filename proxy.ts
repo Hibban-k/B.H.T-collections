@@ -1,8 +1,11 @@
+import { getCanonicalRedirect } from "@/lib/seo/urls";
 import { auth } from "@/lib/auth/auth";
 import { NextResponse, type NextRequest } from "next/server";
 
 export default async function proxy(req: NextRequest) {
   const { pathname } = req.nextUrl;
+  const canonical = getCanonicalRedirect(req.url);
+  if (canonical) return NextResponse.redirect(canonical, 308);
 
   // 1. Admin Route Protection: handled via NextAuth
   if (pathname.startsWith("/admin")) {
@@ -31,7 +34,9 @@ export default async function proxy(req: NextRequest) {
     return NextResponse.redirect(redirectUrl);
   }
 
-  return NextResponse.next();
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-bht-locale", pathname.split("/")[1]);
+  return NextResponse.next({ request: { headers: requestHeaders } });
 }
 
 export const config = {

@@ -1,11 +1,12 @@
 "use client";
 
 import React, { useState, useEffect, useMemo } from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import Image from "next/image";
 import { ArrowRight, ArrowLeft, Eye, Star, CheckCircle2, PackageX } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-import { QuickViewModal } from "@/components/collection/QuickViewModal";
+import dynamic from "next/dynamic";
+const QuickViewModal = dynamic(() => import("@/components/collection/QuickViewModal").then(mod => mod.QuickViewModal));
 import { Product } from "@/data/productsData";
 
 interface DbProduct {
@@ -92,7 +93,7 @@ export const FeaturedProducts: React.FC = () => {
                 image:
                   p.image ||
                   (p.images && p.images[0]) ||
-                  "/collections/korean-super-soft-blanket.png",
+                  "/logo/logo.png",
                 inStock: p.stock === undefined || p.stock > 0,
                 isNew: true,
                 isFeatured: Boolean(p.featured),
@@ -371,10 +372,10 @@ export const FeaturedProducts: React.FC = () => {
       </div>
 
       {/* QUICK VIEW MODAL */}
-      <QuickViewModal
+      {quickViewProduct && <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-      />
+      />}
     </section>
   );
 };

@@ -1,12 +1,15 @@
 "use client";
 
+import { getAbsoluteUrl, getProductPath } from "@/lib/seo/urls";
 import React, { useState, useMemo } from "react";
 import Image, { type ImageProps } from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
-import { OrderModal, type OrderModalItem } from "@/components/order/OrderModal";
+import type { OrderModalItem } from "@/components/order/OrderModal";
+import dynamic from "next/dynamic";
+const OrderModal = dynamic(() => import("@/components/order/OrderModal").then(mod => mod.OrderModal));
 import { Truck, RotateCcw, MessageCircle, Phone, Share2, Check, ChevronRight, Sparkles, Building2 } from "lucide-react";
 
 interface ProductVariant {
@@ -87,11 +90,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
       });
     }
     product.variants?.forEach((variant) => { if (variant.image && !list.includes(variant.image)) list.push(variant.image); });
-    return list.length > 0 ? list : ["/collections/korean-super-soft-blanket.png"];
+    return list.length > 0 ? list : ["/logo/logo.png"];
   }, [product.image, product.images, product.variants]);
 
   const [activeImageIndex, setActiveImageIndex] = useState(() => Math.max(0, allImages.indexOf(product.variants?.[0]?.image || product.image)));
-  const productUrl = `https://www.blankethouse.ae/products/${product.slug}`;
+  const productUrl = getAbsoluteUrl(getProductPath(product, language));
   const [selectedVariantIndex, setSelectedVariantIndex] = useState<number | null>(product.variants?.length ? 0 : null);
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants?.length ? product.variants[0].size || "" : product.sizes?.[0] || ""
@@ -309,7 +312,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 <div className="relative aspect-square w-full rounded-3xl bg-[#f7f6f3] overflow-hidden group">
                   <ProductImage
                     key={allImages[activeImageIndex]}
-                    src={allImages[activeImageIndex] || "/collections/korean-super-soft-blanket.png"}
+                    src={allImages[activeImageIndex] || "/logo/logo.png"}
                     alt={product.name}
                     fill
                     priority
@@ -388,7 +391,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                   >
                     {brandLogo && (
                       <div className="relative w-4 h-4 rounded-full overflow-hidden shrink-0">
-                        <ProductImage src={brandLogo} alt={brandName} fill className="object-contain" />
+                        <ProductImage src={brandLogo} alt={brandName} fill sizes="80px" className="object-contain" />
                       </div>
                     )}
                     <span>{brandName}</span>
@@ -631,7 +634,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                   {/* Main Product Card */}
                   <div className="flex items-center gap-3 p-3 rounded-2xl bg-[#f7f6f3] border border-[#e5e5e5] w-full sm:w-auto sm:max-w-xs">
                     <div className="relative w-16 h-16 rounded-xl bg-white border border-[#e5e5e5] overflow-hidden shrink-0">
-                      <ProductImage src={product.image || allImages[0]} alt={product.name} fill className="object-cover" />
+                      <ProductImage src={product.image || allImages[0]} alt={product.name} fill sizes="80px" className="object-cover" />
                     </div>
                     <div className="min-w-0">
                       <span className="text-[9px] font-bold uppercase text-[#b32025] block">
@@ -663,7 +666,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                             className="rounded text-[#b32025] focus:ring-[#b32025] w-4 h-4"
                           />
                           <div className="relative w-16 h-16 rounded-xl bg-white border border-[#e5e5e5] overflow-hidden shrink-0">
-                            <ProductImage src={item.image} alt={item.name} fill className="object-cover" />
+                            <ProductImage src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
                           </div>
                           <div className="min-w-0">
                             <p className="text-xs font-bold text-[#171717] truncate">{item.name}</p>
@@ -872,7 +875,7 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                       <div className="flex items-center gap-4">
                         {brandLogo && (
                           <div className="relative w-14 h-14 rounded-2xl bg-[#f7f6f3] border border-[#e5e5e5] p-2 overflow-hidden shrink-0">
-                            <ProductImage src={brandLogo} alt={brandName} fill className="object-contain" />
+                            <ProductImage src={brandLogo} alt={brandName} fill sizes="80px" className="object-contain" />
                           </div>
                         )}
                         <div>
@@ -931,9 +934,9 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
                 >
                   <div className="relative aspect-square bg-[#f7f6f3] overflow-hidden">
                     <ProductImage
-                      src={item.image || "/collections/korean-super-soft-blanket.png"}
+                      src={item.image || "/logo/logo.png"}
                       alt={item.name}
-                      fill
+                      fill sizes="(max-width: 768px) 50vw, 25vw"
                       className="object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     {item.featured && (
@@ -992,11 +995,11 @@ Please confirm availability and delivery timeframe across UAE/GCC.`;
       </div>
 
       {/* Customer details & order confirmation modal */}
-      <OrderModal
+      {orderModalOpen && <OrderModal
         isOpen={orderModalOpen}
         onClose={() => setOrderModalOpen(false)}
         items={modalOrderItems}
-      />
+      />}
 
       <Footer />
     </div>

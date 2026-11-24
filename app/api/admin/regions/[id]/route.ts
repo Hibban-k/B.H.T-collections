@@ -1,7 +1,11 @@
+import { auth } from "@/lib/auth/auth";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { RegionService } from "@/lib/services/region.service";
 
 export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const params = await props.params;
     const id = params.id;
@@ -12,6 +16,8 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
       return NextResponse.json({ success: false, error: "Region not found." }, { status: 404 });
     }
 
+    revalidatePath("/[locale]", "layout");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, region });
   } catch (error: any) {
     console.error("PUT /api/admin/regions/[id] error:", error);
@@ -23,6 +29,8 @@ export async function PUT(req: NextRequest, props: { params: Promise<{ id: strin
 }
 
 export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const params = await props.params;
     const id = params.id;
@@ -32,6 +40,8 @@ export async function DELETE(req: NextRequest, props: { params: Promise<{ id: st
       return NextResponse.json({ success: false, error: "Region not found." }, { status: 404 });
     }
 
+    revalidatePath("/[locale]", "layout");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true });
   } catch (error: any) {
     console.error("DELETE /api/admin/regions/[id] error:", error);

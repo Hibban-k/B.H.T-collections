@@ -7,7 +7,8 @@
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint",
-    "db:archive": "node scripts/archive-old-records.mjs"
+    "db:archive": "node scripts/archive-old-records.mjs",
+    "test:seo": "node --test scripts/seo-regression.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.9.1",

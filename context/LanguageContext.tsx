@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { createContext, useContext, useEffect } from "react";
 
 export type Language = "en" | "ar";
 export type Direction = "ltr" | "rtl";
@@ -15,25 +16,22 @@ interface LanguageContextType {
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
-export const LanguageProvider: React.FC<{ children: React.ReactNode }> = ({
+export const LanguageProvider: React.FC<{ children: React.ReactNode; initialLanguage?: Language }> = ({
   children,
+  initialLanguage = "en",
 }) => {
-  const [language, setLanguageState] = useState<Language>("en");
+  const language = initialLanguage;
 
+  const router = useRouter();
+  const pathname = usePathname();
   useEffect(() => {
-    const saved = localStorage.getItem("bht_language") as Language | null;
-    if (saved === "en" || saved === "ar") {
-      setLanguageState(saved);
-      document.documentElement.lang = saved;
-      document.documentElement.dir = saved === "ar" ? "rtl" : "ltr";
-    } else {
-      document.documentElement.lang = "en";
-      document.documentElement.dir = "ltr";
-    }
-  }, []);
+    document.documentElement.lang = initialLanguage;
+    document.documentElement.dir = initialLanguage === "ar" ? "rtl" : "ltr";
+  }, [initialLanguage]);
 
   const setLanguage = (lang: Language) => {
-    setLanguageState(lang);
+    const path = pathname.replace(/^\/[a-z]{2}(?=\/|$)/, "/" + lang);
+    router.push(path + window.location.search);
     if (typeof window !== "undefined") {
       localStorage.setItem("bht_language", lang);
       document.cookie = `bht_language=${lang};path=/;max-age=31536000;SameSite=Lax`;

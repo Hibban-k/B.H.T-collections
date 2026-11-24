@@ -263,7 +263,7 @@ Please confirm my order and provide delivery and payment details. Thank you!`;
                             <Image
                               src={item.image}
                               alt={item.name}
-                              fill
+                              fill sizes="40px"
                               className="object-cover"
                             />
                           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import Image from "next/image";
 import { Search, X, Menu } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 
 import React from "react";
 import Image from "next/image";

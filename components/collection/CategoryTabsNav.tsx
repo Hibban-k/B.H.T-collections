@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import { Bed, Luggage, Footprints, LayoutGrid } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 

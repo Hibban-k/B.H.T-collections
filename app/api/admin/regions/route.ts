@@ -1,7 +1,11 @@
+import { auth } from "@/lib/auth/auth";
+import { revalidatePath } from "next/cache";
 import { NextRequest, NextResponse } from "next/server";
 import { RegionService } from "@/lib/services/region.service";
 
 export async function GET(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const searchParams = req.nextUrl.searchParams;
     const includeInactive = searchParams.get("includeInactive") === "true";
@@ -14,6 +18,8 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
   try {
     const body = await req.json();
     const { name, code, currency, isActive, metaTitleSuffix, metaDescriptionTemplate } = body;
@@ -34,6 +40,8 @@ export async function POST(req: NextRequest) {
       metaDescriptionTemplate,
     });
 
+    revalidatePath("/[locale]", "layout");
+    revalidatePath("/sitemap.xml");
     return NextResponse.json({ success: true, region }, { status: 201 });
   } catch (error: any) {
     console.error("POST /api/admin/regions error:", error);

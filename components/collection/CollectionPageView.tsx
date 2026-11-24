@@ -12,7 +12,8 @@ import { CollectionIntro } from "./CollectionIntro";
 import { ProductToolbar, SortOption } from "./ProductToolbar";
 import { ProductFilterSidebar, FilterState } from "./ProductFilterSidebar";
 import { ProductCard } from "./ProductCard";
-import { QuickViewModal } from "./QuickViewModal";
+import dynamic from "next/dynamic";
+const QuickViewModal = dynamic(() => import("./QuickViewModal").then(mod => mod.QuickViewModal));
 import { Product, CollectionCategoryMeta } from "@/data/productsData";
 import { PackageX, RotateCcw } from "lucide-react";
 
@@ -25,6 +26,7 @@ export interface DBProduct {
   categorySlug?: string;
   subcategoryId?: string | null;
   subcategorySlug?: string;
+  stock?: number;
   price: number;
   salePrice?: number | null;
   originalPrice?: number | null;
@@ -244,7 +246,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
         price: p.salePrice || p.price || 0,
         originalPrice: p.originalPrice || (p.salePrice ? p.price : undefined),
         image: p.image || "/collections/bht-collection-banner.png",
-        inStock: true,
+        inStock: (p.stock ?? 0) > 0,
         isNew: false,
         isFeatured: Boolean(p.featured),
         colorVariants: p.colors || [],
@@ -307,7 +309,7 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       inStockOnly: false,
     });
     setVisibleCount(12);
-    router.push(`/${slug}`, { scroll: false });
+    router.push(`/${language}/${slug}`, { scroll: false });
   };
 
   // Helper to sync URL search params without page reload
@@ -650,10 +652,10 @@ export const CollectionPageView: React.FC<CollectionPageViewProps> = ({
       />
 
       {/* 11. Quick View Modal */}
-      <QuickViewModal
+      {quickViewProduct && <QuickViewModal
         product={quickViewProduct}
         onClose={() => setQuickViewProduct(null)}
-      />
+      />}
 
       {/* 12. Site Footer */}
       <Footer />

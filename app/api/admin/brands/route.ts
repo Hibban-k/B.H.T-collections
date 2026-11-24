@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { BrandService } from "@/lib/services/brand.service";
 import { withAuth } from "@/lib/api/helpers";
 
 export const GET = withAuth("brands:read", async () => {
-  const brands = await BrandService.getBrands();
+  const brands = await BrandService.getBrands(true);
   return NextResponse.json({ brands });
 });
 
@@ -16,10 +16,9 @@ export const POST = withAuth("brands:write", async (req: Request) => {
 
   const created = await BrandService.createBrand(body);
 
-  try {
-    revalidatePath("/");
-    revalidatePath("/[locale]", "page");
-  } catch {}
 
+  revalidateTag("brands", { expire: 0 });
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, brand: created }, { status: 201 });
 });

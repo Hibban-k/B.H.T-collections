@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import Image from "next/image";
 import {
   ChevronLeft,
@@ -72,6 +72,7 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
     >
       {/* FULL-WIDTH SLIDES (SERVER-RENDERED WITH DATABASE BACKGROUND IMAGES) */}
       {slides.map((slide, index) => {
+        const Heading = index === 0 ? "h1" : "h2";
         const isCurrent = index === currentSlideIndex;
         return (
           <div
@@ -120,9 +121,9 @@ export const HeroCarousel: React.FC<HeroCarouselProps> = ({
                   </div>
 
                   {/* Headline */}
-                  <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] sm:leading-[1.1] tracking-tight drop-shadow-md">
+                  <Heading className="bht-hero-heading text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black text-white leading-[1.15] sm:leading-[1.1] tracking-tight drop-shadow-md">
                     {language === "ar" ? slide.headingAr : slide.headingEn}
-                  </h1>
+                  </Heading>
 
                   {/* Description */}
                   <p className="bht-copy text-gray-200 font-normal leading-relaxed drop-shadow-sm max-w-lg line-clamp-2 sm:line-clamp-none">

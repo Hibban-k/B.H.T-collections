@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { BrandService } from "@/lib/services/brand.service";
 import { withAuth } from "@/lib/api/helpers";
 
@@ -12,11 +12,10 @@ export const PUT = withAuth("brands:write", async (req: Request, { params }: { p
     throw new Error("Brand not found");
   }
 
-  try {
-    revalidatePath("/");
-    revalidatePath("/[locale]", "page");
-  } catch {}
 
+  revalidateTag("brands", { expire: 0 });
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, brand: updated });
 });
 
@@ -28,10 +27,9 @@ export const DELETE = withAuth("brands:write", async (req: Request, { params }: 
     throw new Error("Brand not found");
   }
 
-  try {
-    revalidatePath("/");
-    revalidatePath("/[locale]", "page");
-  } catch {}
 
+  revalidateTag("brands", { expire: 0 });
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true });
 });

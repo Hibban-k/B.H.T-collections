@@ -6,8 +6,9 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: ["/"],
-      disallow: ["/api/", "/admin/"],
+      disallow: ["/api/"],
     },
+    // Admin stays crawlable so crawlers can observe its noindex response header.
     sitemap: getAbsoluteUrl("/sitemap.xml"),
   };
 }

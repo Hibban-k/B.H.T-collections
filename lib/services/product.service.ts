@@ -1,3 +1,5 @@
+import { cache } from "react";
+import { generateProductSeo, productSlug } from "@/lib/seo/product";
 import mongoose from "mongoose";
 import {
   ProductRepository,
@@ -85,6 +87,11 @@ function resolveCategoryId(val?: string | null): mongoose.Types.ObjectId | null 
   return null;
 }
 
+export const getPublishedProduct = cache(async (slug: string) => {
+  const product = await ProductRepository.findBySlug(slug);
+  return product?.status === "published" ? product : null;
+});
+
 export class ProductService {
   static async getProducts(options?: ProductFilter): Promise<SerializedProduct[]> {
     return ProductRepository.findAll(options);
@@ -121,13 +128,8 @@ export class ProductService {
       throw new Error(`Product with name "${trimmedName}" already exists.`);
     }
 
-    const slug =
-      (input.slug?.trim().toLowerCase() ||
-      trimmedName
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "")) ||
-      `product-${Date.now()}`;
+    const slug = productSlug(input.slug || trimmedName);
+    if (!slug) throw new Error("Product requires a valid URL slug");
 
     const existingSlug = await ProductRepository.findBySlug(slug);
     if (existingSlug) {
@@ -154,6 +156,7 @@ export class ProductService {
     const resolvedBrand = await resolveBrandId(input.brand);
     const resolvedSubcat = resolveCategoryId(input.subcategoryId);
 
+    const seo = generateProductSeo({ ...input, name: trimmedName });
     const productData: Partial<IProduct> = {
       name: trimmedName,
       slug,
@@ -172,7 +175,7 @@ export class ProductService {
       images: cleanImgs,
       description: input.description || "",
       shortDescription:
-        input.shortDescription || input.description?.slice(0, 120) || "",
+        seo.shortDescription,
       sizes: input.sizes || ["Standard"],
       colors: input.colors || ["Classic"],
       materials: input.materials || ["100% Premium Material"],
@@ -183,9 +186,9 @@ export class ProductService {
       bestseller: Boolean(input.bestseller),
       crossSellSlugs: Array.isArray(input.crossSellSlugs) ? input.crossSellSlugs : [],
       additionalCategories: input.additionalCategories || [],
-      metaTitle: input.metaTitle || "",
-      metaDescription: input.metaDescription || "",
-      keywords: input.keywords || [],
+      metaTitle: seo.metaTitle,
+      metaDescription: seo.metaDescription,
+      keywords: seo.keywords,
       status: input.status || "published",
     };
 
@@ -193,6 +196,12 @@ export class ProductService {
   }
 
   static async updateProduct(id: string, updates: Partial<CreateProductInput>): Promise<SerializedProduct | null> {
+    const current = await ProductRepository.findById(id);
+    if (!current) return null;
+    if (updates.slug !== undefined) {
+      updates = { ...updates, slug: productSlug(updates.slug) };
+      if (!updates.slug) throw new Error("Product requires a valid URL slug");
+    }
     if (updates.name) {
       const existingName = await ProductRepository.findByName(updates.name.trim(), id);
       if (existingName) {
@@ -244,6 +253,14 @@ export class ProductService {
 
     if (Array.isArray(updates.crossSellSlugs)) sanitized.crossSellSlugs = updates.crossSellSlugs;
 
+    // Refresh generated values when their source changes, preserve deliberate overrides.
+    const previous = generateProductSeo({ name: current.name, description: current.description });
+    const merged = { ...current, ...updates };
+    for (const key of ["metaTitle", "metaDescription", "shortDescription"] as const) {
+      if (!merged[key] || merged[key] === previous[key]) merged[key] = "";
+    }
+    if (JSON.stringify(merged.keywords) === JSON.stringify(previous.keywords)) merged.keywords = [];
+    Object.assign(sanitized, generateProductSeo(merged));
     return ProductRepository.update(id, sanitized);
   }
 

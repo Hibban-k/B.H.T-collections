@@ -3,7 +3,7 @@
 import React from "react";
 import { ABOUT_CONTENT, ABOUT_CONTENT_AR } from "@/data/aboutContent";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import { useLanguage } from "@/context/LanguageContext";
 import { ArrowRight, ArrowLeft } from "lucide-react";
 

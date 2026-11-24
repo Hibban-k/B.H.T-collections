@@ -61,7 +61,7 @@ export class CategoryService {
       slug,
       description: input.description || "",
       longDescription: input.longDescription || "",
-      image: input.image || "/collections/korean-super-soft-blanket.png",
+      image: input.image || "/logo/logo.png",
       parentId: (input.parentId as any) || null,
       parentSlug: input.parentSlug || "",
       status: input.status || "active",

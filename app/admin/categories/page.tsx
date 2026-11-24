@@ -331,7 +331,7 @@ export default function AdminCategoriesPage() {
                 {/* Image Banner */}
                 <div className="relative h-36 bg-[#FAF8F5] border-b border-[#E8DFC8] overflow-hidden">
                   <Image
-                    src={cleanImageUrl(cat.image || "/categories/bedsheets.png")}
+                    src={cleanImageUrl(cat.image || "/badding/bht-bed-sheets.jpg")}
                     alt={cat.name}
                     fill
                     className="object-cover"
@@ -591,7 +591,7 @@ export default function AdminCategoriesPage() {
                     type="text"
                     value={formData.image}
                     onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="/categories/bedsheets.png"
+                    placeholder="/badding/bht-bed-sheets.jpg"
                     className="w-full p-2.5 bg-[#FAF8F5] border border-[#E8DFC8] rounded-xl focus:border-[#D4AF37] focus:bg-white outline-none font-mono"
                   />
                 )}

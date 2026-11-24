@@ -625,7 +625,7 @@ export default function AdminProductsPage() {
                       <div className="flex items-center gap-3">
                         <div className="relative w-12 h-12 rounded-lg bg-[#FAF8F5] border border-[#E8DFC8] overflow-hidden shrink-0">
                           <Image
-                            src={product.image || "/collections/korean-super-soft-blanket.png"}
+                            src={product.image || "/logo/logo.png"}
                             alt={product.name}
                             fill
                             className="object-cover"
@@ -1721,7 +1721,7 @@ export default function AdminProductsPage() {
                           <div className="flex items-center gap-2 min-w-0">
                             <div className="relative w-9 h-9 rounded-lg bg-white border border-[#E8DFC8] overflow-hidden shrink-0">
                               <Image
-                                src={matched?.image || "/collections/korean-super-soft-blanket.png"}
+                                src={matched?.image || "/logo/logo.png"}
                                 alt={matched?.name || slug}
                                 fill
                                 className="object-cover"
@@ -1802,7 +1802,7 @@ export default function AdminProductsPage() {
                               <div className="flex items-center gap-2">
                                 <div className="relative w-8 h-8 rounded-lg bg-[#FAF8F5] border border-[#E8DFC8] overflow-hidden shrink-0">
                                   <Image
-                                    src={p.image || "/collections/korean-super-soft-blanket.png"}
+                                    src={p.image || "/logo/logo.png"}
                                     alt={p.name}
                                     fill
                                     className="object-cover"

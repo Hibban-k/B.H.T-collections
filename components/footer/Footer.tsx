@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import Image from "next/image";
 import { Phone, Smartphone, Printer, Mail } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -72,7 +72,7 @@ export const Footer: React.FC = () => {
                   <Image
                     src="/logo/logo.png"
                     alt="Blanket House Trading LLC Logo"
-                    fill
+                    fill sizes="(max-width: 640px) 170px, 220px"
                     className="object-contain object-right rtl:object-left"
                   />
                 </Link>

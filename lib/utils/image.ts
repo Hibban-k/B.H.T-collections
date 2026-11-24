@@ -3,7 +3,7 @@
  * Google image search links, malformed URLs, or local/external combinations.
  */
 export function cleanImageUrl(inputUrl?: string | null): string {
-  const fallback = "/collections/korean-super-soft-blanket.png";
+  const fallback = "/logo/logo.png";
   if (!inputUrl || typeof inputUrl !== "string") return fallback;
 
   let url = inputUrl.trim();

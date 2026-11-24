@@ -1,15 +1,10 @@
-import { redirect } from "next/navigation";
-import { ProductService } from "@/lib/services/product.service";
-
+import { notFound, permanentRedirect } from "next/navigation";
+import { getPublishedProduct } from "@/lib/services/product.service";
+import { getProductPath } from "@/lib/seo/urls";
 export const dynamic = "force-dynamic";
-
-export default async function LegacyProductRedirectPage({
-  params,
-}: {
-  params: Promise<{ locale: string; slug: string }>;
-}) {
+export default async function LegacyProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
   const { locale, slug } = await params;
-  const product = await ProductService.getProductBySlug(slug).catch(() => null);
-  const cat = (product?.categorySlug || product?.category || "bedding").toLowerCase();
-  redirect(`/${locale}/c=${cat}/${slug}`);
+  const product = await getPublishedProduct(slug);
+  if (!product) notFound();
+  permanentRedirect(getProductPath(product, locale));
 }

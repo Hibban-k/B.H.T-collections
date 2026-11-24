@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { ProductService } from "@/lib/services/product.service";
 import { withAuth } from "@/lib/api/helpers";
@@ -27,5 +28,7 @@ export const POST = withAuth("products:write", async (req: Request) => {
   }
 
   const created = await ProductService.createProduct(body);
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, product: created }, { status: 201 });
 });

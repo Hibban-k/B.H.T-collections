@@ -1,11 +1,15 @@
-import { Metadata } from "next";
+import { constructMetadata } from "@/lib/seo/metadata";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return constructMetadata({
+    path: `/${locale}/refund-policy`,
   title: "Refund & Return Policy | Blanket House Trading LLC",
   description: "Official Refund & Return Policy of Blanket House Trading LLC Dubai, UAE.",
-};
+  });
+}
 
 export default function RefundPolicyPage() {
   return (

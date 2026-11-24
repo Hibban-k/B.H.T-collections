@@ -1,5 +1,6 @@
+import { constructMetadata } from "@/lib/seo/metadata";
 import { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CollectionPageView } from "@/components/collection/CollectionPageView";
 import { CategoryService } from "@/lib/services/category.service";
 import { ProductService } from "@/lib/services/product.service";
@@ -39,7 +40,7 @@ const RESERVED_STATIC_SLUGS = new Set([
 const DEFAULT_MAIN_CATEGORIES = ["bedding", "travel-bags", "footwear"];
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const { category: rawCategory } = await params;
+  const { locale, category: rawCategory } = await params;
   const slug = rawCategory.replace(/^c=/, "").toLowerCase();
 
   if (RESERVED_STATIC_SLUGS.has(slug)) {
@@ -58,14 +59,13 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     ? `${dbCat.name.toUpperCase()} Collection | BHT Collections — Blanket House Trading LLC`
     : `${slug.toUpperCase()} Collection | BHT Collections — Blanket House Trading LLC`;
 
-  return {
-    title,
-    description: dbCat?.description || `Explore our certified ${slug} collection in UAE and GCC.`,
-  };
+  return constructMetadata({ title: dbCat?.metaTitle || title,
+    description: dbCat?.metaDescription || dbCat?.description || `Explore our ${slug} collection at BHT Collections.`,
+    path: `/${locale}/${slug}` });
 }
 
 export default async function DynamicCategoryPage({ params, searchParams }: CategoryPageProps) {
-  const { category: rawCategory } = await params;
+  const { locale, category: rawCategory } = await params;
   const slug = rawCategory.replace(/^c=/, "").toLowerCase();
 
   // If slug is a reserved route, let Next.js handle or 404
@@ -89,7 +89,15 @@ export default async function DynamicCategoryPage({ params, searchParams }: Cate
     notFound();
   }
 
+  if (matchedCat?.status === "disabled") notFound();
   const resolvedSearchParams = searchParams ? await searchParams : undefined;
+  if (rawCategory !== slug) {
+    const query = new URLSearchParams();
+    for (const [key, value] of Object.entries(resolvedSearchParams || {})) {
+      if (value !== undefined) query.set(key, value);
+    }
+    permanentRedirect(`/${locale}/${slug}${query.size ? `?${query}` : ""}`);
+  }
   let mainCategorySlug = slug;
   let activeSub = resolvedSearchParams?.subcategory || resolvedSearchParams?.sub || "all";
 

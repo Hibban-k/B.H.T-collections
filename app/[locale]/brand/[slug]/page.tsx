@@ -1,3 +1,4 @@
+import { constructMetadata } from "@/lib/seo/metadata";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BrandShowcaseView } from "@/components/brand/BrandShowcaseView";
@@ -15,10 +16,10 @@ interface BrandPageProps {
 }
 
 export async function generateMetadata({ params }: BrandPageProps): Promise<Metadata> {
-  const { slug } = await params;
+  const { locale, slug } = await params;
   const brand = await BrandService.getBrandBySlug(slug).catch(() => null);
 
-  if (!brand) {
+  if (!brand || !brand.isActive) {
     return {
       title: "Brand Not Found | BHT Collections",
     };
@@ -28,25 +29,16 @@ export async function generateMetadata({ params }: BrandPageProps): Promise<Meta
   const description =
     brand.metaDescription ||
     brand.description ||
-    `Explore authentic ${brand.name} products distributed by Blanket House Trading LLC Dubai across UAE and GCC.`;
+    `Explore ${brand.name} products at BHT Collections in Dubai.`;
 
-  return {
-    title,
-    description,
-    keywords: brand.keywords || [brand.name, "UAE wholesale", "BHT Collections", "official distributor"],
-    openGraph: {
-      title,
-      description,
-      images: brand.logo ? [{ url: brand.logo }] : brand.image ? [{ url: brand.image }] : [],
-    },
-  };
+  return constructMetadata({ title, description, path: `/${locale}/brand/${brand.slug}`, image: brand.logo || brand.image });
 }
 
 export default async function BrandShowcasePage({ params }: BrandPageProps) {
   const { slug } = await params;
   const brand = await BrandService.getBrandBySlug(slug).catch(() => null);
 
-  if (!brand) {
+  if (!brand || !brand.isActive) {
     notFound();
   }
 
@@ -97,7 +89,7 @@ export default async function BrandShowcasePage({ params }: BrandPageProps) {
     brandLogo: brand.logo || "",
     price: p.salePrice || p.price || 0,
     originalPrice: p.originalPrice || (p.salePrice ? p.price : undefined),
-    image: p.image || (p.images && p.images[0]) || "/collections/korean-super-soft-blanket.png",
+    image: p.image || (p.images && p.images[0]) || "/logo/logo.png",
     inStock: p.stock > 0,
     isNew: false,
     isFeatured: Boolean(p.featured),

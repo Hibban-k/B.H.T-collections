@@ -1,11 +1,15 @@
-import { Metadata } from "next";
+import { constructMetadata } from "@/lib/seo/metadata";
 import { Navbar } from "@/components/header/Navbar";
 import { Footer } from "@/components/footer/Footer";
 
-export const metadata: Metadata = {
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  return constructMetadata({
+    path: `/${locale}/terms`,
   title: "Terms & Conditions | Blanket House Trading LLC",
   description: "Terms and conditions of use and commercial trade of Blanket House Trading LLC Dubai.",
-};
+  });
+}
 
 export default function TermsPage() {
   return (

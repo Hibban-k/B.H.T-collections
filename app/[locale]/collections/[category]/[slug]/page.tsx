@@ -1,48 +1,10 @@
-import { Metadata } from "next";
-import { CollectionPageView } from "@/components/collection/CollectionPageView";
-import { COLLECTION_CATEGORIES_META, ALL_PRODUCTS } from "@/data/productsData";
-
-interface PageProps {
-  params: Promise<{
-    category: string;
-    slug: string;
-  }>;
-}
-
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { category, slug } = await params;
-  const catSlug = category.toLowerCase();
-  const product = ALL_PRODUCTS.find(
-    (p) => p.category === catSlug || slug.includes(p.id)
-  );
-
-  if (product) {
-    return {
-      title: `${product.nameEn} | BHT Collections`,
-      description: product.descriptionEn,
-    };
-  }
-
-  const meta = COLLECTION_CATEGORIES_META[catSlug];
-  return {
-    title: meta ? `${meta.nameEn} Collection | BHT Collections` : "BHT Collections",
-  };
-}
-
-export default async function SubcategoryProductPage({ params }: PageProps) {
-  const { category } = await params;
-  const catSlug = category.toLowerCase();
-  const validCategory: "bedding" | "travel-bags" | "footwear" =
-    catSlug === "travel-bags" || catSlug === "travelling"
-      ? "travel-bags"
-      : catSlug === "footwear"
-      ? "footwear"
-      : "bedding";
-
-  return (
-    <CollectionPageView
-      initialCategory={validCategory}
-      initialSubcategory="all"
-    />
-  );
+import { notFound, permanentRedirect } from "next/navigation";
+import { getPublishedProduct } from "@/lib/services/product.service";
+import { getProductPath } from "@/lib/seo/urls";
+export const dynamic = "force-dynamic";
+export default async function LegacyProductPage({ params }: { params: Promise<{ locale: string; slug: string }> }) {
+  const { locale, slug } = await params;
+  const product = await getPublishedProduct(slug);
+  if (!product) notFound();
+  permanentRedirect(getProductPath(product, locale));
 }

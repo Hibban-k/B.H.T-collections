@@ -23,7 +23,7 @@ export interface ProductFilter {
  * materials, and gallery arrays on index pages, reducing payload by >90%.
  */
 export const GRID_PRODUCT_SELECT =
-  "name slug price salePrice originalPrice image category categorySlug rating reviewCount status badge featured bestseller brand";
+  "name slug price salePrice originalPrice image category categorySlug rating reviewCount status badge featured bestseller brand stock subcategoryId subcategorySlug additionalCategories sizes colors materials description shortDescription";
 
 export interface SerializedProductVariant {
   name: string;
@@ -96,10 +96,11 @@ function buildMongoFilter(options?: ProductFilter): Record<string, unknown> {
     }
   }
   if (options.search) {
+    const literalSearch = options.search.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     // If $or already exists (from categorySlug), we must use $and to combine them
     const searchOr = [
-      { name: { $regex: options.search, $options: "i" } },
-      { description: { $regex: options.search, $options: "i" } },
+      { name: { $regex: literalSearch, $options: "i" } },
+      { description: { $regex: literalSearch, $options: "i" } },
     ];
     if (filter.$or) {
       filter.$and = [{ $or: filter.$or }, { $or: searchOr }];
@@ -156,7 +157,7 @@ export class ProductRepository {
 
   static async findByName(name: string, excludeId?: string): Promise<SerializedProduct | null> {
     await connectToDatabase();
-    const query: any = { name: { $regex: new RegExp(`^${name.trim()}$`, "i") } };
+    const query: any = { name: { $regex: new RegExp(`^${name.trim().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "i") } };
     if (excludeId) query._id = { $ne: excludeId };
     const doc = await ProductModel.findOne(query).lean();
     return doc ? serialize(doc) : null;

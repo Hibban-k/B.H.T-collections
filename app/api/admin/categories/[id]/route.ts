@@ -1,3 +1,4 @@
+import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { CategoryService } from "@/lib/services/category.service";
 import { withAuth } from "@/lib/api/helpers";
@@ -7,6 +8,9 @@ export const PUT = withAuth("categories:write", async (req: Request, { params }:
   const body = await req.json();
   const updated = await CategoryService.updateCategory(id, body);
   if (!updated) throw new Error("Category not found");
+  revalidateTag("categories", { expire: 0 });
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, category: updated });
 });
 
@@ -14,5 +18,8 @@ export const DELETE = withAuth("categories:write", async (req: Request, { params
   const { id } = await params;
   const success = await CategoryService.deleteCategory(id);
   if (!success) throw new Error("Category not found");
+  revalidateTag("categories", { expire: 0 });
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, message: "Category deleted" });
 });

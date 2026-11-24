@@ -4,7 +4,7 @@ import React, { useState, useEffect, useMemo } from "react";
 import { BrandClientCard } from "./BrandClientCard";
 import { useLanguage } from "@/context/LanguageContext";
 import { MessageCircle, AlertCircle, RefreshCw } from "lucide-react";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import { BrandClientItem } from "@/types/brand";
 
 interface RawBrandData {

@@ -1,3 +1,15 @@
+import { RegionService } from "@/lib/services/region.service";
+import { constructMetadata } from "@/lib/seo/metadata";
+import { generateOrganizationSchema, serializeJsonLd } from "@/lib/seo/schema";
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const region = await RegionService.getRegionByCode(locale).catch(() => null);
+  const regionName = region?.name || "Dubai & GCC";
+  const regionTitle = region?.metaTitleSuffix?.replaceAll("{{region_name}}", regionName);
+  const regionDescription = region?.metaDescriptionTemplate?.replaceAll("{{region_name}}", regionName);
+  return constructMetadata({ path: `/${locale}`, title: regionTitle ? "BHT Collections " + regionTitle : "BHT Collections | Bedding, Footwear & Travel Bags Dubai",
+    description: regionDescription || "Explore bedding, blankets, footwear and travel bags from Blanket House Trading LLC in Dubai. Contact us for retail and wholesale inquiries." });
+}
 import { Navbar } from "@/components/header/Navbar";
 import { AnnouncementTicker } from "@/components/ticker/AnnouncementTicker";
 import { HeroCarousel } from "@/components/hero/HeroCarousel";
@@ -61,6 +73,7 @@ export default async function HomePage() {
   return (
     <div className="flex flex-col min-h-screen bg-white">
       {/* 1. Header & Navigation: Row 1, Mega Menu & Row 2 Secondary Nav */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(generateOrganizationSchema()) }} />
       <Navbar />
 
       <main className="flex-1">

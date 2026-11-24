@@ -41,11 +41,11 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   // If on login page, render full html body without sidebar shell
   if (pathname === "/admin/login") {
     return (
-      <html lang="en">
-        <body className="min-h-screen bg-[#F8F9FA]" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
+      <>
+        <div className="min-h-screen bg-[#F8F9FA]" style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}>
           <AuthProvider>{children}</AuthProvider>
-        </body>
-      </html>
+        </div>
+      </>
     );
   }
 
@@ -67,8 +67,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   };
 
   return (
-    <html lang="en">
-      <body
+    <>
+      <div
         className="min-h-screen bg-[#F8F9FA] text-[#0B131F] flex flex-col md:flex-row"
         style={{ fontFamily: "var(--font-montserrat-var, system-ui, sans-serif)" }}
       >
@@ -81,7 +81,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <Link href="/admin" className="flex items-center gap-3">
               <div className="relative w-10 h-10 rounded-lg overflow-hidden bg-white/5 border border-white/10 shrink-0">
                 <Image
-                  src="/bht-logo.jpg"
+                  src="/logo/logo.png"
                   alt="BHT Admin"
                   fill
                   className="object-contain p-1"
@@ -157,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       <div className="md:hidden bg-black text-white p-4 flex items-center justify-between border-b border-[#1E2B3E] sticky top-0 z-40">
         <Link href="/admin" className="flex items-center gap-2.5">
           <div className="relative w-8 h-8 rounded overflow-hidden bg-white/5 border border-white/10 shrink-0">
-            <Image src="/bht-logo.jpg" alt="BHT Admin" fill className="object-contain p-0.5" />
+            <Image src="/logo/logo.png" alt="BHT Admin" fill className="object-contain p-0.5" />
           </div>
           <span className="text-sm font-bold text-white">B.H.T. Admin</span>
         </Link>
@@ -248,7 +248,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">{children}</main>
       </div>
         </AuthProvider>
-      </body>
-    </html>
+      </div>
+    </>
   );
 }

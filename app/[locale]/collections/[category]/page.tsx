@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -13,8 +13,8 @@ export default async function LegacyCollectionCategoryRedirectPage({
   const resolvedQuery = searchParams ? await searchParams : {};
   const qs = new URLSearchParams();
   Object.entries(resolvedQuery).forEach(([key, val]) => {
-    if (typeof val === "string") qs.set(key, val);
+    for (const value of Array.isArray(val) ? val : [val]) qs.append(key, value);
   });
   const queryString = qs.toString();
-  redirect(`/${locale}/${category.toLowerCase()}${queryString ? `?${queryString}` : ""}`);
+  permanentRedirect(`/${locale}/${category.toLowerCase()}${queryString ? `?${queryString}` : ""}`);
 }

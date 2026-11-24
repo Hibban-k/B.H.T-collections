@@ -1,3 +1,4 @@
+import { revalidatePath } from "next/cache";
 import { NextResponse } from "next/server";
 import { ProductService } from "@/lib/services/product.service";
 import { withAuth } from "@/lib/api/helpers";
@@ -23,6 +24,8 @@ export const PUT = withAuth("products:write", async (req: Request, { params }: {
 
   const updated = await ProductService.updateProduct(id, body);
   if (!updated) throw new Error("Product not found");
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, product: updated });
 });
 
@@ -30,5 +33,7 @@ export const DELETE = withAuth("products:write", async (req: Request, { params }
   const { id } = await params;
   const success = await ProductService.deleteProduct(id);
   if (!success) throw new Error("Product not found");
+  revalidatePath("/[locale]", "layout");
+  revalidatePath("/sitemap.xml");
   return NextResponse.json({ success: true, message: "Product deleted" });
 });

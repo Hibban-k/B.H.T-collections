@@ -1,4 +1,5 @@
-import { getAbsoluteUrl } from "./urls";
+import { getProductPath, getAbsoluteUrl } from "./urls";
+import { plainText } from "./product";
 import type { SerializedProduct } from "@/lib/repositories/product.repository";
 
 export function generateOrganizationSchema() {
@@ -7,17 +8,13 @@ export function generateOrganizationSchema() {
     "@type": "Organization",
     name: "Blanket House Trading L.L.C.",
     url: getAbsoluteUrl(""),
-    logo: getAbsoluteUrl("/bht-logo.jpg"),
-    description: "Leading wholesale and retail supplier of luxury home textiles, Korean blankets, and hotel collections in Dubai, UAE.",
+    logo: getAbsoluteUrl("/logo/logo.png"),
+    description: "Bedding, footwear and travel bags from Blanket House Trading LLC in Dubai, UAE.",
     address: {
       "@type": "PostalAddress",
       addressLocality: "Dubai",
       addressCountry: "AE",
     },
-    sameAs: [
-      "https://facebook.com/bhtcollections",
-      "https://instagram.com/bhtcollections",
-    ],
   };
 }
 
@@ -34,7 +31,7 @@ export function generateBreadcrumbSchema(items: { name: string; path: string }[]
   };
 }
 
-export function generateItemListSchema(products: SerializedProduct[], categoryUrl: string) {
+export function generateItemListSchema(products: SerializedProduct[], categoryUrl: string, locale = "en") {
   return {
     "@context": "https://schema.org",
     "@type": "ItemList",
@@ -43,14 +40,14 @@ export function generateItemListSchema(products: SerializedProduct[], categoryUr
     itemListElement: products.map((product, index) => ({
       "@type": "ListItem",
       position: index + 1,
-      url: getAbsoluteUrl(`/c=${product.categorySlug}/${product.slug}`),
+      url: getAbsoluteUrl(getProductPath(product, locale)),
       name: product.name,
     })),
   };
 }
 
-export function generateProductSchema(product: SerializedProduct) {
-  const cat = (product.categorySlug || product.category || "bedding").toLowerCase();
+export function generateProductSchema(product: SerializedProduct, locale = "en") {
+  const variant = product.variants?.[0];
   return {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -58,33 +55,25 @@ export function generateProductSchema(product: SerializedProduct) {
     image: product.images && product.images.length > 0
       ? product.images.map((img) => getAbsoluteUrl(img))
       : [getAbsoluteUrl(product.image)],
-    description: product.description || product.shortDescription,
+    description: plainText(product.description || product.shortDescription),
+    url: getAbsoluteUrl(getProductPath(product, locale)),
     sku: product.sku || product.slug,
-    brand: {
-      "@type": "Brand",
-      name: typeof product.brand === "object" && product.brand?.name ? product.brand.name : "BHT Collections",
-    },
+    ...(typeof product.brand === "object" && product.brand?.name ? {
+      brand: { "@type": "Brand", name: product.brand.name },
+    } : {}),
     offers: {
       "@type": "Offer",
-      url: getAbsoluteUrl(`/c=${cat}/${product.slug}`),
+      url: getAbsoluteUrl(getProductPath(product, locale)),
       priceCurrency: "AED",
-      price: product.salePrice || product.price,
+      price: variant?.salePrice ?? variant?.price ?? product.salePrice ?? product.price,
       itemCondition: "https://schema.org/NewCondition",
-      availability: (product.stock ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      availability: (variant?.stock ?? product.stock ?? 0) > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
       seller: {
         "@type": "Organization",
         name: "Blanket House Trading L.L.C.",
       },
     },
-    ...(product.rating
-      ? {
-          aggregateRating: {
-            "@type": "AggregateRating",
-            ratingValue: product.rating,
-            reviewCount: product.reviewCount || 1,
-          },
-        }
-      : {}),
+    // Legacy rating fields contain seeded defaults, so omit unverified review markup.
   };
 }
 
@@ -101,4 +90,9 @@ export function generateFaqSchema(faq: { question: string; answer: string }[]) {
       },
     })),
   };
+}
+
+/** Prevent product content from closing the JSON-LD script element. */
+export function serializeJsonLd(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
 }

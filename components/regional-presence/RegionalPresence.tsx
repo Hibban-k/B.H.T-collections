@@ -2,7 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/common/StoreLink";
 import { REGIONAL_PRESENCE_DATA } from "@/data/regionalData";
 import { CircularFlag } from "./CircularFlag";
 import { useLanguage } from "@/context/LanguageContext";
