@@ -8,6 +8,7 @@ export interface MetadataInput {
   path?: string;
   noIndex?: boolean;
   languages?: Record<string, string>;
+  keywords?: string[];
 }
 
 export function constructMetadata({
@@ -17,6 +18,7 @@ export function constructMetadata({
   path = "",
   noIndex = false,
   languages,
+  keywords,
 }: MetadataInput = {}): Metadata {
   const url = getAbsoluteUrl(path);
 
@@ -24,6 +26,7 @@ export function constructMetadata({
   return {
     title: { absolute: title },
     description,
+    keywords,
     metadataBase: new URL(getAbsoluteUrl("")),
     openGraph: {
       title,

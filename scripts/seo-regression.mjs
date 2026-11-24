@@ -4,8 +4,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import ts from 'typescript';
-import { createRequire } from 'node:module';
-import { fileURLToPath } from 'node:url';
+import { createRequire, registerHooks } from 'node:module';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 const require = createRequire(import.meta.url);
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const testState = { language: 'en', regions: [{ code: 'ae', name: 'United Arab Emirates', isActive: true }, { code: 'sa', name: 'Saudi Arabia', isActive: true }] };
@@ -19,7 +19,7 @@ function load(file, mocks = {}, cache = new Map()) {
   }).outputText;
   const localRequire = id => {
     if (id in mocks) return mocks[id];
-    if (id === 'next/headers') return { cookies: async () => ({ get: () => ({ value: testState.language }) }) };
+    if (id === 'next/headers') return { cookies: async () => ({ get: () => ({ value: testState.language }) }), headers: async () => new Headers() };
     if (id === '@/lib/services/region.service') return { RegionService: {
       getRegions: async () => testState.regions,
       getRegionByCode: async code => testState.regions.find(region => region.code === code) || null,
@@ -37,6 +37,60 @@ const urls = load('lib/seo/urls.ts');
 const seo = load('lib/seo/product.ts');
 const schema = load('lib/seo/schema.ts');
 const metadata = load('lib/seo/metadata.ts');
+
+test('real Auth.js redirects missing/invalid/expired admin sessions without login loops', async () => {
+  // Next's extensionless imports are resolved by its bundler in production.
+  // Resolve those same installed modules for this standalone Node integration test.
+  const nextModules = Object.fromEntries(['next/server', 'next/headers', 'next/navigation']
+    .map(id => [id, pathToFileURL(require.resolve(id)).href]));
+  const hook = registerHooks({ resolve(specifier, context, nextResolve) {
+    return nextModules[specifier] ? { url: nextModules[specifier], shortCircuit: true } : nextResolve(specifier, context);
+  } });
+  const savedEnv = { AUTH_URL: process.env.AUTH_URL, NEXTAUTH_URL: process.env.NEXTAUTH_URL };
+  try {
+    delete process.env.AUTH_URL;
+    delete process.env.NEXTAUTH_URL;
+    const NextAuth = require('next-auth').default;
+    const { encode } = require('@auth/core/jwt');
+    const { NextRequest } = require('next/server');
+    const { authConfig } = load('lib/auth/auth.config.ts', {
+      '@/lib/db/mongodb': { connectToDatabase: () => { throw new Error('Session checks must not query the database'); } },
+      '@/lib/db/models/User': { UserModel: {} },
+    });
+    const secret = 'regression-test-secret-not-a-production-credential';
+    const { auth } = NextAuth({ ...authConfig, secret, trustHost: true, providers: [], logger: { error: () => {} } });
+    const proxy = load('proxy.ts', { '@/lib/auth/auth': { auth } }).default;
+    const origin = 'https://www.example.com';
+    const request = (path, cookie = '') => new NextRequest(origin + path, { headers: { cookie } });
+    const cookieName = '__Secure-authjs.session-token';
+    const token = { sub: 'test-admin', id: 'test-admin', email: 'admin@example.test', name: 'Test Admin', role: 'admin' };
+    const valid = await encode({ token, secret, salt: cookieName, maxAge: 3600 });
+    const expired = await encode({ token, secret, salt: cookieName, maxAge: -3600 });
+    for (const cookie of ['', `${cookieName}=invalid-token`, `${cookieName}=${expired}`]) {
+      for (const path of ['/admin', '/admin/products', '/admin/orders?status=Pending']) {
+        const response = await proxy(request(path, cookie));
+        assert.equal(response.status, 307);
+        const destination = new URL(response.headers.get('location'));
+        assert.equal(destination.pathname, '/admin/login');
+        assert.equal(destination.searchParams.get('callbackUrl'), origin + path);
+      }
+      const login = await proxy(request('/admin/login', cookie));
+      assert.equal(login.headers.get('location'), null);
+      assert.equal(login.headers.get('x-middleware-next'), '1');
+    }
+    const authenticated = await proxy(request('/admin/products', `${cookieName}=${valid}`));
+    assert.equal(authenticated.headers.get('x-middleware-next'), '1');
+    assert.equal(authenticated.headers.get('location'), null);
+    const login = await proxy(request('/admin/login', `${cookieName}=${valid}`));
+    assert.equal(new URL(login.headers.get('location')).pathname, '/admin');
+    assert.equal((await proxy(request('/api/admin/products'))).headers.get('location'), null);
+  } finally {
+    hook.deregister();
+    for (const [key, value] of Object.entries(savedEnv)) {
+      if (value === undefined) delete process.env[key]; else process.env[key] = value;
+    }
+  }
+});
 
 test('country-only URLs have correct regional tags and no language-prefix variants', () => {
   const locales = load('lib/seo/locales.ts');
@@ -305,9 +359,9 @@ test('region endpoints reject anonymous requests before accessing the database',
   }
 });
 
-test('proxy preserves locale queries, sets document locale and leaves auth handling intact', async () => {
+test('proxy preserves market routes and legacy language redirects', async () => {
   const { NextRequest } = require('next/server');
-  const proxy = load('proxy.ts', { '@/lib/auth/auth': { auth: () => async () => new Response(null, { status: 401 }) } }).default;
+  const proxy = load('proxy.ts', { '@/lib/auth/auth': { auth: () => { throw new Error('Public routes must not invoke auth'); } } }).default;
   const apex = await proxy(new NextRequest('https://example.com/ar/about?q=1'));
   assert.equal(apex.status, 308);
   assert.equal(apex.headers.get('location'), 'https://www.example.com/ar/about?q=1');
@@ -315,10 +369,85 @@ test('proxy preserves locale queries, sets document locale and leaves auth handl
   assert.equal(locale.headers.get('location'), 'https://www.example.com/en/about?q=1');
   const page = await proxy(new NextRequest('https://www.example.com/sa/about'));
   assert.equal(page.headers.get('x-middleware-request-x-bht-locale'), 'sa');
+  assert.equal(page.headers.get('x-middleware-request-x-bht-pathname'), '/sa/about');
   const legacy = await proxy(new NextRequest('https://www.example.com/ar/about?q=1'));
   assert.equal(legacy.headers.get('location'), 'https://www.example.com/en/about?q=1');
   assert.match(legacy.headers.get('set-cookie'), /bht_language=ar/);
-  assert.equal((await proxy(new NextRequest('https://www.example.com/admin'))).status, 401);
+});
+
+test('geolocation redirects unscoped product and landing URLs only to active GCC markets', async () => {
+  const { NextRequest } = require('next/server');
+  const saved = process.env.VERCEL;
+  let active = true;
+  let fail = false;
+  const proxy = load('proxy.ts', {
+    '@/lib/auth/auth': { auth: () => { throw new Error('Unexpected auth'); } },
+    '@/lib/services/region.service': { RegionService: { getRegionByCode: async () => {
+      if (fail) throw new Error('Database unavailable');
+      return { isActive: active };
+    } } },
+  }).default;
+  const request = (path, country) => new NextRequest('https://www.example.com' + path,
+    { headers: country ? { 'x-vercel-ip-country': country } : {} });
+  try {
+    process.env.VERCEL = '1';
+    for (const code of ['ae', 'sa', 'qa', 'kw', 'bh', 'om']) {
+      for (const path of ['/', '/c=bedding/blue?q=1']) {
+        const result = await proxy(request(path, code.toUpperCase()));
+        assert.equal(result.status, 307);
+        assert.equal(result.headers.get('location'), `https://www.example.com/${code}${path === '/' ? '' : path}`);
+        assert.equal(result.headers.get('cache-control'), 'private, no-store');
+      }
+    }
+    for (const path of ['/en', '/sa/c=bedding/blue', '/ae/bedding', '/api/products']) {
+      assert.equal((await proxy(request(path, 'QA'))).headers.get('location'), null);
+    }
+    for (const country of [undefined, 'IN', 'US', 'invalid']) {
+      assert.equal((await proxy(request('/', country))).headers.get('location'), 'https://www.example.com/en');
+    }
+    active = false;
+    assert.equal((await proxy(request('/', 'SA'))).headers.get('location'), 'https://www.example.com/en');
+    fail = true;
+    assert.equal((await proxy(request('/', 'SA'))).headers.get('location'), 'https://www.example.com/en');
+    fail = false;
+    active = true;
+    delete process.env.VERCEL;
+    assert.equal((await proxy(request('/', 'SA'))).headers.get('location'), 'https://www.example.com/en');
+  } finally {
+    if (saved === undefined) delete process.env.VERCEL; else process.env.VERCEL = saved;
+  }
+});
+
+test('product canonical URL never redirects to itself and proxy replaces spoofed path headers', async () => {
+  const { NextRequest } = require('next/server');
+  const slug = 'marwa-spanish-style-single-bed-3-piece-comforter-set-160-220';
+  const product = { name: 'Marwa comforter', slug, categorySlug: 'bedding', category: 'Bedding', price: 100, image: '/a.jpg' };
+  const proxy = load('proxy.ts', { '@/lib/auth/auth': { auth: () => { throw new Error('Unexpected auth'); } } }).default;
+  const canonical = `/ae/c=bedding/${slug}`;
+  let requestPath = canonical;
+  const route = load('app/[locale]/[category]/[slug]/page.tsx', {
+    'next/headers': { headers: async () => new Headers({ 'x-bht-pathname': requestPath }) },
+    '@/components/product/ProductDetailView': { ProductDetailView: () => null },
+    '@/lib/services/product.service': { getPublishedProduct: async () => product, ProductService: {
+      getProductsBySlugs: async () => [], getRelatedProducts: async () => [],
+    } },
+    'next/navigation': { notFound: () => { throw new Error('404'); }, permanentRedirect: path => { throw new Error('308 ' + path); } },
+  });
+  for (const path of [canonical, `/ae/c%3Dbedding/${slug}`, `/ae/wrong/${slug}`]) {
+    const response = await proxy(new NextRequest('https://www.example.com' + path,
+      { headers: { 'x-bht-pathname': '/spoofed' } }));
+    assert.equal(response.headers.get('location'), null);
+    requestPath = response.headers.get('x-middleware-request-x-bht-pathname');
+    assert.equal(requestPath, path);
+    const props = { params: Promise.resolve({ locale: 'ae', category: 'c=bedding', slug }) };
+    if (path !== canonical) {
+      await assert.rejects(route.default(props), error => error.message === '308 ' + canonical);
+      requestPath = canonical;
+    }
+    assert.ok(await route.default(props));
+    // Canonical request wins even if the dynamic category arrives encoded.
+    assert.ok(await route.default({ params: Promise.resolve({ locale: 'ae', category: 'c%3Dbedding', slug }) }));
+  }
 });
 
 test('product route uses canonical metadata, rejects missing records and redirects wrong categories', async () => {
@@ -330,6 +459,13 @@ test('product route uses canonical metadata, rejects missing records and redirec
   });
   const props = { params: Promise.resolve({ locale: 'en', category: 'wrong', slug: 'blue' }) };
   assert.equal((await route.generateMetadata(props)).alternates.canonical, 'https://www.example.com/en/c=bedding/blue');
+  const regional = await route.generateMetadata({ params: Promise.resolve({ locale: 'sa', category: 'c=bedding', slug: 'blue' }) });
+  assert.match(regional.title.absolute, /Blue blanket.*Saudi Arabia/);
+  assert.equal(regional.description, 'Saudi Arabia: Blue blanket. Cotton');
+  assert.ok(regional.keywords.includes('Blue blanket Saudi Arabia'));
+  assert.equal(regional.openGraph.title, regional.title.absolute);
+  assert.equal(regional.alternates.canonical, 'https://www.example.com/sa/c=bedding/blue');
+  assert.equal(product.description, 'Cotton');
   await assert.rejects(route.default(props), /308 \/en\/c=bedding\/blue/);
   product = null;
   await assert.rejects(route.generateMetadata(props), /404/);

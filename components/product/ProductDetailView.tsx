@@ -1,6 +1,7 @@
 "use client";
 
 import { getAbsoluteUrl, getProductPath } from "@/lib/seo/urls";
+import { usePathname } from "next/navigation";
 import React, { useState, useMemo } from "react";
 import Image, { type ImageProps } from "next/image";
 import Link from "@/components/common/StoreLink";
@@ -78,6 +79,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   brand,
 }) => {
   const { language, isRTL } = useLanguage();
+  const locale = usePathname().split("/")[1] || "en";
   const isAr = language === "ar";
 
   // Build full gallery array with primary image first
@@ -94,7 +96,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   }, [product.image, product.images, product.variants]);
 
   const [activeImageIndex, setActiveImageIndex] = useState(() => Math.max(0, allImages.indexOf(product.variants?.[0]?.image || product.image)));
-  const productUrl = getAbsoluteUrl(getProductPath(product, language));
+  const productUrl = getAbsoluteUrl(getProductPath(product, locale));
   const [selectedVariantIndex, setSelectedVariantIndex] = useState<number | null>(product.variants?.length ? 0 : null);
   const [selectedSize, setSelectedSize] = useState<string>(
     product.variants?.length ? product.variants[0].size || "" : product.sizes?.[0] || ""

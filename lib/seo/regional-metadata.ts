@@ -5,7 +5,7 @@ import { isStoreMarket, marketAlternates, MARKETS, parseStoreLocale } from "./lo
 import { getRegionalCopy } from "./regional-content";
 import { getRequestLanguage } from "./request-language";
 
-export async function constructRegionalMetadata(input: MetadataInput) {
+export async function constructRegionalMetadata(input: MetadataInput & { productName?: string }) {
   const path = input.path || "/en";
   const [, locale, ...parts] = path.split("/");
   const parsed = parseStoreLocale(locale);
@@ -18,6 +18,14 @@ export async function constructRegionalMetadata(input: MetadataInput) {
   const copy = getRegionalCopy(locale, parts.join("/"), language);
   let title = copy?.title || input.title;
   let description = copy?.description || input.description;
+  let keywords = input.keywords;
+  if (input.productName && parsed?.market) {
+    const country = MARKETS[parsed.market][language];
+    // Preserve catalog facts and authored metadata; regional context adds no stock/delivery claims.
+    title = `${title} | ${country}`;
+    description = `${country}: ${description || input.productName}`;
+    keywords = [...new Set([...(keywords || []), `${input.productName} ${country}`])];
+  }
   const region = regions.find(r => r.code === parsed?.market);
   // Existing admin regional templates customize the landing page, not every product.
   if (region && parts.length === 0 && language === "en") {
@@ -25,5 +33,5 @@ export async function constructRegionalMetadata(input: MetadataInput) {
     if (region.metaTitleSuffix) title = `BHT Collections ${region.metaTitleSuffix.replaceAll("{{region_name}}", name)}`;
     if (region.metaDescriptionTemplate) description = region.metaDescriptionTemplate.replaceAll("{{region_name}}", name);
   }
-  return constructMetadata({ ...input, title, description, languages: input.noIndex ? undefined : languages });
+  return constructMetadata({ ...input, title, description, keywords, languages: input.noIndex ? undefined : languages });
 }

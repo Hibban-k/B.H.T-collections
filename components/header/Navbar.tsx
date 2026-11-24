@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useState } from "react";
-import { MarketContextBar } from "./MarketContextBar";
 import { PrimaryNav } from "./PrimaryNav";
 import { SecondaryNav } from "./SecondaryNav";
 import { MobileNav } from "./MobileNav";
@@ -24,7 +23,6 @@ export const Navbar: React.FC = () => {
 
       {/* Non-Sticky Secondary Navigation Bar (scrolls away naturally) */}
       <SecondaryNav />
-      <MarketContextBar />
     </>
   );
 };

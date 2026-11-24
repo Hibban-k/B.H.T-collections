@@ -71,8 +71,12 @@ export const authConfig: NextAuthConfig = {
       const { pathname } = request.nextUrl;
 
       // Protect /admin routes (except /admin/login)
-      if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
-        return !!auth?.user;
+      if ((pathname === "/admin" || pathname.startsWith("/admin/")) && pathname !== "/admin/login" && !auth?.user) {
+        // Auth.js runs a supplied middleware even when authorized returns false.
+        // Return the redirect itself so the proxy wrapper cannot override it.
+        const loginUrl = new URL("/admin/login", request.url);
+        loginUrl.searchParams.set("callbackUrl", request.nextUrl.href);
+        return Response.redirect(loginUrl, 307);
       }
 
       // If already logged in and visiting /admin/login, redirect to /admin

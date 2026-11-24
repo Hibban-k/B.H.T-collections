@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { ProductDetailView } from "@/components/product/ProductDetailView";
 import { ProductService, getPublishedProduct } from "@/lib/services/product.service";
@@ -16,6 +17,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) notFound();
   const seo = generateProductSeo(product);
   return constructMetadata({ title: seo.metaTitle, description: seo.metaDescription,
+    productName: product.name, keywords: seo.keywords,
     image: product.image, path: getProductPath(product, locale) });
 }
 
@@ -24,7 +26,9 @@ export default async function ProductPage({ params }: Props) {
   const product = await getPublishedProduct(slug);
   if (!product) notFound();
   const path = getProductPath(product, locale);
-  if (path !== "/" + locale + "/" + encodeURIComponent(category).replace("%3D", "=") + "/" + encodeURIComponent(slug)) permanentRedirect(path);
+  const requestPath = (await headers()).get("x-bht-pathname")
+    || "/" + locale + "/" + encodeURIComponent(category).replace("%3D", "=") + "/" + encodeURIComponent(slug);
+  if (requestPath !== path) permanentRedirect(path);
   const [crossSellProducts, relatedProducts] = await Promise.all([
     ProductService.getProductsBySlugs(product.crossSellSlugs || []).catch(() => []),
     ProductService.getRelatedProducts(product.categorySlug, product.slug, 4).catch(() => []),
