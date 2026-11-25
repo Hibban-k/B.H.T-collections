@@ -1,5 +1,7 @@
 # BHT Collections: technical SEO implementation report
 
+> Current consolidated guide: [COMPLETE-SEO-GUIDE.md](COMPLETE-SEO-GUIDE.md). It documents the current implementation through commit `9af5c32`, corrects superseded URL/language and seed-script guidance, and separates code completion from unverified production deployment. Older status entries below are historical.
+
 > Latest regional decision: country-only `/ae`, `/sa`, `/qa`, `/kw`, `/bh`, `/om`; `/en` is international. Language is a cookie preference on the same URL. See [REGIONAL-TARGETING.md](REGIONAL-TARGETING.md), which supersedes earlier separate-English/Arabic URL guidance. Regional setup code is implemented; the database connection prevented installing the six country records here.
 
 Date: 24 November 2026

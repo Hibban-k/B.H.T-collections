@@ -1,5 +1,7 @@
 # Regional targeting and language selection
 
+> Current consolidated guide: [COMPLETE-SEO-GUIDE.md](COMPLETE-SEO-GUIDE.md). It documents the current implementation through commit `9af5c32`, corrects superseded URL/language and seed-script guidance, and separates code completion from unverified production deployment. Older status entries below are historical.
+
 Updated: 24 November 2026. Main origin: https://www.blankethouse.ae.
 
 This document supersedes earlier recommendations to use `/en-sa` and `/ar-sa`. The owner requested country-only paths, with language selection independent of country.
@@ -47,7 +49,7 @@ No country search-volume dataset was supplied. The current wording is based on a
 1. Obtain Keyword Planner or another reliable keyword export for each country and language.
 2. Record the country, language, term, date range, volume source and intended page. Keep English and Arabic research separate.
 3. Choose terms matching products actually sold and the page's intent. Do not repeat a country name across every sentence.
-4. Update landing-page templates in the admin region editor. For page-specific titles, descriptions and descriptions, add reviewed copy to `REGIONAL_SEO_OVERRIDES` in `lib/seo/regional-content.ts`, keyed by country, page and display language.
+4. Update landing-page templates in the admin region editor. For page-specific titles and descriptions, add reviewed copy to `REGIONAL_SEO_OVERRIDES` in `lib/seo/regional-content.ts`, keyed by country, page and display language.
 5. Review resulting pages with the local contact team. Do not claim local stock, local delivery times or free shipping without confirmation.
 6. Measure impressions, queries and conversions by country in Search Console after deployment. This implementation does not promise rankings or traffic.
 
